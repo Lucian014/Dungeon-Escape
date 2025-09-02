@@ -17,7 +17,7 @@ public class Player extends Entity {
 
     public final int screenX;
     public final int screenY;
-    int hasKey = 0;
+    public int hasKey = 0;
 
     public Player(GamePanel gamePanel, KeyHandler keyHandler){
 
@@ -115,21 +115,38 @@ public class Player extends Entity {
                 case "Key":
                     hasKey++;
                     gamePanel.object[i] = null;
-                    System.out.println("Key:"+hasKey);
+                    gamePanel.ui.showMessage("You picked up a key!");
                     gamePanel.playSE(1);
                     break;
+
                 case "Door":
                     if(hasKey > 0) {
                         gamePanel.object[i] = null;
+                        gamePanel.ui.showMessage("You unlocked a door!");
                         hasKey--;
                         gamePanel.playSE(3);
-                        System.out.println("Key:"+hasKey);
+                    } else {
+                        gamePanel.ui.showMessage("Can't unlock this door. Find a key!");
                     }
                     break;
                 case "Boots":
                     gamePanel.playSE(2);
                     speed += 2;
                     gamePanel.object[i] = null;
+                    gamePanel.ui.showMessage("You picked up a pair of boots! (+2speed)");
+                    break;
+                case "Chest":
+                    if(hasKey > 0){
+                        gamePanel.playSE(2);
+                        gamePanel.object[i] = null;
+                        hasKey--;
+                        gamePanel.ui.gameFinished = true;
+                        gamePanel.stopMusic();
+                        gamePanel.playSE(4);
+                        gamePanel.ui.showMessage("Congrats! You finished the game!");
+                    } else {
+                        gamePanel.ui.showMessage("Can't unlock this chest. Find a key!");
+                    }
                     break;
             }
         }
