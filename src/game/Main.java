@@ -1,4 +1,4 @@
-import game.GamePanel;
+package game;
 
 import javax.swing.*;
 
@@ -16,6 +16,7 @@ public class Main {
         window.pack();
         window.setLocationRelativeTo(null);
         window.setVisible(true);
+        gamePanel.setupGame();
         gamePanel.startGameThread();
         }
     }
