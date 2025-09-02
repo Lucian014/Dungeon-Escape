@@ -116,14 +116,21 @@ public class Player extends Entity {
                     hasKey++;
                     gamePanel.object[i] = null;
                     System.out.println("Key:"+hasKey);
+                    gamePanel.playSE(1);
                     break;
                 case "Door":
                     if(hasKey > 0) {
                         gamePanel.object[i] = null;
                         hasKey--;
+                        gamePanel.playSE(3);
+                        System.out.println("Key:"+hasKey);
                     }
-                    System.out.println("Key:"+hasKey);
-
+                    break;
+                case "Boots":
+                    gamePanel.playSE(2);
+                    speed += 2;
+                    gamePanel.object[i] = null;
+                    break;
             }
         }
     }
