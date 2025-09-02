@@ -6,6 +6,7 @@ import game.KeyHandler;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImageFilter;
 import java.io.BufferedReader;
 import java.io.IOException;
 
@@ -24,6 +25,9 @@ public class Player extends Entity {
 
         screenX = gamePanel.screenWidth / 2 - (gamePanel.tileSize / 2);
         screenY = gamePanel.screenHeight / 2 - (gamePanel.tileSize / 2);
+
+        solidArea = new Rectangle(10,18,26,26);
+
 
         setDefaultValues();
         getPlayerImage();
@@ -51,35 +55,48 @@ public class Player extends Entity {
             e.printStackTrace();
         }
     }
-    public void update(){
+    public void update() {
+        int dx = 0;
+        int dy = 0;
 
-        if(keyHandler.upPressed || keyHandler.downPressed || keyHandler.leftPressed || keyHandler.rightPressed){
+        // Collect input
+        if (keyHandler.upPressed) {
+            dy -= speed;
+        }
+        if (keyHandler.downPressed) {
+            dy += speed;
+        }
+        if (keyHandler.leftPressed) {
+            dx -= speed;
+        }
+        if (keyHandler.rightPressed) {
+            dx += speed;
+        }
 
-        if(keyHandler.upPressed){
-            direction = "up";
-            worldY -= speed;
+        // Determine facing direction for animation
+        if (dx < 0) direction = "left";
+        if (dx > 0) direction = "right";
+        if (dy < 0) direction = "up";
+        if (dy > 0) direction = "down";
+
+        // Collision check
+        collisionOn = false;
+        gamePanel.checker.checkTile(this, 0, dy);
+        if (!collisionOn) {
+            worldY += dy;
         }
-        if(keyHandler.downPressed){
-            direction = "down";
-            worldY += speed;
+
+        collisionOn = false;
+        gamePanel.checker.checkTile(this, dx, 0);
+        if (!collisionOn) {
+            worldX += dx;
         }
-        if(keyHandler.leftPressed){
-            direction = "left";
-            worldX -= speed;
-        }
-        if(keyHandler.rightPressed){
-            direction = "right";
-            worldX += speed;
-        }
-        spriteCounter++;
-        if(spriteCounter > 14){
-            if(spriteNum == 1){
-                spriteNum = 2;
-            }
-            else if(spriteNum == 2){
-                spriteNum = 1;
-                }
-            spriteCounter = 0;
+        // Sprite animation
+        if (dx != 0 || dy != 0) {
+            spriteCounter++;
+            if (spriteCounter > 14) {
+                spriteNum = (spriteNum == 1) ? 2 : 1;
+                spriteCounter = 0;
             }
         }
     }
