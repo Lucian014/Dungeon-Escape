@@ -11,7 +11,6 @@ import java.io.IOException;
 
 public class Player extends Entity {
 
-    GamePanel gamePanel;
     KeyHandler keyHandler;
 
     public final int screenX;
@@ -102,8 +101,13 @@ public class Player extends Entity {
 
     public void interactNPC(int i) {
         if(i != 999) {
-            System.out.println("you re hitting an npc");
+
+            if(gamePanel.keyHandler.enterPressed) {
+                gamePanel.gameState = gamePanel.dialogueState;
+                gamePanel.npc[i].speak();
+            }
         }
+        gamePanel.keyHandler.enterPressed = false;
     }
 
     public void draw(Graphics2D g2){

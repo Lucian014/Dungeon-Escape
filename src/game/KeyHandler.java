@@ -5,7 +5,7 @@ import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener {
 
-    public boolean upPressed, downPressed, leftPressed, rightPressed;
+    public boolean upPressed, downPressed, leftPressed, rightPressed, enterPressed;
     GamePanel gamePanel;
 
     public KeyHandler(GamePanel gamePanel) {
@@ -21,23 +21,39 @@ public class KeyHandler implements KeyListener {
     public void keyPressed(KeyEvent e) {
 
         int code = e.getKeyCode();
-
-        if(code == KeyEvent.VK_W){
-            upPressed = true;
-        }
-        if(code == KeyEvent.VK_A){
-            leftPressed = true;
-        }
-        if(code == KeyEvent.VK_S){
-            downPressed = true;
-        }
-        if(code == KeyEvent.VK_D){
-            rightPressed = true;
-        }
-        if(code == KeyEvent.VK_P){
-            if(gamePanel.gameState == gamePanel.playState)
+        //PLAY STATE
+        if(gamePanel.gameState == gamePanel.playState) {
+            if(code == KeyEvent.VK_W){
+                upPressed = true;
+            }
+            if(code == KeyEvent.VK_A){
+                leftPressed = true;
+            }
+            if(code == KeyEvent.VK_S){
+                downPressed = true;
+            }
+            if(code == KeyEvent.VK_D){
+                rightPressed = true;
+            }
+            if(code == KeyEvent.VK_P) {
                 gamePanel.gameState = gamePanel.pauseState;
-            else if (gamePanel.gameState == gamePanel.pauseState){
+            }
+            if(code == KeyEvent.VK_ENTER) {
+                enterPressed = true;
+            }
+
+        }
+
+        //PAUSE STATE
+        if(gamePanel.gameState == gamePanel.pauseState) {
+            if(code == KeyEvent.VK_P) {
+                gamePanel.gameState = gamePanel.playState;
+            }
+        }
+
+        //DIALOGUE STATE
+        if(gamePanel.gameState == gamePanel.dialogueState) {
+            if(code == KeyEvent.VK_ENTER){
                 gamePanel.gameState = gamePanel.playState;
             }
         }
@@ -61,5 +77,4 @@ public class KeyHandler implements KeyListener {
             rightPressed = false;
         }
     }
-
 }
