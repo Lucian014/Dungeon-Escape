@@ -18,7 +18,7 @@ public class UI {
     public UI(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
         arial_40 = new Font("Arial", Font.PLAIN, 40);
-        OBJ_Key key = new OBJ_Key();
+        OBJ_Key key = new OBJ_Key(gamePanel);
         keyImage = key.image;
         arial_80 = new Font("Arial", Font.BOLD, 80);
     }
