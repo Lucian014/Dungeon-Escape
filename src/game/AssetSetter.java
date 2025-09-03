@@ -14,24 +14,24 @@ public class AssetSetter {
     }
 
     public void setObject() {
-
-        gamePanel.object[0] = new OBJ_Key();
+        //23,7
+        gamePanel.object[0] = new OBJ_Key(gamePanel);
         gamePanel.object[0].worldX = 23 * gamePanel.tileSize;
         gamePanel.object[0].worldY = 7 * gamePanel.tileSize;
 
-        gamePanel.object[1] = new OBJ_Key();
+        gamePanel.object[1] = new OBJ_Key(gamePanel);
         gamePanel.object[1].worldX = 23 * gamePanel.tileSize;
         gamePanel.object[1].worldY = 40 * gamePanel.tileSize;
 
-        gamePanel.object[2] = new OBJ_Door();
+        gamePanel.object[2] = new OBJ_Door(gamePanel);
         gamePanel.object[2].worldX = 37 * gamePanel.tileSize;
         gamePanel.object[2].worldY = 7 * gamePanel.tileSize;
 
-        gamePanel.object[3] = new OBJ_Boots();
+        gamePanel.object[3] = new OBJ_Boots(gamePanel);
         gamePanel.object[3].worldX = 37 * gamePanel.tileSize;
         gamePanel.object[3].worldY = 42 * gamePanel.tileSize;
 
-        gamePanel.object[4] = new OBJ_Chest();
+        gamePanel.object[4] = new OBJ_Chest(gamePanel);
         gamePanel.object[4].worldX = 10 * gamePanel.tileSize;
         gamePanel.object[4].worldY = 7 * gamePanel.tileSize;
 

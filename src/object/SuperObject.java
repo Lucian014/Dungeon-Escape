@@ -1,11 +1,13 @@
 package object;
 
 import game.GamePanel;
+import game.UtilityTool;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class SuperObject {
+    GamePanel gamePanel;
     public BufferedImage image;
     public String name;
     public boolean collision = false;
@@ -13,6 +15,7 @@ public class SuperObject {
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
     public int solidAreaDefaultX = 0;
     public int solidAreaDefaultY = 0;
+    UtilityTool utilityTool = new UtilityTool();
 
     public void draw(Graphics2D graphics2D, GamePanel gamePanel) {
 
