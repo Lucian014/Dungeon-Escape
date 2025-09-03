@@ -2,6 +2,8 @@ package game;
 
 import entity.Entity;
 
+import java.awt.*;
+
 public class CollisionChecker {
 
     GamePanel gamePanel;
@@ -125,4 +127,69 @@ public class CollisionChecker {
 
         return index;
     }
+    //NPC OR MONSTER
+    public int checkEntity(Entity entity, Entity[] target) {
+        int index = 999;
+
+        // Store original solid area positions
+        int entityLeftWorldX = entity.worldX + entity.solidAreaDefaultX;
+        int entityTopWorldY = entity.worldY + entity.solidAreaDefaultY;
+
+        // Make a temporary rectangle to simulate movement
+        Rectangle entityArea = new Rectangle(entityLeftWorldX, entityTopWorldY,
+                entity.solidArea.width, entity.solidArea.height);
+
+        // Shift according to direction
+        switch (entity.direction) {
+            case "up":    entityArea.y -= entity.speed; break;
+            case "down":  entityArea.y += entity.speed; break;
+            case "left":  entityArea.x -= entity.speed; break;
+            case "right": entityArea.x += entity.speed; break;
+        }
+
+        for (int i = 0; i < target.length; i++) {
+            if (target[i] != null) {
+                int targetLeftWorldX = target[i].worldX + target[i].solidAreaDefaultX;
+                int targetTopWorldY = target[i].worldY + target[i].solidAreaDefaultY;
+
+                Rectangle targetArea = new Rectangle(targetLeftWorldX, targetTopWorldY,
+                        target[i].solidArea.width, target[i].solidArea.height);
+
+                if (entityArea.intersects(targetArea)) {
+                    entity.collisionOn = true;
+                    index = i;
+                }
+            }
+        }
+
+        return index;
+    }
+    public void checkPlayer(Entity entity) {
+        // Entity rectangle in world space
+        int entityLeftWorldX = entity.worldX + entity.solidAreaDefaultX;
+        int entityTopWorldY = entity.worldY + entity.solidAreaDefaultY;
+        Rectangle entityArea = new Rectangle(entityLeftWorldX, entityTopWorldY,
+                entity.solidArea.width, entity.solidArea.height);
+
+        // Shift entityArea in movement direction
+        switch (entity.direction) {
+            case "up":    entityArea.y -= entity.speed; break;
+            case "down":  entityArea.y += entity.speed; break;
+            case "left":  entityArea.x -= entity.speed; break;
+            case "right": entityArea.x += entity.speed; break;
+        }
+
+        // Player rectangle in world space
+        int playerLeftWorldX = gamePanel.player.worldX + gamePanel.player.solidAreaDefaultX;
+        int playerTopWorldY = gamePanel.player.worldY + gamePanel.player.solidAreaDefaultY;
+        Rectangle playerArea = new Rectangle(playerLeftWorldX, playerTopWorldY,
+                gamePanel.player.solidArea.width, gamePanel.player.solidArea.height);
+
+        // Collision check
+        if (entityArea.intersects(playerArea)) {
+            entity.collisionOn = true;
+            gamePanel.player.collisionOn = true; // block player as well
+        }
+    }
+
 }

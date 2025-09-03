@@ -19,6 +19,7 @@ public class Player extends Entity {
 
     public Player(GamePanel gamePanel, KeyHandler keyHandler){
 
+        super(gamePanel);
         this.gamePanel = gamePanel;
         this.keyHandler = keyHandler;
 
@@ -40,70 +41,52 @@ public class Player extends Entity {
     }
 
     public void getPlayerImage(){
-        up1 = setup("boy_up_1");
-        up2 = setup("boy_up_2");
-        down1 = setup("boy_down_1");
-        down2 = setup("boy_down_2");
-        left1 = setup("boy_left_1");
-        left2 = setup("boy_left_2");
-        right1 = setup("boy_right_1");
-        right2 = setup("boy_right_2");
+        up1 = setup("player/player/boy_up_1");
+        up2 = setup("player/player/boy_up_2");
+        down1 = setup("player/player/boy_down_1");
+        down2 = setup("player/player/boy_down_2");
+        left1 = setup("player/player/boy_left_1");
+        left2 = setup("player/player/boy_left_2");
+        right1 = setup("player/player/boy_right_1");
+        right2 = setup("player/player/boy_right_2");
 
     }
-    public BufferedImage setup(String imageName){
 
-        UtilityTool utilityTool = new UtilityTool();
-        BufferedImage image = null;
-
-        try{
-            image = ImageIO.read(getClass().getResourceAsStream("/player/" + imageName +".png"));
-            image = utilityTool.scaleImage(image, gamePanel.tileSize, gamePanel.tileSize);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-        return image;
-    }
     public void update() {
         int dx = 0;
         int dy = 0;
 
         // Collect input
-        if (keyHandler.upPressed) {
-            dy -= speed;
-        }
-        if (keyHandler.downPressed) {
-            dy += speed;
-        }
-        if (keyHandler.leftPressed) {
-            dx -= speed;
-        }
-        if (keyHandler.rightPressed) {
-            dx += speed;
-        }
+        if (keyHandler.upPressed)    { dy -= speed; direction = "up"; }
+        if (keyHandler.downPressed)  { dy += speed; direction = "down"; }
+        if (keyHandler.leftPressed)  { dx -= speed; direction = "left"; }
+        if (keyHandler.rightPressed) { dx += speed; direction = "right"; }
 
-        // Determine facing direction for animation
-        if (dx < 0) direction = "left";
-        if (dx > 0) direction = "right";
-        if (dy < 0) direction = "up";
-        if (dy > 0) direction = "down";
-
-        //Tile Collision check
+        // ===== Vertical movement =====
         collisionOn = false;
         gamePanel.checker.checkTile(this, 0, dy);
+        int objIndexV = gamePanel.checker.checkObject(this, true);
+        pickUpObject(objIndexV);
+        int npcIndexV = gamePanel.checker.checkEntity(this, gamePanel.npc);
+        if (npcIndexV != 999) interactNPC(npcIndexV);
 
-        //Check object collision
-        int objIndex = gamePanel.checker.checkObject(this, true);
-        pickUpObject(objIndex);
         if (!collisionOn) {
             worldY += dy;
         }
 
+        // ===== Horizontal movement =====
         collisionOn = false;
         gamePanel.checker.checkTile(this, dx, 0);
+        int objIndexH = gamePanel.checker.checkObject(this, true);
+        pickUpObject(objIndexH);
+        int npcIndexH = gamePanel.checker.checkEntity(this, gamePanel.npc);
+        if (npcIndexH != 999) interactNPC(npcIndexH);
+
         if (!collisionOn) {
             worldX += dx;
         }
-        // Sprite animation
+
+        // ===== Animation =====
         if (dx != 0 || dy != 0) {
             spriteCounter++;
             if (spriteCounter > 14) {
@@ -115,6 +98,12 @@ public class Player extends Entity {
 
     public void pickUpObject(int i) {
 
+    }
+
+    public void interactNPC(int i) {
+        if(i != 999) {
+            System.out.println("you re hitting an npc");
+        }
     }
 
     public void draw(Graphics2D g2){
