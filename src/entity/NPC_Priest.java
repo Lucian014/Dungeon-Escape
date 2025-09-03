@@ -12,8 +12,17 @@ public class NPC_Priest extends Entity{
         direction = "down";
         speed = 1;
         getImage();
+        setDialogue();
     }
 
+    public void setDialogue(){
+
+        dialogues[0] = "Hello my son.";
+        dialogues[1] = "So you've come to this island to get \nit.";
+        dialogues[2] = "Many have tried but failed.";
+        dialogues[3] = "Good luck warrior.";
+
+    }
     public void getImage(){
         up1 = setup("npc/priest/priest_up_01");
         up2 = setup("npc/priest/priest_up_02");
@@ -46,5 +55,8 @@ public class NPC_Priest extends Entity{
             }
             actionLockCounter = 0;
         }
+    }
+    public void speak() {
+        super.speak();
     }
 }
