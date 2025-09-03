@@ -1,5 +1,6 @@
 package game;
 
+import entity.NPC_Priest;
 import object.OBJ_Boots;
 import object.OBJ_Chest;
 import object.OBJ_Door;
@@ -15,5 +16,12 @@ public class AssetSetter {
 
     public void setObject() {
 
+    }
+
+    public void setNPC() {
+
+        gamePanel.npc[0] = new NPC_Priest(gamePanel);
+        gamePanel.npc[0].worldX = gamePanel.tileSize * 21;
+        gamePanel.npc[0].worldY = gamePanel.tileSize * 21;
     }
 }
