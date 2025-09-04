@@ -7,6 +7,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class SuperObject {
+
+    public BufferedImage image1, image2,image3;
     GamePanel gamePanel;
     public BufferedImage image;
     public String name;

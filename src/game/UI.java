@@ -1,7 +1,9 @@
 package game;
 
 import object.OBJ_Chest;
+import object.OBJ_Heart;
 import object.OBJ_Key;
+import object.SuperObject;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -12,6 +14,7 @@ public class UI {
     GamePanel gamePanel;
     Graphics2D graphics2D;
     Font maruMonica, purisaBold;
+    BufferedImage heart_full, heart_half, heart_blank;
     public boolean messageOn = false;
     public String message = "";
     int messageCounter = 0;
@@ -33,6 +36,11 @@ public class UI {
             e.printStackTrace();
         }
 
+        //CREATE HUG OBJECT
+        SuperObject heart = new OBJ_Heart(gamePanel);
+        heart_full = heart.image;
+        heart_half = heart.image2;
+        heart_blank = heart.image3;
     }
 
     public void showMessage(String text) {
@@ -51,14 +59,15 @@ public class UI {
         }
         //PLAY STATE - just draw regular UI elements
         else if (gamePanel.gameState == gamePanel.playState) {
-            // Draw regular UI elements here if needed
-            // For example: health bar, inventory, etc.
+
+            drawPlayerLife();
         }
         //DIALOGUE STATE
         else if (gamePanel.gameState == gamePanel.dialogueState) {
-            drawDialogueScreen();
+            drawPlayerLife();
+          // Draw regular UI elements here if needed
+            // For example: health bar, inventory, etc.
         }
-        // Don't handle pause state here - it's handled separately in GamePanel
     }
 
     public void drawPauseScreen(Graphics2D graphics2D) {
@@ -73,6 +82,7 @@ public class UI {
         graphics2D.setFont(graphics2D.getFont().deriveFont(Font.BOLD, 64F));
         int x = getXforCenteredText(text, graphics2D);
         int y = gamePanel.screenHeight / 2 - gamePanel.tileSize;
+
 
         // Shadow
         graphics2D.setColor(Color.BLACK);
@@ -120,6 +130,8 @@ public class UI {
     }
     public int getXforCenteredText(String text, Graphics2D graphics2D) {
 
+
+      
         int length = (int)graphics2D.getFontMetrics().getStringBounds(text, graphics2D).getWidth();
         int x = gamePanel.screenWidth / 2 - length / 2;
         return x;
@@ -228,4 +240,33 @@ public class UI {
             }
         }
     }
-}
+    public void drawPlayerLife() {
+
+        int x = gamePanel.tileSize / 2;
+        int y = gamePanel.tileSize / 2;
+        int i = 0;
+
+        //DRAW MAX LIFE
+        while(i < gamePanel.player.maxLife / 2) {
+            graphics2D.drawImage(heart_blank,x,y,null);
+            i++;
+            x += gamePanel.tileSize;
+        }
+
+        //RESET
+        x = gamePanel.tileSize / 2;
+        y = gamePanel.tileSize / 2;
+        i = 0;
+
+        //DRAW CURRENT LIFE
+        while(i < gamePanel.player.life) {
+            graphics2D.drawImage(heart_half, x, y, null);
+            i++;
+            if(i < gamePanel.player.life) {
+                graphics2D.drawImage(heart_full,x,y,null);
+            }
+            i++;
+            x += gamePanel.tileSize;
+        }
+    }
+
