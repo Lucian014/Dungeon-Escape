@@ -59,14 +59,15 @@ public class UI {
         }
         //PLAY STATE - just draw regular UI elements
         else if (gamePanel.gameState == gamePanel.playState) {
+
             drawPlayerLife();
         }
         //DIALOGUE STATE
         else if (gamePanel.gameState == gamePanel.dialogueState) {
             drawPlayerLife();
-            drawDialogueScreen();
+          // Draw regular UI elements here if needed
+            // For example: health bar, inventory, etc.
         }
-        // Don't handle pause state here - it's handled separately in GamePanel
     }
 
     public void drawPauseScreen(Graphics2D graphics2D) {
@@ -81,6 +82,7 @@ public class UI {
         graphics2D.setFont(graphics2D.getFont().deriveFont(Font.BOLD, 64F));
         int x = getXforCenteredText(text, graphics2D);
         int y = gamePanel.screenHeight / 2 - gamePanel.tileSize;
+
 
         // Shadow
         graphics2D.setColor(Color.BLACK);
@@ -128,6 +130,8 @@ public class UI {
     }
     public int getXforCenteredText(String text, Graphics2D graphics2D) {
 
+
+      
         int length = (int)graphics2D.getFontMetrics().getStringBounds(text, graphics2D).getWidth();
         int x = gamePanel.screenWidth / 2 - length / 2;
         return x;
@@ -266,4 +270,3 @@ public class UI {
         }
     }
 
-}
