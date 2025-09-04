@@ -21,8 +21,74 @@ public class KeyHandler implements KeyListener {
     public void keyPressed(KeyEvent e) {
 
         int code = e.getKeyCode();
+
+        //TITLE STATE
+        if(gamePanel.gameState == gamePanel.titleState) {
+            if(gamePanel.ui.titleScreenState == 0) {
+                if(code == KeyEvent.VK_W){
+                    gamePanel.ui.commandNum--;
+                    if(gamePanel.ui.commandNum < 0) {
+                        gamePanel.ui.commandNum = 3;
+                    }
+                }
+                if(code == KeyEvent.VK_S){
+                    gamePanel.ui.commandNum ++;
+                    if(gamePanel.ui.commandNum > 3) {
+                        gamePanel.ui.commandNum = 0;
+                    }
+                }
+                if(code == KeyEvent.VK_ENTER) {
+                    if(gamePanel.ui.commandNum == 0) {
+                        gamePanel.ui.titleScreenState = 1;
+                    }
+                    if(gamePanel.ui.commandNum == 1) {
+
+                    }
+                    if(gamePanel.ui.commandNum == 2) {
+
+                    }
+                    if(gamePanel.ui.commandNum == 3) {
+                        System.exit(0);
+                    }
+                }
+            }
+            else if(gamePanel.ui.titleScreenState == 1) {
+                if(code == KeyEvent.VK_W){
+                    gamePanel.ui.commandNum--;
+                    if(gamePanel.ui.commandNum < 0) {
+                        gamePanel.ui.commandNum = 3;
+                    }
+                }
+                if(code == KeyEvent.VK_S){
+                    gamePanel.ui.commandNum ++;
+                    if(gamePanel.ui.commandNum > 3) {
+                        gamePanel.ui.commandNum = 0;
+                    }
+                }
+                if(code == KeyEvent.VK_ENTER) {
+                    if(gamePanel.ui.commandNum == 0) {
+                        System.out.println("Fighter stats: ...");
+                        gamePanel.gameState = gamePanel.playState;
+                    }
+                    if(gamePanel.ui.commandNum == 1) {
+                        System.out.println("Fighter stats: ...");
+                        gamePanel.gameState = gamePanel.playState;
+
+                    }
+                    if(gamePanel.ui.commandNum == 2) {
+                        System.out.println("Thief stats: ...");
+                        gamePanel.gameState = gamePanel.playState;
+
+                    }
+                    if(gamePanel.ui.commandNum == 3) {
+                        gamePanel.ui.titleScreenState = 0;
+                    }
+                }
+            }
+        }
+
         //PLAY STATE
-        if(gamePanel.gameState == gamePanel.playState) {
+        else if(gamePanel.gameState == gamePanel.playState) {
             if(code == KeyEvent.VK_W){
                 upPressed = true;
             }
@@ -41,18 +107,15 @@ public class KeyHandler implements KeyListener {
             if(code == KeyEvent.VK_ENTER) {
                 enterPressed = true;
             }
-
         }
-
         //PAUSE STATE
-        if(gamePanel.gameState == gamePanel.pauseState) {
+        else if(gamePanel.gameState == gamePanel.pauseState) {
             if(code == KeyEvent.VK_P) {
                 gamePanel.gameState = gamePanel.playState;
             }
         }
-
         //DIALOGUE STATE
-        if(gamePanel.gameState == gamePanel.dialogueState) {
+        else if(gamePanel.gameState == gamePanel.dialogueState) {
             if(code == KeyEvent.VK_ENTER){
                 gamePanel.gameState = gamePanel.playState;
             }

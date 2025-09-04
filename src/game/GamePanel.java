@@ -41,10 +41,10 @@ public class GamePanel extends JPanel implements Runnable{
 
     //GAME STATE
     public int gameState;
+    public final int titleState = 0;
     public int playState = 1;
     public int pauseState = 2;
     public int dialogueState = 3;
-
 
     public GamePanel(){
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -59,7 +59,7 @@ public class GamePanel extends JPanel implements Runnable{
         assetSetter.setObject();
         playMusic(0);
         stopMusic();
-        gameState = playState;
+        gameState = titleState;
     }
 
     public void startGameThread(){
@@ -111,37 +111,40 @@ public class GamePanel extends JPanel implements Runnable{
             }
         }
         if(gameState == pauseState) {
-            //nothing
+
         }
     }
 
+    @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);
-
         Graphics2D g2 = (Graphics2D) g;
 
-        //TILE
-        tileManager.draw(g2);
+        if(gameState == titleState) {
+            ui.draw(g2);
+        } else {
+            tileManager.draw(g2);
 
-        //OBJECT
-        for(int i = 0; i < object.length; ++i){
-            if(object[i] != null) {
-                object[i].draw(g2,this);
+            for(SuperObject obj : object){
+                if(obj != null) obj.draw(g2, this);
+            }
+
+            for(Entity e : npc){
+                if(e != null) e.draw(g2);
+            }
+
+            player.draw(g2);
+
+            // Only draw regular UI if NOT in pause state
+            if(gameState != pauseState) {
+                ui.draw(g2);
+            }
+
+            // Draw pause overlay last - only if in pause state
+            if(gameState == pauseState) {
+                ui.drawPauseScreen(g2);
             }
         }
-
-        for(int i = 0; i < npc.length; ++i) {
-            if(npc[i] != null) {
-                npc[i].draw(g2);
-            }
-        }
-
-        //PLAYER
-        player.draw(g2);
-
-        //UI
-        ui.draw(g2);
-        g2.dispose();
     }
 
     public void playMusic(int i) {
