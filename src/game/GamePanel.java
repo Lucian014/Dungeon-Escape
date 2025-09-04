@@ -2,11 +2,13 @@ package game;
 
 import entity.Entity;
 import entity.Player;
-import object.SuperObject;
 import tiles.TileManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class GamePanel extends JPanel implements Runnable{
 
@@ -34,10 +36,12 @@ public class GamePanel extends JPanel implements Runnable{
     Sound music = new Sound();
     public UI ui = new UI(this);
     public EventHandler eventHandler =  new EventHandler(this);
+
     //ENTITY AND OBJECT
     public Player player = new Player(this, keyHandler);
-    public SuperObject[] object= new SuperObject[10];
+    public Entity[] object= new Entity[10];
     public Entity[] npc = new Entity[10];
+    ArrayList<Entity> entityList = new ArrayList<>();
 
     //GAME STATE
     public int gameState;
@@ -123,27 +127,49 @@ public class GamePanel extends JPanel implements Runnable{
         if(gameState == titleState) {
             ui.draw(g2);
         } else {
+
+            //TILE
             tileManager.draw(g2);
 
-            for(SuperObject obj : object){
-                if(obj != null) obj.draw(g2, this);
+            //ADD PLAYER
+            entityList.add(player);
+
+            //ADD NPCs
+            for (Entity entity : npc) {
+                if (entity != null) {
+                    entityList.add(entity);
+                }
             }
 
-            for(Entity e : npc){
-                if(e != null) e.draw(g2);
+            //ADD OBJECTS
+            for (Entity entity : object) {
+                if (entity != null) {
+                    entityList.add(entity);
+                }
             }
 
-            player.draw(g2);
+            //SORT
+            Collections.sort(entityList, new Comparator<Entity>() {
+                @Override
+                public int compare(Entity e1, Entity e2) {
 
-            // Only draw regular UI if NOT in pause state
-            if(gameState != pauseState) {
-                ui.draw(g2);
+                    return Integer.compare(e1.worldY, e2.worldY);
+                }
+            });
+
+            //DRAW ENTITIES
+            for(int i = 0; i < entityList.size(); ++i) {
+                entityList.get(i).draw(g2);
             }
 
-            // Draw pause overlay last - only if in pause state
-            if(gameState == pauseState) {
-                ui.drawPauseScreen(g2);
+            //EMPTY ENTITY LIST
+            for(int i = 0; i < entityList.size(); ++i) {
+                entityList.remove(i);
             }
+            //UI
+            ui.draw(g2);
+
+
         }
     }
 
