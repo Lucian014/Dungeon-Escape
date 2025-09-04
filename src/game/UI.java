@@ -24,7 +24,6 @@ public class UI {
     public int titleScreenState = 0; // 0: the first screen, 1: 2nd screen
 
 
-
     public UI(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
         try {
@@ -65,7 +64,7 @@ public class UI {
         //DIALOGUE STATE
         else if (gamePanel.gameState == gamePanel.dialogueState) {
             drawPlayerLife();
-          // Draw regular UI elements here if needed
+            // Draw regular UI elements here if needed
             // For example: health bar, inventory, etc.
         }
     }
@@ -99,13 +98,13 @@ public class UI {
         int y = gamePanel.tileSize / 2;
         int width = gamePanel.screenWidth - (gamePanel.tileSize * 4);
         int height = gamePanel.tileSize * 4;
-        drawSubWindow(x,y,width,height);
+        drawSubWindow(x, y, width, height);
 
-        graphics2D.setFont(graphics2D.getFont().deriveFont(Font.PLAIN,32F));
+        graphics2D.setFont(graphics2D.getFont().deriveFont(Font.PLAIN, 32F));
         x += gamePanel.tileSize;
         y += gamePanel.tileSize * 2;
 
-        for(String line : currentDialogue.split("\n")) {
+        for (String line : currentDialogue.split("\n")) {
             graphics2D.drawString(line, x, y);
             y += 40;
         }
@@ -113,41 +112,42 @@ public class UI {
 
     public void drawSubWindow(int x, int y, int width, int height) {
 
-        Color color = new Color(0, 0, 0,190);
+        Color color = new Color(0, 0, 0, 190);
         graphics2D.setColor(color);
-        graphics2D.fillRoundRect(x,y,width,height,35,35);
+        graphics2D.fillRoundRect(x, y, width, height, 35, 35);
 
-        color = new Color(255,255,255);
+        color = new Color(255, 255, 255);
         graphics2D.setColor(color);
         graphics2D.setStroke(new BasicStroke(5));
-        graphics2D.drawRoundRect(x+5,y+5,width-10,height-10,25,25);
+        graphics2D.drawRoundRect(x + 5, y + 5, width - 10, height - 10, 25, 25);
     }
+
     public int getXforCenteredText(String text) {
 
-        int length = (int)graphics2D.getFontMetrics().getStringBounds(text, graphics2D).getWidth();
+        int length = (int) graphics2D.getFontMetrics().getStringBounds(text, graphics2D).getWidth();
         int x = gamePanel.screenWidth / 2 - length / 2;
         return x;
     }
+
     public int getXforCenteredText(String text, Graphics2D graphics2D) {
 
 
-      
-        int length = (int)graphics2D.getFontMetrics().getStringBounds(text, graphics2D).getWidth();
+        int length = (int) graphics2D.getFontMetrics().getStringBounds(text, graphics2D).getWidth();
         int x = gamePanel.screenWidth / 2 - length / 2;
         return x;
     }
 
     public void drawTitleScreen() {
 
-        if(titleScreenState == 0) {
+        if (titleScreenState == 0) {
             graphics2D.setColor(new Color(100, 163, 232));
-            graphics2D.fillRect(0,0,gamePanel.screenWidth,gamePanel.screenHeight);
+            graphics2D.fillRect(0, 0, gamePanel.screenWidth, gamePanel.screenHeight);
 
             //TITLE NAME
-            graphics2D.setFont(graphics2D.getFont().deriveFont(Font.BOLD,96F));
+            graphics2D.setFont(graphics2D.getFont().deriveFont(Font.BOLD, 96F));
             String text = "Dungeon Escape";
             int x = getXforCenteredText(text);
-            int y = gamePanel.screenHeight / 2 - gamePanel.tileSize * 3 ;
+            int y = gamePanel.screenHeight / 2 - gamePanel.tileSize * 3;
 
             //SHADOW
             graphics2D.setColor(Color.black);
@@ -163,41 +163,40 @@ public class UI {
             graphics2D.drawImage(gamePanel.player.down1, x, y, gamePanel.tileSize * 2, gamePanel.tileSize * 2, null);
 
             //MENU
-            graphics2D.setFont(graphics2D.getFont().deriveFont(Font.BOLD,40F));
+            graphics2D.setFont(graphics2D.getFont().deriveFont(Font.BOLD, 40F));
 
             text = "NEW GAME";
             x = getXforCenteredText(text);
             y += gamePanel.tileSize * 3;
             graphics2D.drawString(text, x, y);
-            if(commandNum == 0) {
-                graphics2D.drawString(">", x- gamePanel.tileSize , y);
+            if (commandNum == 0) {
+                graphics2D.drawString(">", x - gamePanel.tileSize, y);
             }
 
             text = "LOAD GAME";
             x = getXforCenteredText(text);
-            y += gamePanel.tileSize ;
+            y += gamePanel.tileSize;
             graphics2D.drawString(text, x, y);
-            if(commandNum == 1) {
-                graphics2D.drawString(">", x- gamePanel.tileSize , y);
+            if (commandNum == 1) {
+                graphics2D.drawString(">", x - gamePanel.tileSize, y);
             }
 
             text = "SETTINGS";
             x = getXforCenteredText(text);
-            y += gamePanel.tileSize ;
+            y += gamePanel.tileSize;
             graphics2D.drawString(text, x, y);
-            if(commandNum == 2) {
-                graphics2D.drawString(">", x- gamePanel.tileSize , y);
+            if (commandNum == 2) {
+                graphics2D.drawString(">", x - gamePanel.tileSize, y);
             }
 
             text = "QUIT GAME";
             x = getXforCenteredText(text);
-            y += gamePanel.tileSize ;
+            y += gamePanel.tileSize;
             graphics2D.drawString(text, x, y);
-            if(commandNum == 3) {
-                graphics2D.drawString(">", x- gamePanel.tileSize , y);
+            if (commandNum == 3) {
+                graphics2D.drawString(">", x - gamePanel.tileSize, y);
             }
-        }
-        else if(titleScreenState == 1) {
+        } else if (titleScreenState == 1) {
 
             graphics2D.setColor(Color.WHITE);
             graphics2D.setFont(graphics2D.getFont().deriveFont(42f));
@@ -211,35 +210,36 @@ public class UI {
             x = getXforCenteredText(text);
             y += gamePanel.tileSize * 2;
             graphics2D.drawString(text, x, y);
-            if(commandNum == 0) {
-                graphics2D.drawString(">", x-gamePanel.tileSize, y);
+            if (commandNum == 0) {
+                graphics2D.drawString(">", x - gamePanel.tileSize, y);
             }
 
             text = "Thief";
             x = getXforCenteredText(text);
             y += gamePanel.tileSize;
             graphics2D.drawString(text, x, y);
-            if(commandNum == 1) {
-                graphics2D.drawString(">", x-gamePanel.tileSize, y);
+            if (commandNum == 1) {
+                graphics2D.drawString(">", x - gamePanel.tileSize, y);
             }
 
             text = "Wizard";
             x = getXforCenteredText(text);
             y += gamePanel.tileSize;
             graphics2D.drawString(text, x, y);
-            if(commandNum == 2) {
-                graphics2D.drawString(">", x-gamePanel.tileSize, y);
+            if (commandNum == 2) {
+                graphics2D.drawString(">", x - gamePanel.tileSize, y);
             }
 
             text = "Back";
             x = getXforCenteredText(text);
             y += gamePanel.tileSize * 2;
             graphics2D.drawString(text, x, y);
-            if(commandNum == 3) {
-                graphics2D.drawString(">", x-gamePanel.tileSize, y);
+            if (commandNum == 3) {
+                graphics2D.drawString(">", x - gamePanel.tileSize, y);
             }
         }
     }
+
     public void drawPlayerLife() {
 
         int x = gamePanel.tileSize / 2;
@@ -247,8 +247,8 @@ public class UI {
         int i = 0;
 
         //DRAW MAX LIFE
-        while(i < gamePanel.player.maxLife / 2) {
-            graphics2D.drawImage(heart_blank,x,y,null);
+        while (i < gamePanel.player.maxLife / 2) {
+            graphics2D.drawImage(heart_blank, x, y, null);
             i++;
             x += gamePanel.tileSize;
         }
@@ -259,14 +259,15 @@ public class UI {
         i = 0;
 
         //DRAW CURRENT LIFE
-        while(i < gamePanel.player.life) {
+        while (i < gamePanel.player.life) {
             graphics2D.drawImage(heart_half, x, y, null);
             i++;
-            if(i < gamePanel.player.life) {
-                graphics2D.drawImage(heart_full,x,y,null);
+            if (i < gamePanel.player.life) {
+                graphics2D.drawImage(heart_full, x, y, null);
             }
             i++;
             x += gamePanel.tileSize;
         }
     }
 
+}
