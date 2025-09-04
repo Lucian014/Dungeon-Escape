@@ -118,6 +118,7 @@ public class KeyHandler implements KeyListener {
         else if(gamePanel.gameState == gamePanel.dialogueState) {
             if(code == KeyEvent.VK_ENTER){
                 gamePanel.gameState = gamePanel.playState;
+                gamePanel.ui.currentDialogue = "";
             }
         }
     }

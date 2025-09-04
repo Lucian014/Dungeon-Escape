@@ -64,6 +64,9 @@ public class UI {
         //DIALOGUE STATE
         else if (gamePanel.gameState == gamePanel.dialogueState) {
             drawPlayerLife();
+
+            drawDialogueScreen();
+
             // Draw regular UI elements here if needed
             // For example: health bar, inventory, etc.
         }
@@ -269,5 +272,4 @@ public class UI {
             x += gamePanel.tileSize;
         }
     }
-
 }
