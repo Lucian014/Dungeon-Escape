@@ -33,7 +33,7 @@ public class GamePanel extends JPanel implements Runnable{
     Sound se = new Sound();
     Sound music = new Sound();
     public UI ui = new UI(this);
-
+    public EventHandler eventHandler =  new EventHandler(this);
     //ENTITY AND OBJECT
     public Player player = new Player(this, keyHandler);
     public SuperObject[] object= new SuperObject[10];

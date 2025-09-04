@@ -57,45 +57,48 @@ public class Player extends Entity {
     }
 
     public void update() {
-        int dx = 0;
-        int dy = 0;
 
-        // Collect input
-        if (keyHandler.upPressed)    { dy -= speed; direction = "up"; }
-        if (keyHandler.downPressed)  { dy += speed; direction = "down"; }
-        if (keyHandler.leftPressed)  { dx -= speed; direction = "left"; }
-        if (keyHandler.rightPressed) { dx += speed; direction = "right"; }
+        // Only move player if in PLAY state
+        if(gamePanel.gameState == gamePanel.playState) {
+            int dx = 0;
+            int dy = 0;
 
-        // ===== Vertical movement =====
-        collisionOn = false;
-        gamePanel.checker.checkTile(this, 0, dy);
-        int objIndexV = gamePanel.checker.checkObject(this, true);
-        pickUpObject(objIndexV);
-        int npcIndexV = gamePanel.checker.checkEntity(this, gamePanel.npc);
-        if (npcIndexV != 999) interactNPC(npcIndexV);
+            // Collect input
+            if (keyHandler.upPressed)    { dy -= speed; direction = "up"; }
+            if (keyHandler.downPressed)  { dy += speed; direction = "down"; }
+            if (keyHandler.leftPressed)  { dx -= speed; direction = "left"; }
+            if (keyHandler.rightPressed) { dx += speed; direction = "right"; }
 
-        if (!collisionOn) {
-            worldY += dy;
-        }
+            // Vertical movement
+            collisionOn = false;
+            gamePanel.checker.checkTile(this, 0, dy);
+            int objIndexV = gamePanel.checker.checkObject(this, true);
+            pickUpObject(objIndexV);
+            int npcIndexV = gamePanel.checker.checkEntity(this, gamePanel.npc);
+            if (npcIndexV != 999) interactNPC(npcIndexV);
 
-        // ===== Horizontal movement =====
-        collisionOn = false;
-        gamePanel.checker.checkTile(this, dx, 0);
-        int objIndexH = gamePanel.checker.checkObject(this, true);
-        pickUpObject(objIndexH);
-        int npcIndexH = gamePanel.checker.checkEntity(this, gamePanel.npc);
-        if (npcIndexH != 999) interactNPC(npcIndexH);
+            if (!collisionOn) worldY += dy;
 
-        if (!collisionOn) {
-            worldX += dx;
-        }
+            // Horizontal movement
+            collisionOn = false;
+            gamePanel.checker.checkTile(this, dx, 0);
+            int objIndexH = gamePanel.checker.checkObject(this, true);
+            pickUpObject(objIndexH);
+            int npcIndexH = gamePanel.checker.checkEntity(this, gamePanel.npc);
+            if (npcIndexH != 999) interactNPC(npcIndexH);
 
-        // ===== Animation =====
-        if (dx != 0 || dy != 0) {
-            spriteCounter++;
-            if (spriteCounter > 14) {
-                spriteNum = (spriteNum == 1) ? 2 : 1;
-                spriteCounter = 0;
+            if (!collisionOn) worldX += dx;
+
+            // Check events
+            gamePanel.eventHandler.checkEvent();
+
+            // Animation
+            if (dx != 0 || dy != 0) {
+                spriteCounter++;
+                if (spriteCounter > 14) {
+                    spriteNum = (spriteNum == 1) ? 2 : 1;
+                    spriteCounter = 0;
+                }
             }
         }
     }
@@ -111,8 +114,8 @@ public class Player extends Entity {
                 gamePanel.gameState = gamePanel.dialogueState;
                 gamePanel.npc[i].speak();
             }
+            gamePanel.keyHandler.enterPressed = false;
         }
-        gamePanel.keyHandler.enterPressed = false;
     }
 
     public void draw(Graphics2D g2){
