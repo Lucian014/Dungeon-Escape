@@ -5,11 +5,13 @@ import object.OBJ_Key;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class UI {
     GamePanel gamePanel;
     Graphics2D graphics2D;
-    Font arial_40, arial_80;
+    Font maruMonica, purisaBold;
     public boolean messageOn = false;
     public String message = "";
     int messageCounter = 0;
@@ -17,8 +19,15 @@ public class UI {
     public String currentDialogue = "";
     public UI(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
-        arial_40 = new Font("Arial", Font.PLAIN, 40);
-        arial_80 = new Font("Arial", Font.BOLD, 80);
+        try {
+            InputStream inputStream = getClass().getResourceAsStream("/fonts/x12y16pxMaruMonica.ttf");
+            maruMonica = Font.createFont(Font.TRUETYPE_FONT, inputStream);
+            inputStream = getClass().getResourceAsStream("/fonts/Purisa Bold.ttf");
+            purisaBold = Font.createFont(Font.TRUETYPE_FONT, inputStream);
+        } catch (IOException | FontFormatException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void showMessage(String text) {
@@ -29,7 +38,7 @@ public class UI {
     public void draw(Graphics2D graphics2D) {
 
         this.graphics2D = graphics2D;
-        graphics2D.setFont(arial_40);
+        graphics2D.setFont(maruMonica);
         graphics2D.setColor(Color.WHITE);
 
         //PLAY STATE
