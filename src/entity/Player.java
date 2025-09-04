@@ -57,7 +57,6 @@ public class Player extends Entity {
     }
 
     public void update() {
-
         // Only move player if in PLAY state
         if(gamePanel.gameState == gamePanel.playState) {
             int dx = 0;
@@ -69,25 +68,28 @@ public class Player extends Entity {
             if (keyHandler.leftPressed)  { dx -= speed; direction = "left"; }
             if (keyHandler.rightPressed) { dx += speed; direction = "right"; }
 
-            // Vertical movement
+            // Check collisions for both axes
             collisionOn = false;
-            gamePanel.checker.checkTile(this, 0, dy);
-            int objIndexV = gamePanel.checker.checkObject(this, true);
-            pickUpObject(objIndexV);
-            int npcIndexV = gamePanel.checker.checkEntity(this, gamePanel.npc);
-            if (npcIndexV != 999) interactNPC(npcIndexV);
 
-            if (!collisionOn) worldY += dy;
+            // Check tile collisions
+            gamePanel.checker.checkTile(this, dx, dy);
 
-            // Horizontal movement
-            collisionOn = false;
-            gamePanel.checker.checkTile(this, dx, 0);
-            int objIndexH = gamePanel.checker.checkObject(this, true);
-            pickUpObject(objIndexH);
-            int npcIndexH = gamePanel.checker.checkEntity(this, gamePanel.npc);
-            if (npcIndexH != 999) interactNPC(npcIndexH);
+            // Check object collisions
+            int objIndex = gamePanel.checker.checkObject(this, true);
+            pickUpObject(objIndex);
 
-            if (!collisionOn) worldX += dx;
+            // Check NPC collisions - add to both axes check
+            int npcIndex = gamePanel.checker.checkEntity(this, gamePanel.npc);
+            if (npcIndex != 999) interactNPC(npcIndex);
+
+            // Check monster collisions - add to both axes check
+            int monsterIndex = gamePanel.checker.checkEntity(this, gamePanel.monster);
+            contactMonster(monsterIndex);
+            // Only move if no collision detected
+            if (!collisionOn) {
+                worldX += dx;
+                worldY += dy;
+            }
 
             // Check events
             gamePanel.eventHandler.checkEvent();
@@ -99,6 +101,13 @@ public class Player extends Entity {
                     spriteNum = (spriteNum == 1) ? 2 : 1;
                     spriteCounter = 0;
                 }
+            }
+        }
+        if(invincible) {
+            invincibleCounter ++;
+            if(invincibleCounter == 60) {
+                invincible = false;
+                invincibleCounter = 0;
             }
         }
     }
@@ -117,7 +126,6 @@ public class Player extends Entity {
             gamePanel.keyHandler.enterPressed = false;
         }
     }
-
     public void draw(Graphics2D g2){
 
         BufferedImage image = null;
@@ -156,7 +164,28 @@ public class Player extends Entity {
                 break;
         }
 
-
+        if( invincible ) {
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
+        }
         g2.drawImage(image,screenX,screenY,null);
+
+        //RESET ALPHA
+
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+
+        //DEBUG
+//        g2.setFont(new Font("Arial",Font.PLAIN,26));
+//        g2.setColor(Color.white);
+//        g2.drawString("Invincible: "+ invincibleCounter, gamePanel.tileSize, gamePanel.screenHeight / 2);
+    }
+    public void contactMonster(int i) {
+
+        if(i != 999) {
+
+            if(!invincible) {
+                life -= 1;
+                invincible = true;
+            }
+        }
     }
 }
