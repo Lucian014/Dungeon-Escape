@@ -21,9 +21,12 @@ public class Entity {
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
     public int solidAreaDefaultX, solidAreaDefaultY;
     public boolean collisionOn = false;
+    public boolean invincible = false;
+    public int invincibleCounter = 0;
     public int actionLockCounter = 0;
     String[] dialogues = new String[20];
     int dialogueIndex = 0;
+    public int type;
 
     //CHARACTER STATUS
     public int maxLife;
@@ -135,7 +138,17 @@ public class Entity {
 
         gamePanel.checker.checkTile(this, dx, dy);
         gamePanel.checker.checkObject(this, false);
-        gamePanel.checker.checkPlayer(this);
+        gamePanel.checker.checkEntity(this,gamePanel.npc);
+        gamePanel.checker.checkEntity(this,gamePanel.monster);
+        boolean contactPlayer = gamePanel.checker.checkPlayer(this);
+
+        if(this.type == 2 && contactPlayer){
+            if(!gamePanel.player.invincible) {
+                gamePanel.player.life -= 1;
+                gamePanel.player.invincible = true;
+            }
+        }
+
         if (!collisionOn) {
             worldX += dx;
             worldY += dy;
