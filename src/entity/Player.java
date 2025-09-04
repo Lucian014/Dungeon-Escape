@@ -16,7 +16,7 @@ public class Player extends Entity {
     public final int screenX;
     public final int screenY;
 
-    public Player(GamePanel gamePanel, KeyHandler keyHandler){
+    public Player(GamePanel gamePanel, KeyHandler keyHandler) {
 
         super(gamePanel);
         this.gamePanel = gamePanel;
@@ -25,13 +25,19 @@ public class Player extends Entity {
         screenX = gamePanel.screenWidth / 2 - (gamePanel.tileSize / 2);
         screenY = gamePanel.screenHeight / 2 - (gamePanel.tileSize / 2);
 
-        solidArea = new Rectangle(10,18,26,26);
+        solidArea = new Rectangle(10, 18, 26, 26);
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
+
+        attackArea.width = 36;
+        attackArea.height = 36;
+
         setDefaultValues();
         getPlayerImage();
+        getPlayerAttackImage();
     }
-    public void setDefaultValues(){
+
+    public void setDefaultValues() {
 
         worldX = gamePanel.tileSize * 23;
         worldY = gamePanel.tileSize * 21;
@@ -40,75 +46,169 @@ public class Player extends Entity {
 
         //PLAYER STATUS
         maxLife = 6; // 2 lives = 1 heart
-        life =  maxLife;
+        life = maxLife;
 
     }
 
-    public void getPlayerImage(){
-        up1 = setup("player/player/boy_up_1");
-        up2 = setup("player/player/boy_up_2");
-        down1 = setup("player/player/boy_down_1");
-        down2 = setup("player/player/boy_down_2");
-        left1 = setup("player/player/boy_left_1");
-        left2 = setup("player/player/boy_left_2");
-        right1 = setup("player/player/boy_right_1");
-        right2 = setup("player/player/boy_right_2");
+    public void getPlayerImage() {
+        up1 = setup("player/player/boy_up_1", 1, 1);
+        up2 = setup("player/player/boy_up_2", 1, 1);
+        down1 = setup("player/player/boy_down_1", 1, 1);
+        down2 = setup("player/player/boy_down_2", 1, 1);
+        left1 = setup("player/player/boy_left_1", 1, 1);
+        left2 = setup("player/player/boy_left_2", 1, 1);
+        right1 = setup("player/player/boy_right_1", 1, 1);
+        right2 = setup("player/player/boy_right_2", 1, 1);
+    }
+
+    public void getPlayerAttackImage() {
+
+        attackUp1 = setup("player/player/boy_attack_up_1", 1, 2);
+        attackUp2 = setup("player/player/boy_attack_up_2", 1, 2);
+        attackDown1 = setup("player/player/boy_attack_down_1", 1, 2);
+        attackDown2 = setup("player/player/boy_attack_down_2", 1, 2);
+        attackLeft1 = setup("player/player/boy_attack_left_1", 2, 1);
+        attackLeft2 = setup("player/player/boy_attack_left_2", 2, 1);
+        attackRight1 = setup("player/player/boy_attack_right_1", 2, 1);
+        attackRight2 = setup("player/player/boy_attack_right_2", 2, 1);
 
     }
 
     public void update() {
-        // Only move player if in PLAY state
-        if(gamePanel.gameState == gamePanel.playState) {
-            int dx = 0;
-            int dy = 0;
+        // Only update when in play state
+        if (gamePanel.gameState == gamePanel.playState) {
 
-            // Collect input
-            if (keyHandler.upPressed)    { dy -= speed; direction = "up"; }
-            if (keyHandler.downPressed)  { dy += speed; direction = "down"; }
-            if (keyHandler.leftPressed)  { dx -= speed; direction = "left"; }
-            if (keyHandler.rightPressed) { dx += speed; direction = "right"; }
+            // Handle attack input
+            if (gamePanel.keyHandler.attackPressed && !attacking) {
+                boolean nearNPC = false;
+                int npcIndex = gamePanel.checker.checkEntity(this, gamePanel.npc);
 
-            // Check collisions for both axes
-            collisionOn = false;
 
-            // Check tile collisions
-            gamePanel.checker.checkTile(this, dx, dy);
+                if (npcIndex != 999) {
+                    nearNPC = true;
+                }
+                if (!nearNPC) {
+                    attacking = true;
+                    spriteCounter = 0;
+                }
 
-            // Check object collisions
-            int objIndex = gamePanel.checker.checkObject(this, true);
-            pickUpObject(objIndex);
-
-            // Check NPC collisions - add to both axes check
-            int npcIndex = gamePanel.checker.checkEntity(this, gamePanel.npc);
-            if (npcIndex != 999) interactNPC(npcIndex);
-
-            // Check monster collisions - add to both axes check
-            int monsterIndex = gamePanel.checker.checkEntity(this, gamePanel.monster);
-            contactMonster(monsterIndex);
-            // Only move if no collision detected
-            if (!collisionOn) {
-                worldX += dx;
-                worldY += dy;
+                // Consume attack input
+                gamePanel.keyHandler.attackPressed = false;
             }
 
-            // Check events
-            gamePanel.eventHandler.checkEvent();
+            if (attacking) {
+                // Only handle attack animation
+                attack();
+            } else {
+                int dx = 0;
+                int dy = 0;
 
-            // Animation
-            if (dx != 0 || dy != 0) {
-                spriteCounter++;
-                if (spriteCounter > 14) {
-                    spriteNum = (spriteNum == 1) ? 2 : 1;
-                    spriteCounter = 0;
+                // Collect movement input
+                if (gamePanel.keyHandler.upPressed) {
+                    dy -= speed;
+                    direction = "up";
+                }
+                if (gamePanel.keyHandler.downPressed) {
+                    dy += speed;
+                    direction = "down";
+                }
+                if (gamePanel.keyHandler.leftPressed) {
+                    dx -= speed;
+                    direction = "left";
+                }
+                if (gamePanel.keyHandler.rightPressed) {
+                    dx += speed;
+                    direction = "right";
+                }
+
+                // Reset collision flag
+                collisionOn = false;
+
+                // Check collisions
+                gamePanel.checker.checkTile(this, dx, dy);
+                int objIndex = gamePanel.checker.checkObject(this, true);
+                pickUpObject(objIndex);
+
+                // ✅ Interact with NPC only if ENTER is pressed
+                int npcIndex = gamePanel.checker.checkEntity(this, gamePanel.npc);
+                if (npcIndex != 999 && gamePanel.keyHandler.enterPressed) {
+                    interactNPC(npcIndex);
+                    gamePanel.keyHandler.enterPressed = false; // consume input
+                }
+
+                int monsterIndex = gamePanel.checker.checkEntity(this, gamePanel.monster);
+                contactMonster(monsterIndex);
+
+                // Move only if no collision
+                if (!collisionOn) {
+                    worldX += dx;
+                    worldY += dy;
+                }
+
+                // Check events
+                gamePanel.eventHandler.checkEvent();
+
+                // Walking animation
+                if (dx != 0 || dy != 0) {
+                    spriteCounter++;
+                    if (spriteCounter > 14) {
+                        spriteNum = (spriteNum == 1) ? 2 : 1;
+                        spriteCounter = 0;
+                    }
+                }
+            }
+
+            // Invincibility timer
+            if (invincible) {
+                invincibleCounter++;
+                if (invincibleCounter == 60) {
+                    invincible = false;
+                    invincibleCounter = 0;
                 }
             }
         }
-        if(invincible) {
-            invincibleCounter ++;
-            if(invincibleCounter == 60) {
-                invincible = false;
-                invincibleCounter = 0;
+    }
+
+
+    public void attack() {
+        spriteCounter++;
+
+        if(spriteCounter <= 5) {
+            spriteNum = 1;
+        }
+        if(spriteCounter > 5 & spriteCounter <= 25) {
+            spriteNum = 2;
+
+            //SAVE THE CURRENT worldX, worldY, solidArea
+            int currentWorldX = worldX;
+            int currentWorldY = worldY;
+            int solidAreaWidth = solidArea.width;
+            int solidAreaHeight = solidArea.height;
+
+            //Adjust player's worldX/Y for the attackArea
+            switch (direction) {
+                case "up" : worldY -=  attackArea.height; break;
+                case "down": worldY += attackArea.height; break;
+                case "left": worldX -= attackArea.width; break;
+                case "right": worldX += attackArea.width; break;
             }
+            //attackArea becomes solidArea
+            solidArea.width = attackArea.width;
+            solidArea.height = attackArea.height;
+            //Check monster collision with the updated worldX, worldY and solidArea
+            int monsterIndex = gamePanel.checker.checkEntity(this, gamePanel.monster);
+            damageMonster(monsterIndex);
+            //Restore the original coordinates after checking collision
+            worldX = currentWorldX;
+            worldY = currentWorldY;
+            solidArea.width = solidAreaWidth;
+            solidArea.height = solidAreaHeight;
+
+        }
+        if(spriteCounter > 25) {
+            spriteNum = 1;
+            spriteCounter = 0;
+            attacking = false;
         }
     }
 
@@ -117,49 +217,64 @@ public class Player extends Entity {
     }
 
     public void interactNPC(int i) {
+        if(gamePanel.keyHandler.enterPressed){
         if(i != 999) {
-
-            if(gamePanel.keyHandler.enterPressed) {
                 gamePanel.gameState = gamePanel.dialogueState;
                 gamePanel.npc[i].speak();
             }
             gamePanel.keyHandler.enterPressed = false;
+
+            } else {
+            attacking = true;
         }
     }
     public void draw(Graphics2D g2){
 
         BufferedImage image = null;
+        int tempScreenX = screenX;
+        int tempScreenY = screenY;
+
         switch (direction){
             case "up":
-                if(spriteNum == 1){
-                    image = up1;
+                if(!attacking){
+                    if(spriteNum == 1){image = up1;}
+                    if(spriteNum == 2){image = up2;}
                 }
-                if(spriteNum == 2){
-                    image = up2;
+                if(attacking) {
+                    tempScreenY = screenY - gamePanel.tileSize;
+                    if(spriteNum == 1){image = attackUp1;}
+                    if(spriteNum == 2){image = attackUp2;}
                 }
                 break;
             case "down":
-                if(spriteNum == 1){
-                    image = down1;
+                if(!attacking){
+                    if(spriteNum == 1){image = down1;}
+                    if(spriteNum == 2){image = down2;}
                 }
-                if(spriteNum == 2){
-                    image = down2;
+                if(attacking) {
+                    if(spriteNum == 1){image = attackDown1;}
+                    if(spriteNum == 2){image = attackDown2;}
                 }
                 break;
             case "left":
-                if(spriteNum == 1){
-                    image = left1;
+                if(!attacking){
+                    if(spriteNum == 1){image = left1;}
+                    if(spriteNum == 2){image = left2;}
                 }
-                if(spriteNum == 2){
-                    image = left2;
+                if(attacking) {
+                    tempScreenX = screenX - gamePanel.tileSize ;
+                    if(spriteNum == 1){image = attackLeft1;}
+                    if(spriteNum == 2){image = attackLeft2;}
                 }
                 break;
             case "right":
-                if(spriteNum == 1){
-                    image = right1;
+                if(!attacking){
+                    if(spriteNum == 1){image = right1;}
+                    if(spriteNum == 2){image = right2;}
                 }
-                if(spriteNum == 2){
-                    image = right2;
+                if(attacking) {
+                    if(spriteNum == 1){image = attackRight1;}
+                    if(spriteNum == 2){image = attackRight2;}
                 }
                 break;
         }
@@ -167,7 +282,7 @@ public class Player extends Entity {
         if( invincible ) {
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
         }
-        g2.drawImage(image,screenX,screenY,null);
+        g2.drawImage(image,tempScreenX,tempScreenY,null);
 
         //RESET ALPHA
 
@@ -186,6 +301,21 @@ public class Player extends Entity {
                 life -= 1;
                 invincible = true;
             }
+        }
+    }
+
+    public void damageMonster(int monsterIndex) {
+
+        if(monsterIndex != 999) {
+            if(!gamePanel.monster[monsterIndex].invincible) {
+                gamePanel.monster[monsterIndex].life--;
+                gamePanel.monster[monsterIndex].invincible = true;
+
+                if(gamePanel.monster[monsterIndex].life <= 0) {
+                    gamePanel.monster[monsterIndex] = null;
+                }
+            }
+        } else {
         }
     }
 }

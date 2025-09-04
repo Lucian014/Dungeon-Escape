@@ -24,14 +24,14 @@ public class NPC_Priest extends Entity{
 
     }
     public void getImage(){
-        up1 = setup("npc/priest/priest_up_01");
-        up2 = setup("npc/priest/priest_up_02");
-        down1 = setup("npc/priest/priest_down_01");
-        down2 = setup("npc/priest/priest_down_02");
-        left1 = setup("npc/priest/priest_left_01");
-        left2 = setup("npc/priest/priest_left_02");
-        right1 = setup("npc/priest/priest_right_01");
-        right2 = setup("npc/priest/priest_right_02");
+        up1 = setup("npc/priest/priest_up_01",1,1);
+        up2 = setup("npc/priest/priest_up_02",1,1);
+        down1 = setup("npc/priest/priest_down_01",1,1);
+        down2 = setup("npc/priest/priest_down_02",1,1);
+        left1 = setup("npc/priest/priest_left_01",1,1);
+        left2 = setup("npc/priest/priest_left_02",1,1);
+        right1 = setup("npc/priest/priest_right_01",1,1);
+        right2 = setup("npc/priest/priest_right_02",1,1);
 
     }
 
