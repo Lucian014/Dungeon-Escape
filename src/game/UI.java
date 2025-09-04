@@ -3,7 +3,7 @@ package game;
 import object.OBJ_Chest;
 import object.OBJ_Heart;
 import object.OBJ_Key;
-import object.SuperObject;
+import entity.Entity;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -36,7 +36,7 @@ public class UI {
         }
 
         //CREATE HUG OBJECT
-        SuperObject heart = new OBJ_Heart(gamePanel);
+        Entity heart = new OBJ_Heart(gamePanel);
         heart_full = heart.image;
         heart_half = heart.image2;
         heart_blank = heart.image3;
