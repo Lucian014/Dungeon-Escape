@@ -180,12 +180,13 @@ public class GamePanel extends JPanel implements Runnable{
                     entityList.add(entity);
                 }
             }
+
+            //ADD PROJECTILES
             for (Entity entity : projectileList) {
                 if (entity != null) {
                     entityList.add(entity);
                 }
             }
-
 
             //SORT
             entityList.sort(new Comparator<Entity>() {

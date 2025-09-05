@@ -30,8 +30,13 @@ public class Projectile extends Entity {
             }
         }
         if(user != gamePanel.player) {
-
+            boolean contactPlayer = gamePanel.checker.checkPlayer(this);
+            if(!gamePanel.player.invincible && contactPlayer) {
+                damagePlayer(attack);
+                alive = false;
+            }
         }
+
 
         switch (direction) {
             case "up" : worldY -= speed;break;
@@ -56,4 +61,6 @@ public class Projectile extends Entity {
             spriteCounter = 0;
         }
     }
+    public boolean haveResource(Entity user) { return false; }
+    public void subtractResource(Entity user) {}
 }
