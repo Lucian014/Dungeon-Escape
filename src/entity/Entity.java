@@ -37,13 +37,15 @@ public class Entity {
     public int actionLockCounter = 0;
     int dyingCounter = 0;
     int hpBarCounter = 0;
+    public int shotAvailableCounter = 0;
 
     //CHARACTER STATS
     public int maxLife;
     public int life;
     public int speed;
     public String name;
-    public int type;
+    public int maxMana;
+    public int mana;
     public int level;
     public int strength;
     public int dexterity;
@@ -54,17 +56,28 @@ public class Entity {
     public int coin;
     public Entity currentWeapon;
     public Entity currentShield;
-
+    public Projectile projectile;
     //ITEM ATTRIBUTES
     public int attackValue;
     public int defenseValue;
     public String description = "";
+    public int useCost;
+
+    //TYPE
+    public int type;
+    public final int type_player = 0;
+    public final int type_npc = 1;
+    public final int type_monster = 2;
+    public final int type_sword = 3;
+    public final int type_axe = 4;
+    public final int type_shield = 5;
+    public final int type_consumable = 6;
 
     public Entity(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
     }
 
-        public void draw(Graphics2D graphics2D) {
+    public void draw(Graphics2D graphics2D) {
 
             BufferedImage image = null;
             int screenX = worldX - gamePanel.player.worldX + gamePanel.player.screenX;
@@ -130,6 +143,7 @@ public class Entity {
                 changeAlpha(graphics2D,1F);
             }
         }
+
     public BufferedImage setup(String imagePath, int scaleWidth, int scaleHeigth) {
         UtilityTool utilityTool = new UtilityTool();
         BufferedImage image = null;
@@ -171,9 +185,12 @@ public class Entity {
                 break;
         }
     }
-    public void update() {
-        setAction();
 
+    public void use(Entity entity) {}
+
+    public void update() {
+
+        setAction();
 
         collisionOn = false;
 
@@ -191,7 +208,7 @@ public class Entity {
         gamePanel.checker.checkEntity(this,gamePanel.monster);
         boolean contactPlayer = gamePanel.checker.checkPlayer(this);
 
-        if(this.type == 2 && contactPlayer){
+        if(this.type == type_monster && contactPlayer){
             if(!gamePanel.player.invincible) {
                 //We can give damage
                 gamePanel.playSE(6);
@@ -241,7 +258,6 @@ public class Entity {
         if(dyingCounter > i * 7 && dyingCounter <= i * 8) {changeAlpha(graphics2D,0f);
         }
         if(dyingCounter > i * 8) {
-            dying = false;
             alive = false;
         }
     }

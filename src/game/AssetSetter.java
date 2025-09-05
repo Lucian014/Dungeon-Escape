@@ -2,10 +2,7 @@ package game;
 
 import entity.NPC_Priest;
 import monster.MON_GreenSlime;
-import object.OBJ_Boots;
-import object.OBJ_Chest;
-import object.OBJ_Door;
-import object.OBJ_Key;
+import object.*;
 
 public class AssetSetter {
 
@@ -16,7 +13,31 @@ public class AssetSetter {
     }
 
     public void setObject() {
-
+        int i = 0;
+        gamePanel.object[i] = new OBJ_Key(gamePanel);
+        gamePanel.object[i].worldX = 25 * gamePanel.tileSize;
+        gamePanel.object[i].worldY = 23 * gamePanel.tileSize;
+        i++;
+        gamePanel.object[i] = new OBJ_Key(gamePanel);
+        gamePanel.object[i].worldX = 21 * gamePanel.tileSize;;
+        gamePanel.object[i].worldY = 19 * gamePanel.tileSize;;
+        i++;
+        gamePanel.object[i] = new OBJ_Key(gamePanel);
+        gamePanel.object[i].worldX = 26 * gamePanel.tileSize;;
+        gamePanel.object[i].worldY = 21 * gamePanel.tileSize;;
+        i++;
+        gamePanel.object[i] = new OBJ_Axe(gamePanel);
+        gamePanel.object[i].worldX = 33 * gamePanel.tileSize;;
+        gamePanel.object[i].worldY = 21 * gamePanel.tileSize;;
+        i++;
+        gamePanel.object[i] = new OBJ_Shield_Blue(gamePanel);
+        gamePanel.object[i].worldX = 35 * gamePanel.tileSize;;
+        gamePanel.object[i].worldY = 21 * gamePanel.tileSize;;
+        i++;
+        gamePanel.object[i] = new OBJ_Potion_Red(gamePanel);
+        gamePanel.object[i].worldX = 37 * gamePanel.tileSize;;
+        gamePanel.object[i].worldY = 21 * gamePanel.tileSize;;
+        i++;
     }
 
     public void setNPC() {
