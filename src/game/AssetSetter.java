@@ -29,17 +29,29 @@ public class AssetSetter {
 
     public void setMonster() {
 
-        gamePanel.monster[0] = new MON_GreenSlime(gamePanel);
-        gamePanel.monster[0].worldX = gamePanel.tileSize  * 23;
-        gamePanel.monster[0].worldY = gamePanel.tileSize  * 16;
+        int i = 0;
 
-        gamePanel.monster[1] = new MON_GreenSlime(gamePanel);
-        gamePanel.monster[1].worldX = gamePanel.tileSize  * 23;
-        gamePanel.monster[1].worldY = gamePanel.tileSize  * 37;
+        gamePanel.monster[i] = new MON_GreenSlime(gamePanel);
+        gamePanel.monster[i].worldX = gamePanel.tileSize  * 23;
+        gamePanel.monster[i].worldY = gamePanel.tileSize  * 16;
+        i++;
+        gamePanel.monster[i] = new MON_GreenSlime(gamePanel);
+        gamePanel.monster[i].worldX = gamePanel.tileSize  * 24;
+        gamePanel.monster[i].worldY = gamePanel.tileSize  * 37;
+        i++;
+        gamePanel.monster[i] = new MON_GreenSlime(gamePanel);
+        gamePanel.monster[i].worldX = gamePanel.tileSize  * 21;
+        gamePanel.monster[i].worldY = gamePanel.tileSize  * 38;
+        i++;
+        gamePanel.monster[i] = new MON_GreenSlime(gamePanel);
+        gamePanel.monster[i].worldX = gamePanel.tileSize  * 34;
+        gamePanel.monster[i].worldY = gamePanel.tileSize  * 42;
+        i++;
+        gamePanel.monster[i] = new MON_GreenSlime(gamePanel);
+        gamePanel.monster[i].worldX = gamePanel.tileSize  * 38;
+        gamePanel.monster[i].worldY = gamePanel.tileSize  * 42;
+        i++;
 
-        gamePanel.monster[2] = new MON_GreenSlime(gamePanel);
-        gamePanel.monster[2].worldX = gamePanel.tileSize  * 21;
-        gamePanel.monster[2].worldY = gamePanel.tileSize  * 34;
 
     }
 

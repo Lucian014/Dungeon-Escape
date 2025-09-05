@@ -1,17 +1,17 @@
-package entity;
+    package entity;
 
-import game.GamePanel;
-import game.KeyHandler;
-import game.UtilityTool;
-import object.OBJ_Shield_Wood;
-import object.OBJ_Sword_Normal;
+    import game.GamePanel;
+    import game.KeyHandler;
+    import game.UtilityTool;
+    import object.OBJ_Shield_Wood;
+    import object.OBJ_Sword_Normal;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
+    import javax.imageio.ImageIO;
+    import java.awt.*;
+    import java.awt.image.BufferedImage;
+    import java.io.IOException;
 
-public class Player extends Entity {
+    public class Player extends Entity {
 
     KeyHandler keyHandler;
 
@@ -321,17 +321,20 @@ public class Player extends Entity {
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
 
         //DEBUG
-//        g2.setFont(new Font("Arial",Font.PLAIN,26));
-//        g2.setColor(Color.white);
-//        g2.drawString("Invincible: "+ invincibleCounter, gamePanel.tileSize, gamePanel.screenHeight / 2);
+    //        g2.setFont(new Font("Arial",Font.PLAIN,26));
+    //        g2.setColor(Color.white);
+    //        g2.drawString("Invincible: "+ invincibleCounter, gamePanel.tileSize, gamePanel.screenHeight / 2);
     }
     public void contactMonster(int i) {
 
         if(i != 999) {
-
             if(!invincible) {
                 gamePanel.playSE(6);
-                life -= 1;
+                int damage = gamePanel.monster[i].attack - defense;
+                if(damage < 0) {
+                    damage = 0;
+                }
+                life -= damage;
                 invincible = true;
             }
         }
@@ -342,13 +345,39 @@ public class Player extends Entity {
         if(monsterIndex != 999) {
             if(!gamePanel.monster[monsterIndex].invincible) {
                 gamePanel.playSE(5);
-                gamePanel.monster[monsterIndex].life--;
+
+                int damage = attack - gamePanel.monster[monsterIndex].defense;
+                if(damage < 0) {
+                    damage = 0;
+                }
+                gamePanel.monster[monsterIndex].life -= damage;
+                gamePanel.ui.addMessage(damage + " damage!");
                 gamePanel.monster[monsterIndex].invincible = true;
                 gamePanel.monster[monsterIndex].damageReaction();
                 if(gamePanel.monster[monsterIndex].life <= 0) {
                     gamePanel.monster[monsterIndex].dying = true;
+                    gamePanel.ui.addMessage("You killed the " + gamePanel.monster[monsterIndex].name + " !" );
+                    gamePanel.ui.addMessage("Exp + " + gamePanel.monster[monsterIndex].exp + " !" );
+                    exp += gamePanel.monster[monsterIndex].exp;
+                    checkLevelUp();
                 }
             }
+        }
+    }
+    public void checkLevelUp() {
+        if(exp >= nextLevelExp) {
+
+            level++;
+            nextLevelExp = nextLevelExp * 2;
+            maxLife += 2;
+            strength++;
+            dexterity++;
+            attack = getAttack();
+            defense = getDefense();
+
+        gamePanel.playSE(8);
+        gamePanel.gameState = gamePanel.dialogueState;
+        gamePanel.ui.currentDialogue = "You are level " + level + " !";
         }
     }
 }
