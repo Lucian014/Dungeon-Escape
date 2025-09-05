@@ -10,5 +10,7 @@ public class OBJ_Key extends Entity {
         super(gamePanel);
         name =  "Key";
         down1 = setup("items/key",1,1);
+        description = "[" + name + "]\nIt opens chests or doors.";
+
     }
 }
