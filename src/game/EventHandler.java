@@ -28,7 +28,7 @@ public class EventHandler {
         // PIT EVENT at col 27, row 15
         events.add(new Event(27, 15, "right", this::damagePit, true));
         // HEALING POOL at col 23, row 12
-        events.add(new Event(23, 12, "up", this::healingPool, false));
+        events.add(new Event(23, 12, "up", this::healingPool, true));
         //TELEPORT at col 27 row 16
         //events.add(new Event(27,15, "right", this::teleport, true));
     }
@@ -83,6 +83,7 @@ public class EventHandler {
             gamePanel.gameState = gamePanel.dialogueState;
             gamePanel.ui.currentDialogue = "You drink the water.\nYour life has been recovered";
             gamePanel.player.life = gamePanel.player.maxLife;
+            gamePanel.assetSetter.setMonster();
     }
 
     public void teleport() {
