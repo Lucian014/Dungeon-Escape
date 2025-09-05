@@ -3,6 +3,7 @@
     import game.GamePanel;
     import game.KeyHandler;
     import game.UtilityTool;
+    import object.OBJ_Key;
     import object.OBJ_Shield_Wood;
     import object.OBJ_Sword_Normal;
 
@@ -10,6 +11,7 @@
     import java.awt.*;
     import java.awt.image.BufferedImage;
     import java.io.IOException;
+    import java.util.ArrayList;
 
     public class Player extends Entity {
 
@@ -17,6 +19,9 @@
 
     public final int screenX;
     public final int screenY;
+    int standCounter = 0;
+    public boolean attackCanceled = false;
+    public ArrayList<Entity> inventory = new ArrayList<>();
 
 
     public Player(GamePanel gamePanel, KeyHandler keyHandler) {
@@ -38,6 +43,7 @@
         setDefaultValues();
         getPlayerImage();
         getPlayerAttackImage();
+        setItems();
     }
 
     public void setDefaultValues() {
@@ -61,7 +67,22 @@
         attack = getAttack(); // Influenced by player's strength and weapon's attack value
         defense = getDefense(); // Influenced by player's dexterity and shield's defense stats
     }
+    public void setItems() {
 
+        inventory.add(currentWeapon);
+        inventory.add(currentShield);
+        inventory.add(new OBJ_Key(gamePanel));
+        inventory.add(new OBJ_Key(gamePanel));
+        inventory.add(new OBJ_Key(gamePanel));
+        inventory.add(new OBJ_Key(gamePanel));
+        inventory.add(new OBJ_Key(gamePanel));
+        inventory.add(new OBJ_Key(gamePanel));
+        inventory.add(new OBJ_Key(gamePanel));
+        inventory.add(new OBJ_Key(gamePanel));
+        inventory.add(new OBJ_Key(gamePanel));
+
+
+    }
     public int getAttack() {
 
         return attack = strength * currentWeapon.attackValue;

@@ -16,6 +16,7 @@ public class GamePanel extends JPanel implements Runnable{
     final int scale = 3;
     int FPS = 60;
 
+
     public final int tileSize = originalTileSize * scale; //48x48 tile
     public final int maxScreenCol = 16;
     public final int maxScreenRow = 12;
@@ -189,7 +190,20 @@ public class GamePanel extends JPanel implements Runnable{
             //UI
             ui.draw(g2);
 
-
+            //DEBUG
+            if(keyHandler.showDebugText) {
+                g2.setFont(new Font("Arial", Font.PLAIN, 20));
+                g2.setColor(Color.WHITE);
+                int x = 10;
+                int y = 400;
+                int lineHeight = 20;
+                int col = (player.worldX + player.solidArea.x) / tileSize;
+                int row = (player.worldY + player.solidArea.y) / tileSize;
+                g2.drawString("WorldX: " + player.worldX, x, y); y += lineHeight;
+                g2.drawString("WorldY: " + player.worldY, x, y); y += lineHeight;
+                g2.drawString("Col: " + col, x, y + 15);y += lineHeight;
+                g2.drawString("Row: " + row, x, y + 20);
+            }
         }
     }
 
@@ -207,4 +221,5 @@ public class GamePanel extends JPanel implements Runnable{
         se.setFile(i);
         se.play();
     }
+
 }

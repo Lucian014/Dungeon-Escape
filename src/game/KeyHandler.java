@@ -9,6 +9,8 @@ public class KeyHandler implements KeyListener {
     public boolean upPressed, downPressed, leftPressed, rightPressed, enterPressed, attackPressed;
     GamePanel gamePanel;
 
+    //DEBUG
+    boolean showDebugText = false;
     public KeyHandler(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
     }
@@ -110,6 +112,13 @@ public class KeyHandler implements KeyListener {
         if(code == KeyEvent.VK_SPACE) {
             attackPressed = true;
         }
+        if(code == KeyEvent.VK_T) {
+            if(!showDebugText){
+                showDebugText = true;
+            } else if (showDebugText) {
+                showDebugText = false;
+            }
+        }
     }
 
     public void pauseState(int code) {
@@ -127,6 +136,30 @@ public class KeyHandler implements KeyListener {
     public void characterState(int code) {
         if(code == KeyEvent.VK_C) {
             gamePanel.gameState = gamePanel.playState;
+        }
+        if(code == KeyEvent.VK_W) {
+            if(gamePanel.ui.slotRow != 0){
+                gamePanel.ui.slotRow--;
+                gamePanel.playSE(9);
+            }
+        }
+        if(code == KeyEvent.VK_A) {
+            if(gamePanel.ui.slotCol != 0){
+                gamePanel.ui.slotCol--;
+                gamePanel.playSE(9);
+            }
+        }
+        if(code == KeyEvent.VK_S) {
+            if(gamePanel.ui.slotRow != 3){
+                gamePanel.ui.slotRow++;
+                gamePanel.playSE(9);
+            }
+        }
+        if(code == KeyEvent.VK_D) {
+            if(gamePanel.ui.slotCol != 4){
+                gamePanel.ui.slotCol++;
+                gamePanel.playSE(9);
+            }
         }
     }
     @Override

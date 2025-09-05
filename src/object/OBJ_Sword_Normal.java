@@ -11,6 +11,7 @@ public class OBJ_Sword_Normal extends Entity {
         name = "Normal Sword";
         down1 = setup("items/sword_normal", gamePanel.tileSize, gamePanel.tileSize);
         attackValue = 4;
+        description = "[" + name + "]\nAn old sword.";
 
     }
 }
