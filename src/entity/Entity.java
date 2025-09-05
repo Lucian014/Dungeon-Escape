@@ -37,12 +37,28 @@ public class Entity {
     public int actionLockCounter = 0;
     int dyingCounter = 0;
     int hpBarCounter = 0;
-    //CHARACTER STATUS
+
+    //CHARACTER STATS
     public int maxLife;
     public int life;
     public int speed;
     public String name;
     public int type;
+    public int level;
+    public int strength;
+    public int dexterity;
+    public int attack;
+    public int defense;
+    public int exp;
+    public int nextLevelExp;
+    public int coin;
+    public Entity currentWeapon;
+    public Entity currentShield;
+
+    //ITEM ATTRIBUTES
+    public int attackValue;
+    public int defenseValue;
+
 
     public Entity(GamePanel gamePanel) {
         this.gamePanel = gamePanel;

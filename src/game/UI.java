@@ -57,18 +57,22 @@ public class UI {
             drawTitleScreen();
         }
         //PLAY STATE - just draw regular UI elements
-        else if (gamePanel.gameState == gamePanel.playState) {
-
+        if (gamePanel.gameState == gamePanel.playState) {
             drawPlayerLife();
         }
         //DIALOGUE STATE
-        else if (gamePanel.gameState == gamePanel.dialogueState) {
+        if (gamePanel.gameState == gamePanel.dialogueState) {
             drawPlayerLife();
-
             drawDialogueScreen();
-
-            // Draw regular UI elements here if needed
-            // For example: health bar, inventory, etc.
+        }
+        //PAUSE STATE
+        if (gamePanel.gameState == gamePanel.pauseState) {
+            drawPlayerLife();
+            drawPauseScreen(graphics2D);
+        }
+        // CHARACTER STATE
+        if (gamePanel.gameState == gamePanel.characterState) {
+            drawCharacterScreen();
         }
     }
 
@@ -113,6 +117,71 @@ public class UI {
         }
     }
 
+    public void drawCharacterScreen() {
+        // Subwindow frame
+        final int frameX = gamePanel.tileSize * 2;
+        final int frameY = gamePanel.tileSize;
+        final int frameWidth = gamePanel.tileSize * 6;
+        final int frameHeight = gamePanel.tileSize * 10;
+        drawSubWindow(frameX, frameY, frameWidth, frameHeight);
+
+        // Text setup
+        graphics2D.setColor(Color.WHITE);
+        graphics2D.setFont(graphics2D.getFont().deriveFont(28F));
+        final int paddingX = 40;
+        final int lineHeight = 32;
+
+        int textX = frameX + paddingX;
+        int textY = frameY + gamePanel.tileSize;
+        int tailX = frameX + frameWidth - paddingX;
+
+        // Draw regular stats
+        String[][] regularStats = {
+                {"Level", String.valueOf(gamePanel.player.level)},
+                {"Life", gamePanel.player.life + "/" + gamePanel.player.maxLife},
+                {"Strength", String.valueOf(gamePanel.player.strength)},
+                {"Dexterity", String.valueOf(gamePanel.player.dexterity)},
+                {"Attack", String.valueOf(gamePanel.player.attack)},
+                {"Defense", String.valueOf(gamePanel.player.defense)},
+                {"Exp", String.valueOf(gamePanel.player.exp)},
+                {"Next Level", String.valueOf(gamePanel.player.nextLevelExp)},
+                {"Coin", String.valueOf(gamePanel.player.coin)}
+        };
+
+        for (String[] stat : regularStats) {
+            graphics2D.drawString(stat[0], textX, textY);
+            int valueX = getXforAllignToRight(stat[1], tailX);
+            graphics2D.drawString(stat[1], valueX, textY);
+            textY += lineHeight;
+        }
+
+        // Draw Weapon - moved lower and more to the right
+        textY += 10;
+        graphics2D.drawString("Weapon", textX, textY);
+        if (gamePanel.player.currentWeapon != null) {
+            // Adjust these values to move the image lower and more to the right
+            int weaponX = tailX - gamePanel.tileSize + 20; // Move 20 pixels more to the right
+            int weaponY = textY - gamePanel.tileSize + 15; // Move 25 pixels lower
+
+            graphics2D.drawImage(gamePanel.player.currentWeapon.down1,
+                    weaponX, weaponY,
+                    gamePanel.tileSize, gamePanel.tileSize, null);
+        }
+        textY += gamePanel.tileSize + 5 ; // Extra space for image
+
+        // Draw Shield - moved lower and more to the right
+        graphics2D.drawString("Shield", textX, textY);
+        if (gamePanel.player.currentShield != null) {
+            // Adjust these values to move the image lower and more to the right
+            int shieldX = tailX - gamePanel.tileSize + 20; // Move 20 pixels more to the right
+            int shieldY = textY - gamePanel.tileSize + 15; // Move 25 pixels lower
+
+            graphics2D.drawImage(gamePanel.player.currentShield.down1,
+                    shieldX, shieldY,
+                    gamePanel.tileSize, gamePanel.tileSize, null);
+        }
+    }
+
     public void drawSubWindow(int x, int y, int width, int height) {
 
         Color color = new Color(0, 0, 0, 190);
@@ -137,6 +206,13 @@ public class UI {
 
         int length = (int) graphics2D.getFontMetrics().getStringBounds(text, graphics2D).getWidth();
         int x = gamePanel.screenWidth / 2 - length / 2;
+        return x;
+    }
+
+    public int getXforAllignToRight(String text, int tailX) {
+
+        int length = (int) graphics2D.getFontMetrics().getStringBounds(text, graphics2D).getWidth();
+        int x = tailX - length;
         return x;
     }
 

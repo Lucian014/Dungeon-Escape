@@ -2,6 +2,7 @@ package game;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.security.Key;
 
 public class KeyHandler implements KeyListener {
 
@@ -22,110 +23,112 @@ public class KeyHandler implements KeyListener {
 
         int code = e.getKeyCode();
 
-        //TITLE STATE
-        if(gamePanel.gameState == gamePanel.titleState) {
-            if(gamePanel.ui.titleScreenState == 0) {
-                if(code == KeyEvent.VK_W){
-                    gamePanel.ui.commandNum--;
-                    if(gamePanel.ui.commandNum < 0) {
-                        gamePanel.ui.commandNum = 3;
-                    }
-                }
-                if(code == KeyEvent.VK_S){
-                    gamePanel.ui.commandNum ++;
-                    if(gamePanel.ui.commandNum > 3) {
-                        gamePanel.ui.commandNum = 0;
-                    }
-                }
-                if(code == KeyEvent.VK_ENTER) {
-                    if(gamePanel.ui.commandNum == 0) {
-                        gamePanel.ui.titleScreenState = 1;
-                    }
-                    if(gamePanel.ui.commandNum == 1) {
-
-                    }
-                    if(gamePanel.ui.commandNum == 2) {
-
-                    }
-                    if(gamePanel.ui.commandNum == 3) {
-                        System.exit(0);
-                    }
-                }
-            }
-            else if(gamePanel.ui.titleScreenState == 1) {
-                if(code == KeyEvent.VK_W){
-                    gamePanel.ui.commandNum--;
-                    if(gamePanel.ui.commandNum < 0) {
-                        gamePanel.ui.commandNum = 3;
-                    }
-                }
-                if(code == KeyEvent.VK_S){
-                    gamePanel.ui.commandNum ++;
-                    if(gamePanel.ui.commandNum > 3) {
-                        gamePanel.ui.commandNum = 0;
-                    }
-                }
-                if(code == KeyEvent.VK_ENTER) {
-                    if(gamePanel.ui.commandNum == 0) {
-                        System.out.println("Fighter stats: ...");
-                        gamePanel.gameState = gamePanel.playState;
-                    }
-                    if(gamePanel.ui.commandNum == 1) {
-                        System.out.println("Fighter stats: ...");
-                        gamePanel.gameState = gamePanel.playState;
-
-                    }
-                    if(gamePanel.ui.commandNum == 2) {
-                        System.out.println("Thief stats: ...");
-                        gamePanel.gameState = gamePanel.playState;
-
-                    }
-                    if(gamePanel.ui.commandNum == 3) {
-                        gamePanel.ui.titleScreenState = 0;
-                    }
-                }
-            }
-        }
-
         //PLAY STATE
-        else if(gamePanel.gameState == gamePanel.playState) {
-            if(code == KeyEvent.VK_W){
-                upPressed = true;
-            }
-            if(code == KeyEvent.VK_A){
-                leftPressed = true;
-            }
-            if(code == KeyEvent.VK_S){
-                downPressed = true;
-            }
-            if(code == KeyEvent.VK_D){
-                rightPressed = true;
-            }
-            if(code == KeyEvent.VK_P) {
-                gamePanel.gameState = gamePanel.pauseState;
-            }
-            if(code == KeyEvent.VK_ENTER) {
-                enterPressed = true;
-            }
-            if(code == KeyEvent.VK_SPACE) {
-                attackPressed = true;
-            }
+        if(gamePanel.gameState == gamePanel.playState) {
+            playState(code);
         }
         //PAUSE STATE
         else if(gamePanel.gameState == gamePanel.pauseState) {
-            if(code == KeyEvent.VK_P) {
-                gamePanel.gameState = gamePanel.playState;
-            }
+            pauseState(code);
         }
         //DIALOGUE STATE
         else if(gamePanel.gameState == gamePanel.dialogueState) {
-            if(code == KeyEvent.VK_ENTER){
-                gamePanel.gameState = gamePanel.playState;
-                gamePanel.ui.currentDialogue = "";
-            }
+            dialogueState(code);
+        }
+        //CHARACTER STATE
+        else if(gamePanel.gameState == gamePanel.characterState) {
+            characterState(code);
+        }
+        //TITLE STATE
+        else if(gamePanel.gameState == gamePanel.titleState) {
+            titleState(code);
         }
     }
 
+    public void titleState(int code) {
+        if(gamePanel.ui.titleScreenState == 0) { // Main menu
+            handleMainMenu(code);
+        }
+        else if(gamePanel.ui.titleScreenState == 1) { // Character selection
+            handleCharacterSelection(code);
+        }
+    }
+
+    private void handleMainMenu(int code) {
+        if(code == KeyEvent.VK_W){
+            gamePanel.ui.commandNum--;
+            if(gamePanel.ui.commandNum < 0) {
+                gamePanel.ui.commandNum = 3;
+            }
+        }
+        if(code == KeyEvent.VK_S){
+            gamePanel.ui.commandNum++;
+            if(gamePanel.ui.commandNum > 3) {
+                gamePanel.ui.commandNum = 0;
+            }
+        }
+        if(code == KeyEvent.VK_ENTER) {
+            switch(gamePanel.ui.commandNum) {
+                case 0: // New Game
+                    gamePanel.ui.titleScreenState = 1;
+                    // Reset selection for character screen
+                    break;
+                case 1: // Load Game (example)
+                    // Add load game functionality
+                    break;
+                case 2: // Options (example)
+                    // Add options functionality
+                    break;
+                case 3: // Quit
+                    System.exit(0);
+                    break;
+            }
+        }
+    }
+    public void playState(int code) {
+        if(code == KeyEvent.VK_W){
+            upPressed = true;
+        }
+        if(code == KeyEvent.VK_A){
+            leftPressed = true;
+        }
+        if(code == KeyEvent.VK_S){
+            downPressed = true;
+        }
+        if(code == KeyEvent.VK_D){
+            rightPressed = true;
+        }
+        if(code == KeyEvent.VK_P) {
+            gamePanel.gameState = gamePanel.pauseState;
+        }
+        if(code == KeyEvent.VK_C) {
+            gamePanel.gameState = gamePanel.characterState;
+        }
+        if(code == KeyEvent.VK_ENTER) {
+            enterPressed = true;
+        }
+        if(code == KeyEvent.VK_SPACE) {
+            attackPressed = true;
+        }
+    }
+
+    public void pauseState(int code) {
+        if(code == KeyEvent.VK_P) {
+            gamePanel.gameState = gamePanel.playState;
+        }
+    }
+
+    public void dialogueState(int code) {
+        if(code == KeyEvent.VK_ENTER){
+            gamePanel.gameState = gamePanel.playState;
+            gamePanel.ui.currentDialogue = "";
+        }
+    }
+    public void characterState(int code) {
+        if(code == KeyEvent.VK_C) {
+            gamePanel.gameState = gamePanel.playState;
+        }
+    }
     @Override
     public void keyReleased(KeyEvent e) {
 
@@ -143,5 +146,39 @@ public class KeyHandler implements KeyListener {
         if(code == KeyEvent.VK_D){
             rightPressed = false;
         }
+    }
+    private void handleCharacterSelection(int code) {
+        if(code == KeyEvent.VK_W){
+            gamePanel.ui.commandNum--;
+            if(gamePanel.ui.commandNum < 0) {
+                gamePanel.ui.commandNum = 3;
+            }
+        }
+        if(code == KeyEvent.VK_S){
+            gamePanel.ui.commandNum++;
+            if(gamePanel.ui.commandNum > 3) {
+                gamePanel.ui.commandNum = 0;
+            }
+        }
+        if(code == KeyEvent.VK_ENTER) {
+            switch(gamePanel.ui.commandNum) {
+                case 0: // Fighter
+                case 1: // Another class
+                case 2: // Thief
+                    startGame();
+                    break;
+                case 3: // Back
+                    gamePanel.ui.titleScreenState = 0;
+                    gamePanel.ui.commandNum = 0; // Reset to "New Game" selection
+                    break;
+            }
+        }
+    }
+
+    private void startGame() {
+        System.out.println("Starting game with selected character...");
+        gamePanel.gameState = gamePanel.playState;
+        gamePanel.ui.titleScreenState = 0; // Reset to main menu
+        gamePanel.ui.commandNum = 0; // Reset selection to top
     }
 }
