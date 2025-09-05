@@ -4,6 +4,7 @@
     import object.OBJ_Heart;
     import object.OBJ_Key;
     import entity.Entity;
+    import object.OBJ_ManaCrystal;
 
     import java.awt.*;
     import java.awt.image.BufferedImage;
@@ -15,7 +16,7 @@
     GamePanel gamePanel;
     Graphics2D graphics2D;
     Font maruMonica, purisaBold;
-    BufferedImage heart_full, heart_half, heart_blank;
+    BufferedImage heart_full, heart_half, heart_blank, crystal_full, crystal_blank;
     public boolean messageOn = false;
     ArrayList<String> message = new ArrayList<>();
     ArrayList<Integer> messageCounter = new ArrayList<>();
@@ -42,6 +43,9 @@
         heart_full = heart.image;
         heart_half = heart.image2;
         heart_blank = heart.image3;
+        Entity crystal = new OBJ_ManaCrystal(gamePanel);
+        crystal_full = crystal.image;
+        crystal_blank = crystal.image2;
     }
     public void addMessage(String text) {
 
@@ -140,6 +144,7 @@
         String[][] regularStats = {
                 {"Level", String.valueOf(gamePanel.player.level)},
                 {"Life", gamePanel.player.life + "/" + gamePanel.player.maxLife},
+                {"Mana", gamePanel.player.mana + "/" + gamePanel.player.maxMana},
                 {"Strength", String.valueOf(gamePanel.player.strength)},
                 {"Dexterity", String.valueOf(gamePanel.player.dexterity)},
                 {"Attack", String.valueOf(gamePanel.player.attack)},
@@ -311,116 +316,129 @@
                 }
             }
         }
-        public void drawInventory() {
-            // FRAME
-            int frameX = gamePanel.tileSize * 9;
-            int frameY = gamePanel.tileSize + 25;
-            int frameWidth = gamePanel.tileSize * 6;
-            int frameHeight = gamePanel.tileSize * 5;
-            drawSubWindow(frameX, frameY, frameWidth, frameHeight);
+    public void drawInventory() {
+        // FRAME
+        int frameX = gamePanel.tileSize * 9;
+        int frameY = gamePanel.tileSize + 25;
+        int frameWidth = gamePanel.tileSize * 6;
+        int frameHeight = gamePanel.tileSize * 5;
+        drawSubWindow(frameX, frameY, frameWidth, frameHeight);
 
-            // SLOT
-            final int slotXstart = frameX + 25;
-            final int slotYstart = frameY + 25;
-            int slotX = slotXstart;
-            int slotY = slotYstart;
-            int slotSize = gamePanel.tileSize ; // Use consistent size
+        // SLOT
+        final int slotXstart = frameX + 25;
+        final int slotYstart = frameY + 25;
+        int slotX = slotXstart;
+        int slotY = slotYstart;
+        int slotSize = gamePanel.tileSize ; // Use consistent size
 
-            // Grid dimensions
-            final int columns = 5;
+        // Grid dimensions
+        final int columns = 5;
 
-            // DRAW PLAYER'S ITEMS (only up to maxSlots)
-            for(int i = 0; i < gamePanel.player.inventory.size(); i++) {
-                Entity item = gamePanel.player.inventory.get(i);
+        // DRAW PLAYER'S ITEMS (only up to maxSlots)
+        for(int i = 0; i < gamePanel.player.inventory.size(); i++) {
+            Entity item = gamePanel.player.inventory.get(i);
 
-                if(gamePanel.player.inventory.get(i) == gamePanel.player.currentWeapon || gamePanel.player.inventory.get(i) == gamePanel.player.currentShield) {
-                    graphics2D.setColor(new Color(240,190,90));
-                    graphics2D.fillRoundRect(slotX,slotY,gamePanel.tileSize,gamePanel.tileSize, 10, 10);
-                }
-
-                // Draw item image with proper scaling
-                if (item != null && item.down1 != null) {
-                    graphics2D.drawImage(item.down1, slotX, slotY, slotSize, slotSize, null);
-                } else {
-                    // Draw empty slot or debug indicator
-                    graphics2D.setColor(Color.GRAY);
-                    graphics2D.fillRect(slotX, slotY, slotSize, slotSize);
-                }
-
-                // Move to next column
-                slotX += slotSize;
-
-                // Move to next row when we reach the end of a row
-                if ((i + 1) % columns == 0) {
-                    slotX = slotXstart;
-                    slotY += slotSize;
-                }
+            if(gamePanel.player.inventory.get(i) == gamePanel.player.currentWeapon || gamePanel.player.inventory.get(i) == gamePanel.player.currentShield) {
+                graphics2D.setColor(new Color(240,190,90));
+                graphics2D.fillRoundRect(slotX,slotY,gamePanel.tileSize,gamePanel.tileSize, 10, 10);
             }
 
-            // CURSOR
-            int cursorX = slotXstart + (slotSize * slotCol);
-            int cursorY = slotYstart + (slotSize * slotRow);
+            // Draw item image with proper scaling
+            if (item != null && item.down1 != null) {
+                graphics2D.drawImage(item.down1, slotX, slotY, slotSize, slotSize, null);
+            } else {
+                // Draw empty slot or debug indicator
+                graphics2D.setColor(Color.GRAY);
+                graphics2D.fillRect(slotX, slotY, slotSize, slotSize);
+            }
 
-            // DRAW CURSOR
-            graphics2D.setColor(Color.WHITE);
-            graphics2D.setStroke(new BasicStroke(3));
-            graphics2D.drawRoundRect(cursorX, cursorY, slotSize, slotSize, 10, 10);
+            // Move to next column
+            slotX += slotSize;
 
-            // DESCRIPTION FRAME
-
-            int dFrameX = frameX;
-            int dFrameY = frameY + frameHeight + 30;
-            int dFrameWidth = frameWidth;
-            int dFrameHeight = gamePanel.tileSize * 3;
-            //DRAW DESCRIPTION TEXT
-            int textX = dFrameX + 20;
-            int textY = dFrameY + gamePanel.tileSize;
-            graphics2D.setFont(graphics2D.getFont().deriveFont(20F));
-
-            int itemIndex = getItemIndexOnSlot();
-
-            if(itemIndex < gamePanel.player.inventory.size()) {
-
-                drawSubWindow(dFrameX,dFrameY,dFrameWidth,dFrameHeight);
-
-                for(String line: gamePanel.player.inventory.get(itemIndex).description.split("\n")){
-                    graphics2D.drawString(line,textX,textY);
-                    textY += 32;
-                }
+            // Move to next row when we reach the end of a row
+            if ((i + 1) % columns == 0) {
+                slotX = slotXstart;
+                slotY += slotSize;
             }
         }
+
+        // CURSOR
+        int cursorX = slotXstart + (slotSize * slotCol);
+        int cursorY = slotYstart + (slotSize * slotRow);
+
+        // DRAW CURSOR
+        graphics2D.setColor(Color.WHITE);
+        graphics2D.setStroke(new BasicStroke(3));
+        graphics2D.drawRoundRect(cursorX, cursorY, slotSize, slotSize, 10, 10);
+
+        // DESCRIPTION FRAME
+
+        int dFrameX = frameX;
+        int dFrameY = frameY + frameHeight + 30;
+        int dFrameWidth = frameWidth;
+        int dFrameHeight = gamePanel.tileSize * 3;
+        //DRAW DESCRIPTION TEXT
+        int textX = dFrameX + 20;
+        int textY = dFrameY + gamePanel.tileSize;
+        graphics2D.setFont(graphics2D.getFont().deriveFont(20F));
+
+        int itemIndex = getItemIndexOnSlot();
+
+        if(itemIndex < gamePanel.player.inventory.size()) {
+
+            drawSubWindow(dFrameX,dFrameY,dFrameWidth,dFrameHeight);
+
+            for(String line: gamePanel.player.inventory.get(itemIndex).description.split("\n")){
+                graphics2D.drawString(line,textX,textY);
+                textY += 32;
+            }
+        }
+    }
     public int getItemIndexOnSlot() {
         return slotCol + (slotRow * 5);
     }
+
     public void drawPlayerLife() {
+        int x = gamePanel.tileSize / 2;
+        int y = gamePanel.tileSize / 2;
 
-            int x = gamePanel.tileSize / 2;
-            int y = gamePanel.tileSize / 2;
-            int i = 0;
-
-            //DRAW MAX LIFE
-            while (i < gamePanel.player.maxLife / 2) {
-                graphics2D.drawImage(heart_blank, x, y, null);
-                i++;
-                x += gamePanel.tileSize;
-            }
-
-            //RESET
-            x = gamePanel.tileSize / 2;
-            y = gamePanel.tileSize / 2;
-            i = 0;
-
-            //DRAW CURRENT LIFE
-            while (i < gamePanel.player.life) {
-                graphics2D.drawImage(heart_half, x, y, null);
-                i++;
-                if (i < gamePanel.player.life) {
-                    graphics2D.drawImage(heart_full, x, y, null);
-                }
-                i++;
-                x += gamePanel.tileSize;
-            }
+        // --- DRAW MAX LIFE (empty hearts) ---
+        for (int i = 0; i < gamePanel.player.maxLife / 2; i++) {
+            graphics2D.drawImage(heart_blank, x, y, null);
+            x += gamePanel.tileSize;
         }
+
+        // --- DRAW CURRENT LIFE ---
+        x = gamePanel.tileSize / 2;
+        int remainingLife = gamePanel.player.life;
+        for (int i = 0; i < gamePanel.player.maxLife / 2; i++) {
+            if (remainingLife >= 2) {
+                graphics2D.drawImage(heart_full, x, y, null);
+                remainingLife -= 2;
+            } else if (remainingLife == 1) {
+                graphics2D.drawImage(heart_half, x, y, null);
+                remainingLife -= 1;
+            }
+            x += gamePanel.tileSize;
+        }
+
+        // --- DRAW MANA ---
+        x = gamePanel.tileSize / 2;
+        y += gamePanel.tileSize + 6; // a bit below hearts
+
+        // Max mana (empty crystals)
+        for (int i = 0; i < gamePanel.player.maxMana; i++) {
+            graphics2D.drawImage(crystal_blank, x, y, gamePanel.tileSize, gamePanel.tileSize, null);
+            x += gamePanel.tileSize;
+        }
+
+        // Current mana (full crystals)
+        x = gamePanel.tileSize / 2;
+        for (int i = 0; i < gamePanel.player.mana; i++) {
+            graphics2D.drawImage(crystal_full, x, y, gamePanel.tileSize, gamePanel.tileSize, null);
+            x += gamePanel.tileSize;
+        }
+    }
     public void drawSubWindow(int x, int y, int width, int height) {
 
         Color color = new Color(0, 0, 0, 190);

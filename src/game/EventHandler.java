@@ -83,6 +83,7 @@ public class EventHandler {
             gamePanel.gameState = gamePanel.dialogueState;
             gamePanel.ui.currentDialogue = "You drink the water.\nYour life has been recovered";
             gamePanel.player.life = gamePanel.player.maxLife;
+            gamePanel.player.mana = gamePanel.player.maxMana;
             gamePanel.assetSetter.setMonster();
     }
 

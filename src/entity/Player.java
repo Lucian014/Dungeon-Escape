@@ -56,6 +56,8 @@
         //PLAYER STATUS
         maxLife = 6; // 2 lives = 1 heart
         life = maxLife;
+        maxMana = 6;
+        mana = maxMana;
         level = 1;
         strength = 1; // The greater the strength, the more damage he gives.
         dexterity = 1; // The greater the dex, the less damage he receives.
@@ -208,9 +210,13 @@
                 }
             }
 
-            if(gamePanel.keyHandler.shotKeyPressed && !projectile.alive && shotAvailableCounter == 180) {
+            if(gamePanel.keyHandler.shotKeyPressed && !projectile.alive && shotAvailableCounter == 120 && projectile.haveResource(this)) {
+
                 //SET DEFAULT COORDINATES, DIRECTION AND USER
                 projectile.set(worldX, worldY, direction, true, this);
+
+                //SUBTRACT THE COST(MANA, AMMO)
+                projectile.subtractResource(this);
                 //ADD IT TO THE LIST
                 gamePanel.projectileList.add(projectile);
                 gamePanel.playSE(11);
@@ -229,7 +235,7 @@
                 }
             }
         }
-        if(shotAvailableCounter < 180) {
+        if(shotAvailableCounter < 120) {
             shotAvailableCounter++;
         }
     }
