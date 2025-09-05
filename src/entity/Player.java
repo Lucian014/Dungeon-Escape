@@ -16,6 +16,7 @@ public class Player extends Entity {
     public final int screenX;
     public final int screenY;
 
+
     public Player(GamePanel gamePanel, KeyHandler keyHandler) {
 
         super(gamePanel);
@@ -129,7 +130,6 @@ public class Player extends Entity {
                 int objIndex = gamePanel.checker.checkObject(this, true);
                 pickUpObject(objIndex);
 
-                // ✅ Interact with NPC only if ENTER is pressed
                 int npcIndex = gamePanel.checker.checkEntity(this, gamePanel.npc);
                 if (npcIndex != 999 && gamePanel.keyHandler.enterPressed) {
                     interactNPC(npcIndex);
@@ -173,39 +173,51 @@ public class Player extends Entity {
     public void attack() {
         spriteCounter++;
 
-        if(spriteCounter <= 5) {
+        if (spriteCounter == 1) {
+            // Attack just started → decide sound
+            int monsterIndex = gamePanel.checker.checkEntity(this, gamePanel.monster);
+            if (monsterIndex == 999) {
+                gamePanel.playSE(7); // air swing sound
+            }
+        }
+
+        if (spriteCounter <= 5) {
             spriteNum = 1;
         }
-        if(spriteCounter > 5 & spriteCounter <= 25) {
+        if (spriteCounter > 5 && spriteCounter <= 25) {
             spriteNum = 2;
 
-            //SAVE THE CURRENT worldX, worldY, solidArea
+            // Save player position
             int currentWorldX = worldX;
             int currentWorldY = worldY;
             int solidAreaWidth = solidArea.width;
             int solidAreaHeight = solidArea.height;
 
-            //Adjust player's worldX/Y for the attackArea
+            // Extend attack hitbox
             switch (direction) {
-                case "up" : worldY -=  attackArea.height; break;
-                case "down": worldY += attackArea.height; break;
-                case "left": worldX -= attackArea.width; break;
+                case "up":    worldY -= attackArea.height; break;
+                case "down":  worldY += attackArea.height; break;
+                case "left":  worldX -= attackArea.width; break;
                 case "right": worldX += attackArea.width; break;
             }
-            //attackArea becomes solidArea
+
             solidArea.width = attackArea.width;
             solidArea.height = attackArea.height;
-            //Check monster collision with the updated worldX, worldY and solidArea
+
+            // Check monster collision
             int monsterIndex = gamePanel.checker.checkEntity(this, gamePanel.monster);
-            damageMonster(monsterIndex);
-            //Restore the original coordinates after checking collision
+            if (monsterIndex != 999) {
+                damageMonster(monsterIndex); // plays monster hit sound (SE 5)
+            }
+
+            // Restore original values
             worldX = currentWorldX;
             worldY = currentWorldY;
             solidArea.width = solidAreaWidth;
             solidArea.height = solidAreaHeight;
-
         }
-        if(spriteCounter > 25) {
+
+        if (spriteCounter > 25) {
             spriteNum = 1;
             spriteCounter = 0;
             attacking = false;
@@ -223,8 +235,8 @@ public class Player extends Entity {
                 gamePanel.npc[i].speak();
             }
             gamePanel.keyHandler.enterPressed = false;
-
             } else {
+            gamePanel.playSE(7);
             attacking = true;
         }
     }
@@ -298,6 +310,7 @@ public class Player extends Entity {
         if(i != 999) {
 
             if(!invincible) {
+                gamePanel.playSE(6);
                 life -= 1;
                 invincible = true;
             }
@@ -308,14 +321,14 @@ public class Player extends Entity {
 
         if(monsterIndex != 999) {
             if(!gamePanel.monster[monsterIndex].invincible) {
+                gamePanel.playSE(5);
                 gamePanel.monster[monsterIndex].life--;
                 gamePanel.monster[monsterIndex].invincible = true;
-
+                gamePanel.monster[monsterIndex].damageReaction();
                 if(gamePanel.monster[monsterIndex].life <= 0) {
-                    gamePanel.monster[monsterIndex] = null;
+                    gamePanel.monster[monsterIndex].dying = true;
                 }
             }
-        } else {
         }
     }
 }
