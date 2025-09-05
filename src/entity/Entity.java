@@ -27,12 +27,16 @@ public class Entity {
     public boolean collision = false;
     public boolean invincible = false;
     public boolean attacking = false;
+    public boolean alive = true;
+    public boolean dying = false;
+    boolean hpBarOn = false;
 
     //COUNTER
     public int spriteCounter = 0;
     public int invincibleCounter = 0;
     public int actionLockCounter = 0;
-
+    int dyingCounter = 0;
+    int hpBarCounter = 0;
     //CHARACTER STATUS
     public int maxLife;
     public int life;
@@ -73,11 +77,41 @@ public class Entity {
                         if (spriteNum == 2) {image = right2;}
                         break;
                 }
+
+                //MONSTER HP bar
+                if(type == 2 && hpBarOn) {
+
+                    double oneScale = (double)gamePanel.tileSize / maxLife;
+                    double hpBarValue = oneScale * life;
+
+
+                    graphics2D.setColor(new Color(35,35,35));
+                    graphics2D.fillRect(screenX - 1,screenY - 1,gamePanel.tileSize + 2, 12);
+
+                    graphics2D.setColor(new Color(185, 185, 185));
+                    graphics2D.fillRect(screenX, screenY, gamePanel.tileSize,10);
+
+                    graphics2D.setColor(new Color(255,0,30));
+                    graphics2D.fillRect(screenX, screenY, (int)hpBarValue,10);
+
+                    hpBarCounter++;
+
+                    if(hpBarCounter > 600) {
+                        hpBarCounter = 0;
+                        hpBarOn = false;
+                    }
+                }
+
                 if( invincible ) {
-                    graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f));
+                    changeAlpha(graphics2D,0.4F);
+                    hpBarCounter = 0;
+                    hpBarOn =true;
+                }
+                if(dying) {
+                    dyingAnimation(graphics2D);
                 }
                     graphics2D.drawImage(image, screenX, screenY, gamePanel.tileSize, gamePanel.tileSize, null);
-                    graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
+                changeAlpha(graphics2D,1F);
             }
         }
     public BufferedImage setup(String imagePath, int scaleWidth, int scaleHeigth) {
@@ -96,6 +130,9 @@ public class Entity {
     }
 
     public void setAction() {}
+
+    public void damageReaction() {}
+
     public void speak() {
         if(dialogues[dialogueIndex] == null){
             dialogueIndex = 0;
@@ -140,6 +177,8 @@ public class Entity {
 
         if(this.type == 2 && contactPlayer){
             if(!gamePanel.player.invincible) {
+                //We can give damage
+                gamePanel.playSE(6);
                 gamePanel.player.life -= 1;
                 gamePanel.player.invincible = true;
             }
@@ -165,4 +204,27 @@ public class Entity {
         }
     }
 
+    public void dyingAnimation(Graphics2D graphics2D) {
+
+        int i = 5;
+
+
+        dyingCounter ++;
+        if(dyingCounter <= i) {changeAlpha(graphics2D,0f);}
+        if(dyingCounter > i && dyingCounter <= i * 2) {changeAlpha(graphics2D,1f);}
+        if(dyingCounter > i * 2 && dyingCounter <= i * 3) {changeAlpha(graphics2D,0f);}
+        if(dyingCounter > i * 3 && dyingCounter <= i * 4) {changeAlpha(graphics2D,1f);}
+        if(dyingCounter > i * 4 && dyingCounter <= i * 5) {changeAlpha(graphics2D,1f);}
+        if(dyingCounter > i * 5 && dyingCounter <= i * 6) {changeAlpha(graphics2D,0f);}
+        if(dyingCounter > i * 6 && dyingCounter <= i * 7) {changeAlpha(graphics2D,1f);}
+        if(dyingCounter > i * 7 && dyingCounter <= i * 8) {changeAlpha(graphics2D,0f);
+        }
+        if(dyingCounter > i * 8) {
+            dying = false;
+            alive = false;
+        }
+    }
+    public void changeAlpha(Graphics2D graphics2D, float alphaValue) {
+        graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValue));
+    }
 }
