@@ -3,6 +3,7 @@
     import game.GamePanel;
     import game.KeyHandler;
     import game.UtilityTool;
+    import object.OBJ_Fireball;
     import object.OBJ_Key;
     import object.OBJ_Shield_Wood;
     import object.OBJ_Sword_Normal;
@@ -22,7 +23,7 @@
     int standCounter = 0;
     public boolean attackCanceled = false;
     public ArrayList<Entity> inventory = new ArrayList<>();
-
+    int maxInventorySize = 20;
 
     public Player(GamePanel gamePanel, KeyHandler keyHandler) {
 
@@ -33,12 +34,11 @@
         screenX = gamePanel.screenWidth / 2 - (gamePanel.tileSize / 2);
         screenY = gamePanel.screenHeight / 2 - (gamePanel.tileSize / 2);
 
+        //SOLID AREA
         solidArea = new Rectangle(10, 18, 26, 26);
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
 
-        attackArea.width = 36;
-        attackArea.height = 36;
 
         setDefaultValues();
         getPlayerImage();
@@ -64,27 +64,20 @@
         coin = 0;
         currentWeapon = new OBJ_Sword_Normal(gamePanel);
         currentShield = new OBJ_Shield_Wood(gamePanel);
+        projectile = new OBJ_Fireball(gamePanel);
         attack = getAttack(); // Influenced by player's strength and weapon's attack value
         defense = getDefense(); // Influenced by player's dexterity and shield's defense stats
+
     }
     public void setItems() {
 
         inventory.add(currentWeapon);
         inventory.add(currentShield);
         inventory.add(new OBJ_Key(gamePanel));
-        inventory.add(new OBJ_Key(gamePanel));
-        inventory.add(new OBJ_Key(gamePanel));
-        inventory.add(new OBJ_Key(gamePanel));
-        inventory.add(new OBJ_Key(gamePanel));
-        inventory.add(new OBJ_Key(gamePanel));
-        inventory.add(new OBJ_Key(gamePanel));
-        inventory.add(new OBJ_Key(gamePanel));
-        inventory.add(new OBJ_Key(gamePanel));
-
 
     }
     public int getAttack() {
-
+        attackArea = currentWeapon.attackArea;
         return attack = strength * currentWeapon.attackValue;
     }
 
@@ -105,14 +98,30 @@
 
     public void getPlayerAttackImage() {
 
-        attackUp1 = setup("player/player/boy_attack_up_1", 1, 2);
-        attackUp2 = setup("player/player/boy_attack_up_2", 1, 2);
-        attackDown1 = setup("player/player/boy_attack_down_1", 1, 2);
-        attackDown2 = setup("player/player/boy_attack_down_2", 1, 2);
-        attackLeft1 = setup("player/player/boy_attack_left_1", 2, 1);
-        attackLeft2 = setup("player/player/boy_attack_left_2", 2, 1);
-        attackRight1 = setup("player/player/boy_attack_right_1", 2, 1);
-        attackRight2 = setup("player/player/boy_attack_right_2", 2, 1);
+        if(currentWeapon.type == type_sword){
+
+            attackUp1 = setup("player/player/boy_attack_up_1", 1, 2);
+            attackUp2 = setup("player/player/boy_attack_up_2", 1, 2);
+            attackDown1 = setup("player/player/boy_attack_down_1", 1, 2);
+            attackDown2 = setup("player/player/boy_attack_down_2", 1, 2);
+            attackLeft1 = setup("player/player/boy_attack_left_1", 2, 1);
+            attackLeft2 = setup("player/player/boy_attack_left_2", 2, 1);
+            attackRight1 = setup("player/player/boy_attack_right_1", 2, 1);
+            attackRight2 = setup("player/player/boy_attack_right_2", 2, 1);
+
+        }
+        if(currentWeapon.type == type_axe){
+
+            attackUp1 = setup("player/player/boy_axe_up_1", 1, 2);
+            attackUp2 = setup("player/player/boy_axe_up_2", 1, 2);
+            attackDown1 = setup("player/player/boy_axe_down_1", 1, 2);
+            attackDown2 = setup("player/player/boy_axe_down_2", 1, 2);
+            attackLeft1 = setup("player/player/boy_axe_left_1", 2, 1);
+            attackLeft2 = setup("player/player/boy_axe_left_2", 2, 1);
+            attackRight1 = setup("player/player/boy_axe_right_1", 2, 1);
+            attackRight2 = setup("player/player/boy_axe_right_2", 2, 1);
+
+        }
 
     }
 
@@ -199,6 +208,18 @@
                 }
             }
 
+            if(gamePanel.keyHandler.shotKeyPressed && !projectile.alive && shotAvailableCounter == 180) {
+                //SET DEFAULT COORDINATES, DIRECTION AND USER
+                projectile.set(worldX, worldY, direction, true, this);
+                //ADD IT TO THE LIST
+                gamePanel.projectileList.add(projectile);
+                gamePanel.playSE(11);
+
+                shotAvailableCounter = 0;
+
+                gamePanel.keyHandler.shotKeyPressed = false;
+            }
+
             // Invincibility timer
             if (invincible) {
                 invincibleCounter++;
@@ -207,6 +228,9 @@
                     invincibleCounter = 0;
                 }
             }
+        }
+        if(shotAvailableCounter < 180) {
+            shotAvailableCounter++;
         }
     }
 
@@ -248,7 +272,7 @@
             // Check monster collision
             int monsterIndex = gamePanel.checker.checkEntity(this, gamePanel.monster);
             if (monsterIndex != 999) {
-                damageMonster(monsterIndex); // plays monster hit sound (SE 5)
+                damageMonster(monsterIndex, attack); // plays monster hit sound (SE 5)
             }
 
             // Restore original values
@@ -267,6 +291,21 @@
 
     public void pickUpObject(int i) {
 
+        if(i != 999) {
+
+            String text;
+
+            if(inventory.size() != maxInventorySize) {
+                inventory.add(gamePanel.object[i]);
+                gamePanel.playSE(1);
+                text = "Got a " + gamePanel.object[i].name + "!";
+            }
+            else {
+                text = "You cannot carry other stuff anymore!";
+            }
+            gamePanel.ui.addMessage(text);
+            gamePanel.object[i] = null;
+        }
     }
 
     public void interactNPC(int i) {
@@ -346,10 +385,37 @@
     //        g2.setColor(Color.white);
     //        g2.drawString("Invincible: "+ invincibleCounter, gamePanel.tileSize, gamePanel.screenHeight / 2);
     }
+    public void selectItem() {
+
+        int itemIndex = gamePanel.ui.getItemIndexOnSlot();
+
+        if(itemIndex < inventory.size()) {
+
+            Entity selectedItem = inventory.get(itemIndex);
+
+            if(selectedItem.type == type_sword || selectedItem.type == type_axe) {
+
+                currentWeapon = selectedItem;
+                attack = getAttack();
+                getPlayerAttackImage();
+            }
+            if(selectedItem.type == type_shield) {
+
+                currentShield = selectedItem;
+                defense = getDefense();
+
+            }
+            if(selectedItem.type == type_consumable) {
+
+                selectedItem.use(this);
+                inventory.remove(itemIndex);
+            }
+        }
+    }
     public void contactMonster(int i) {
 
         if(i != 999) {
-            if(!invincible) {
+            if(!invincible && !gamePanel.monster[i].dying) {
                 gamePanel.playSE(6);
                 int damage = gamePanel.monster[i].attack - defense;
                 if(damage < 0) {
@@ -361,7 +427,7 @@
         }
     }
 
-    public void damageMonster(int monsterIndex) {
+    public void damageMonster(int monsterIndex, int attack) {
 
         if(monsterIndex != 999) {
             if(!gamePanel.monster[monsterIndex].invincible) {

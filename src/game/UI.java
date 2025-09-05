@@ -333,6 +333,11 @@
             for(int i = 0; i < gamePanel.player.inventory.size(); i++) {
                 Entity item = gamePanel.player.inventory.get(i);
 
+                if(gamePanel.player.inventory.get(i) == gamePanel.player.currentWeapon || gamePanel.player.inventory.get(i) == gamePanel.player.currentShield) {
+                    graphics2D.setColor(new Color(240,190,90));
+                    graphics2D.fillRoundRect(slotX,slotY,gamePanel.tileSize,gamePanel.tileSize, 10, 10);
+                }
+
                 // Draw item image with proper scaling
                 if (item != null && item.down1 != null) {
                     graphics2D.drawImage(item.down1, slotX, slotY, slotSize, slotSize, null);
@@ -367,7 +372,6 @@
             int dFrameY = frameY + frameHeight + 30;
             int dFrameWidth = frameWidth;
             int dFrameHeight = gamePanel.tileSize * 3;
-            drawSubWindow(dFrameX,dFrameY,dFrameWidth,dFrameHeight);
             //DRAW DESCRIPTION TEXT
             int textX = dFrameX + 20;
             int textY = dFrameY + gamePanel.tileSize;
@@ -376,6 +380,9 @@
             int itemIndex = getItemIndexOnSlot();
 
             if(itemIndex < gamePanel.player.inventory.size()) {
+
+                drawSubWindow(dFrameX,dFrameY,dFrameWidth,dFrameHeight);
+
                 for(String line: gamePanel.player.inventory.get(itemIndex).description.split("\n")){
                     graphics2D.drawString(line,textX,textY);
                     textY += 32;
