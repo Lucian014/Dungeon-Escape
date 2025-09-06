@@ -15,6 +15,11 @@ public class Main {
         window.setTitle("Dungeon Escape");
         GamePanel gamePanel = new GamePanel();
 
+        gamePanel.config.loadConfig();
+        if(gamePanel.fullScreenOn) {
+            window.setUndecorated(true);
+        }
+
         window.add(gamePanel);
         window.pack();
         window.setLocationRelativeTo(null);
