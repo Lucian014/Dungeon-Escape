@@ -2,7 +2,6 @@ package game;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.security.Key;
 
 public class KeyHandler implements KeyListener {
 
@@ -53,7 +52,6 @@ public class KeyHandler implements KeyListener {
     public void titleState(int code) {
         if(gamePanel.ui.titleScreenState == 0) { // Main menu
             handleMainMenu(code);
-            gamePanel.playMusic(0);
         }
         else if(gamePanel.ui.titleScreenState == 1) { // Character selection
             handleCharacterSelection(code);
@@ -61,6 +59,7 @@ public class KeyHandler implements KeyListener {
     }
 
     private void handleMainMenu(int code) {
+
         if(code == KeyEvent.VK_W){
             gamePanel.ui.commandNum--;
             if(gamePanel.ui.commandNum < 0) {
@@ -91,6 +90,7 @@ public class KeyHandler implements KeyListener {
             }
         }
     }
+
     public void playState(int code) {
         if(code == KeyEvent.VK_W){
             upPressed = true;
@@ -129,7 +129,6 @@ public class KeyHandler implements KeyListener {
         if(code == KeyEvent.VK_ESCAPE) {
             gamePanel.gameState = gamePanel.optionsState;
         }
-
     }
 
     public void pauseState(int code) {
@@ -137,52 +136,56 @@ public class KeyHandler implements KeyListener {
             gamePanel.gameState = gamePanel.playState;
         }
     }
+
     public void dialogueState(int code) {
         if(code == KeyEvent.VK_ENTER){
             gamePanel.gameState = gamePanel.playState;
             gamePanel.ui.currentDialogue = "";
         }
     }
+
     public void characterState(int code) {
+        Sound sound = Sound.getInstance();
+
         if(code == KeyEvent.VK_C) {
             gamePanel.gameState = gamePanel.playState;
         }
         if(code == KeyEvent.VK_W) {
             if(gamePanel.ui.slotRow != 0){
                 gamePanel.ui.slotRow--;
-                gamePanel.playSE(9);
+                sound.playSoundEffect(9);
             }
         }
         if(code == KeyEvent.VK_A) {
             if(gamePanel.ui.slotCol != 0){
                 gamePanel.ui.slotCol--;
-                gamePanel.playSE(9);
+                sound.playSoundEffect(9);
             }
-
         }
         if(code == KeyEvent.VK_S) {
             if(gamePanel.ui.slotRow != 3){
                 gamePanel.ui.slotRow++;
-                gamePanel.playSE(9);
+                sound.playSoundEffect(9);
             }
         }
         if(code == KeyEvent.VK_D) {
             if(gamePanel.ui.slotCol != 4){
                 gamePanel.ui.slotCol++;
-                gamePanel.playSE(9);
+                sound.playSoundEffect(9);
             }
         }
-
         if(code == KeyEvent.VK_ENTER) {
             gamePanel.player.selectItem();
         }
     }
+
     public void optionState(int code) {
+        Sound sound = Sound.getInstance();
 
         if(code == KeyEvent.VK_ESCAPE) {
             gamePanel.gameState = gamePanel.playState;
         }
-        if(code ==KeyEvent.VK_ENTER) {
+        if(code == KeyEvent.VK_ENTER) {
             enterPressed = true;
         }
 
@@ -192,16 +195,16 @@ public class KeyHandler implements KeyListener {
             case 3: maxCommandNum = 1; break;
         }
 
-        if(code ==KeyEvent.VK_W) {
+        if(code == KeyEvent.VK_W) {
             gamePanel.ui.commandNum--;
-            gamePanel.playSE(9);
+            sound.playSoundEffect(9);
             if(gamePanel.ui.commandNum < 0) {
                 gamePanel.ui.commandNum = maxCommandNum;
             }
         }
-        if(code ==KeyEvent.VK_S) {
+        if(code == KeyEvent.VK_S) {
             gamePanel.ui.commandNum++;
-            gamePanel.playSE(9);
+            sound.playSoundEffect(9);
             if(gamePanel.ui.commandNum > maxCommandNum) {
                 gamePanel.ui.commandNum = 0;
             }
@@ -209,34 +212,32 @@ public class KeyHandler implements KeyListener {
 
         if(code == KeyEvent.VK_A) {
             if(gamePanel.ui.subState == 0) {
-                if(gamePanel.ui.commandNum == 1 && gamePanel.music.volumeScale > 0) {
-                    gamePanel.music.volumeScale--;
-                    gamePanel.music.checkVolume();
-                    gamePanel.playSE(9);
+                if(gamePanel.ui.commandNum == 1 && gamePanel.sound.getMusicVolumeScale() > 0) {
+                    gamePanel.sound.setMusicVolumeScale(gamePanel.sound.getMusicVolumeScale() - 1);
+                    gamePanel.sound.playSoundEffect(9);
                 }
-                if(gamePanel.ui.commandNum == 2 && gamePanel.se.volumeScale > 0) {
-                    gamePanel.se.volumeScale--;
-                    gamePanel.playSE(9);
+                if(gamePanel.ui.commandNum == 2 && gamePanel.sound.getSEVolumeScale() > 0) {
+                    gamePanel.sound.setSEVolumeScale(gamePanel.sound.getSEVolumeScale() - 1);
+                    gamePanel.sound.playSoundEffect(9);
                 }
             }
         }
         if(code == KeyEvent.VK_D) {
             if(gamePanel.ui.subState == 0) {
-                if(gamePanel.ui.commandNum == 1 && gamePanel.music.volumeScale < 5) {
-                    gamePanel.music.volumeScale++;
-                    gamePanel.music.checkVolume();
-                    gamePanel.playSE(9);
+                if(gamePanel.ui.commandNum == 1 && gamePanel.sound.getMusicVolumeScale() < 5) {
+                    gamePanel.sound.setMusicVolumeScale(gamePanel.sound.getMusicVolumeScale() + 1);
+                    gamePanel.sound.playSoundEffect(9);
                 }
-            }
-                if(gamePanel.ui.commandNum == 2 && gamePanel.se.volumeScale < 5) {
-                    gamePanel.se.volumeScale++;
-                    gamePanel.playSE(9);
+                if(gamePanel.ui.commandNum == 2 && gamePanel.sound.getSEVolumeScale() < 5) {
+                    gamePanel.sound.setSEVolumeScale(gamePanel.sound.getSEVolumeScale() + 1);
+                    gamePanel.sound.playSoundEffect(9);
                 }
             }
         }
+    }
+
     @Override
     public void keyReleased(KeyEvent e) {
-
         int code = e.getKeyCode();
 
         if(code == KeyEvent.VK_W){
@@ -255,6 +256,7 @@ public class KeyHandler implements KeyListener {
             shotKeyPressed = false;
         }
     }
+
     private void handleCharacterSelection(int code) {
         if(code == KeyEvent.VK_W){
             gamePanel.ui.commandNum--;
