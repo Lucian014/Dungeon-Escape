@@ -234,6 +234,12 @@
                     invincibleCounter = 0;
                 }
             }
+            if(life > maxLife) {
+                life = maxLife;
+            }
+            if(mana > maxMana) {
+                mana = maxMana;
+            }
         }
         if(shotAvailableCounter < 120) {
             shotAvailableCounter++;
@@ -299,18 +305,28 @@
 
         if(i != 999) {
 
-            String text;
+            //PICKUP ONLY ITEMS
+            if(gamePanel.object[i].type == type_pickUpOnly) {
 
-            if(inventory.size() != maxInventorySize) {
-                inventory.add(gamePanel.object[i]);
-                gamePanel.playSE(1);
-                text = "Got a " + gamePanel.object[i].name + "!";
+                gamePanel.object[i].use(this);
+                gamePanel.object[i] = null;
+            } else {
+
+                String text;
+                if(inventory.size() != maxInventorySize) {
+                    inventory.add(gamePanel.object[i]);
+                    gamePanel.playSE(1);
+                    text = "Got a " + gamePanel.object[i].name + "!";
+                }
+                else {
+                    text = "You cannot carry other stuff anymore!";
+                }
+                gamePanel.ui.addMessage(text);
+                gamePanel.object[i] = null;
             }
-            else {
-                text = "You cannot carry other stuff anymore!";
-            }
-            gamePanel.ui.addMessage(text);
-            gamePanel.object[i] = null;
+            //INVENTORY ITEMS
+
+
         }
     }
 
@@ -473,4 +489,5 @@
         gamePanel.ui.currentDialogue = "You are level " + level + " !";
         }
     }
+
 }
