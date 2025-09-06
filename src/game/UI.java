@@ -349,94 +349,91 @@
         gamePanel.keyHandler.enterPressed = false;
     }
 
-    public void options_top(int frameX,int frameY) {
-        int textX,textY;
+        public void options_top(int frameX, int frameY) {
+            int textX, textY;
 
-        String text = "Options";
-        textX = getXforCenteredText(text);
-        textY = frameY + gamePanel.tileSize;
-        graphics2D.drawString(text,textX,textY);
+            String text = "Options";
+            textX = getXforCenteredText(text);
+            textY = frameY + gamePanel.tileSize;
+            graphics2D.drawString(text, textX, textY);
 
-        //FULL SCREEN ON/OFF
-        textX = frameX + gamePanel.tileSize - 15;
-        textY += gamePanel.tileSize * 2;
-        graphics2D.drawString("Full Screen", textX, textY);
-        if(commandNum == 0) {
-            graphics2D.drawString(">", textX - 20, textY);
-            if (gamePanel.keyHandler.enterPressed) {
-                gamePanel.fullScreenOn = !gamePanel.fullScreenOn;
-                subState = 1;
+            //FULL SCREEN ON/OFF
+            textX = frameX + gamePanel.tileSize - 15;
+            textY += gamePanel.tileSize * 2;
+            graphics2D.drawString("Full Screen", textX, textY);
+            if(commandNum == 0) {
+                graphics2D.drawString(">", textX - 20, textY);
+                if (gamePanel.keyHandler.enterPressed) {
+                    gamePanel.fullScreenOn = !gamePanel.fullScreenOn;
+                    subState = 1;
+                }
             }
-        }
-        //MUSIC
-        textY += gamePanel.tileSize;
-        graphics2D.drawString("Music", textX, textY);
-        if(commandNum == 1) {
-            graphics2D.drawString(">", textX - 20, textY);
-        }
-        //SE
-
-        textY += gamePanel.tileSize;
-        graphics2D.drawString("Sound Effects", textX, textY);
-        if(commandNum == 2) {
-            graphics2D.drawString(">", textX - 20, textY);
-        }
-        //CONTROL
-
-        textY += gamePanel.tileSize;
-        graphics2D.drawString("Controls", textX, textY);
-        if(commandNum == 3) {
-            graphics2D.drawString(">", textX - 20, textY);
-            if(gamePanel.keyHandler.enterPressed) {
-                subState = 2;
-                commandNum = 0;
+            //MUSIC
+            textY += gamePanel.tileSize;
+            graphics2D.drawString("Music", textX, textY);
+            if(commandNum == 1) {
+                graphics2D.drawString(">", textX - 20, textY);
             }
-        }
-
-        //END GAME
-
-        textY += gamePanel.tileSize;
-        graphics2D.drawString("Quit Game", textX, textY);
-        if(commandNum == 4) {
-            graphics2D.drawString(">", textX - 20, textY);
-            if(gamePanel.keyHandler.enterPressed){
-                subState = 3;
-                commandNum = 0;
+            //SE
+            textY += gamePanel.tileSize;
+            graphics2D.drawString("Sound Effects", textX, textY);
+            if(commandNum == 2) {
+                graphics2D.drawString(">", textX - 20, textY);
             }
-        }
-        //BACK
-        textY += gamePanel.tileSize * 2;
-        graphics2D.drawString("Back", textX, textY);
-        if(commandNum == 5) {
-            graphics2D.drawString(">", textX - 20, textY);
-            if(gamePanel.keyHandler.enterPressed) {
-                gamePanel.gameState = gamePanel.playState;
-                commandNum = 0;
+            //CONTROL
+            textY += gamePanel.tileSize;
+            graphics2D.drawString("Controls", textX, textY);
+            if(commandNum == 3) {
+                graphics2D.drawString(">", textX - 20, textY);
+                if(gamePanel.keyHandler.enterPressed) {
+                    subState = 2;
+                    commandNum = 0;
+                }
             }
+
+            //END GAME
+            textY += gamePanel.tileSize;
+            graphics2D.drawString("Quit Game", textX, textY);
+            if(commandNum == 4) {
+                graphics2D.drawString(">", textX - 20, textY);
+                if(gamePanel.keyHandler.enterPressed){
+                    subState = 3;
+                    commandNum = 0;
+                }
+            }
+            //BACK
+            textY += gamePanel.tileSize * 2;
+            graphics2D.drawString("Back", textX, textY);
+            if(commandNum == 5) {
+                graphics2D.drawString(">", textX - 20, textY);
+                if(gamePanel.keyHandler.enterPressed) {
+                    gamePanel.gameState = gamePanel.playState;
+                    commandNum = 0;
+                }
+            }
+
+            //FULL SCREEN CHECK BOX
+            textX = frameX + gamePanel.tileSize * 7;
+            textY = frameY + gamePanel.tileSize * 2 + 24;
+            graphics2D.setStroke(new BasicStroke(3));
+            graphics2D.drawRect(textX, textY, 28, 28);
+            if(gamePanel.fullScreenOn) {
+                graphics2D.fillRect(textX, textY, 28, 28);
+            }
+
+            //MUSIC VOLUME - FIXED: Use getMusicVolumeScale()
+            textX = frameX + gamePanel.tileSize * 6 + 4;
+            textY += gamePanel.tileSize;
+            graphics2D.drawRect(textX - gamePanel.tileSize, textY, 120, 24);
+            int musicVolumeWidth = 24 * gamePanel.sound.getMusicVolumeScale(); // Changed this line
+            graphics2D.fillRect(textX - gamePanel.tileSize, textY, musicVolumeWidth, 24);
+
+            //SE VOLUME - FIXED: Use getSEVolumeScale()
+            textY += gamePanel.tileSize;
+            graphics2D.drawRect(textX - gamePanel.tileSize, textY, 120, 24);
+            int seVolumeWidth = 24 * gamePanel.sound.getSEVolumeScale(); // Changed this line
+            graphics2D.fillRect(textX - gamePanel.tileSize, textY, seVolumeWidth, 24);
         }
-
-        //FULL SCREEN CHECK BOX
-        textX = frameX + gamePanel.tileSize * 7;
-        textY = frameY + gamePanel.tileSize * 2 + 24;
-        graphics2D.setStroke(new BasicStroke(3));
-        graphics2D.drawRect(textX,textY,28,28);
-        if(gamePanel.fullScreenOn) {
-            graphics2D.fillRect(textX,textY,28,28);
-        }
-        //MUSIC VOLUME
-        textX = frameX + gamePanel.tileSize * 6 + 4;
-        textY += gamePanel.tileSize;
-        graphics2D.drawRect(textX - gamePanel.tileSize,textY,120, 24);
-        int volumeWidth = 24 * gamePanel.music.volumeScale;
-        graphics2D.fillRect(textX - gamePanel.tileSize,textY,volumeWidth,24);
-
-        //SE VOLUME
-        textY += gamePanel.tileSize;
-        graphics2D.drawRect(textX - gamePanel.tileSize,textY,120, 24);
-        volumeWidth = 24 * gamePanel.se.volumeScale;
-        graphics2D.fillRect(textX - gamePanel.tileSize,textY,volumeWidth,24);
-
-    }
 
     public void options_fullScreenNotification(int frameX, int frameY) {
 

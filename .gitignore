@@ -27,3 +27,42 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# Libraries and dependencies
+libs/
+lib/
+libraries/
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+
+# Built artifacts
+target/
+build/
+dist/
+
+# IDE files
+.idea/
+*.iml
+*.ipr
+*.iws
+.settings/
+
+# OS files
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Other
+*.class
+*.tmp
+*.bak
