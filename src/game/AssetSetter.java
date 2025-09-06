@@ -92,7 +92,7 @@ public class AssetSetter {
         gamePanel.iTile[i] = new IT_DryTree(gamePanel,27,12);i++;
         gamePanel.iTile[i] = new IT_DryTree(gamePanel,28,12);i++;
         gamePanel.iTile[i] = new IT_DryTree(gamePanel,29,12);i++;
-        gamePanel.iTile[i] = new IT_DryTree(gamePanel,30,12);i++;
+        gamePanel.iTile[i] = new IT_DryTree(gamePanel,31,21);i++;
         gamePanel.iTile[i] = new IT_DryTree(gamePanel,31,12);i++;
         gamePanel.iTile[i] = new IT_DryTree(gamePanel,32,12);i++;
         gamePanel.iTile[i] = new IT_DryTree(gamePanel,33,12);i++;

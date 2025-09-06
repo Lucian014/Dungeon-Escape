@@ -512,4 +512,21 @@
         }
     }
 
+        public Color getParticleColor() {
+            return new Color(65,50,30);
+        }
+        public int getParticleSize() {
+            int size = 3; // 6 pixels
+            return size;
+        }
+        public int getParticleSpeed() {
+            int speed = 1;
+            return speed;
+        }
+
+        public int getParticleMaxLife() {
+            int maxLife = 20;
+            return maxLife;
+        }
+
 }
