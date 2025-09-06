@@ -90,11 +90,16 @@
             drawInventory();
         }
 
+        //OPTION STATE
         if(gamePanel.gameState == gamePanel.optionsState) {
             drawOptionsScreen();
         }
-    }
 
+        //GAME OVER STATE
+        if(gamePanel.gameState == gamePanel.gameOverState) {
+            drawGameOverScreen();
+        }
+    }
     public void drawPauseScreen(Graphics2D graphics2D) {
         // Use the passed graphics2D parameter, not the class field graphics2D
         // Semi-transparent overlay
@@ -199,6 +204,305 @@
                     gamePanel.tileSize, gamePanel.tileSize, null);
         }
     }
+    public void drawTitleScreen() {
+
+        if (titleScreenState == 0) {
+            graphics2D.setColor(new Color(100, 163, 232));
+            graphics2D.fillRect(0, 0, gamePanel.screenWidth, gamePanel.screenHeight);
+
+            //TITLE NAME
+            graphics2D.setFont(graphics2D.getFont().deriveFont(Font.BOLD, 96F));
+            String text = "Dungeon Escape";
+            int x = getXforCenteredText(text);
+            int y = gamePanel.screenHeight / 2 - gamePanel.tileSize * 3;
+
+            //SHADOW
+            graphics2D.setColor(Color.black);
+            graphics2D.drawString(text, x + 6, y + 6);
+
+            //MAIN COLOR
+            graphics2D.setColor(Color.WHITE);
+            graphics2D.drawString(text, x, y);
+
+            //TITLE CARD
+            x = gamePanel.screenWidth / 2 - gamePanel.tileSize;
+            y += gamePanel.tileSize;
+            graphics2D.drawImage(gamePanel.player.down1, x, y, gamePanel.tileSize * 2, gamePanel.tileSize * 2, null);
+
+            //MENU
+            graphics2D.setFont(graphics2D.getFont().deriveFont(Font.BOLD, 40F));
+
+            text = "NEW GAME";
+            x = getXforCenteredText(text);
+            y += gamePanel.tileSize * 3;
+            graphics2D.drawString(text, x, y);
+            if (commandNum == 0) {
+                graphics2D.drawString(">", x - gamePanel.tileSize, y);
+            }
+
+            text = "LOAD GAME";
+            x = getXforCenteredText(text);
+            y += gamePanel.tileSize;
+            graphics2D.drawString(text, x, y);
+            if (commandNum == 1) {
+                graphics2D.drawString(">", x - gamePanel.tileSize, y);
+            }
+
+            text = "SETTINGS";
+            x = getXforCenteredText(text);
+            y += gamePanel.tileSize;
+            graphics2D.drawString(text, x, y);
+            if (commandNum == 2) {
+                graphics2D.drawString(">", x - gamePanel.tileSize, y);
+            }
+
+            text = "QUIT GAME";
+            x = getXforCenteredText(text);
+            y += gamePanel.tileSize;
+            graphics2D.drawString(text, x, y);
+            if (commandNum == 3) {
+                graphics2D.drawString(">", x - gamePanel.tileSize, y);
+            }
+        } else if (titleScreenState == 1) {
+
+            graphics2D.setColor(Color.WHITE);
+            graphics2D.setFont(graphics2D.getFont().deriveFont(42f));
+
+            String text = "Select your class: ";
+            int x = getXforCenteredText(text);
+            int y = gamePanel.tileSize * 3;
+            graphics2D.drawString(text, x, y);
+
+            text = "Fighter";
+            x = getXforCenteredText(text);
+            y += gamePanel.tileSize * 2;
+            graphics2D.drawString(text, x, y);
+            if (commandNum == 0) {
+                graphics2D.drawString(">", x - gamePanel.tileSize, y);
+            }
+
+            text = "Thief";
+            x = getXforCenteredText(text);
+            y += gamePanel.tileSize;
+            graphics2D.drawString(text, x, y);
+            if (commandNum == 1) {
+                graphics2D.drawString(">", x - gamePanel.tileSize, y);
+            }
+
+            text = "Wizard";
+            x = getXforCenteredText(text);
+            y += gamePanel.tileSize;
+            graphics2D.drawString(text, x, y);
+            if (commandNum == 2) {
+                graphics2D.drawString(">", x - gamePanel.tileSize, y);
+            }
+
+            text = "Back";
+            x = getXforCenteredText(text);
+            y += gamePanel.tileSize * 2;
+            graphics2D.drawString(text, x, y);
+            if (commandNum == 3) {
+                graphics2D.drawString(">", x - gamePanel.tileSize, y);
+            }
+        }
+    }
+    public void drawOptionsScreen() {
+
+        graphics2D.setColor(Color.WHITE);
+        graphics2D.setFont(graphics2D.getFont().deriveFont(32F));
+
+        int frameX = gamePanel.tileSize * 6;
+        int frameY = gamePanel.tileSize ;
+        int frameWidth = gamePanel.tileSize * 8;
+        int frameHeight = gamePanel.tileSize * 10;
+        drawSubWindow(frameX,frameY,frameWidth,frameHeight);
+
+        switch (subState) {
+            case 0: options_top(frameX,frameY); break;
+            case 1: options_fullScreenNotification(frameX,frameY); break;
+            case 2: options_displayControls(frameX,frameY); break;
+            case 3: options_quitGameConfirmation(frameX, frameY);
+
+        }
+        gamePanel.keyHandler.enterPressed = false;
+    }
+    public void drawGameOverScreen() {
+        graphics2D.setColor(new Color(0,0,0, 223));
+        graphics2D.fillRect(0,0,gamePanel.screenWidth,gamePanel.screenHeight);
+
+        int x;
+        int y;
+        String text;
+        graphics2D.setFont(graphics2D.getFont().deriveFont(Font.BOLD,110f));
+        text = "You Died";
+        //SHADOW
+        graphics2D.setColor(Color.BLACK);
+        x = getXforCenteredText(text,graphics2D);
+        y = gamePanel.screenHeight / 2;
+        graphics2D.drawString(text, x, y);
+        //MAIN
+        graphics2D.setColor(new Color(139, 0, 0));
+        graphics2D.drawString(text, x - 4, y - 4);
+
+        //Retry
+        graphics2D.setFont(graphics2D.getFont().deriveFont(50f));
+        text = "Retry";
+        x = getXforCenteredText(text);
+        y += gamePanel.tileSize * 2;
+        graphics2D.drawString(text,x,y);
+        if(commandNum == 0) {
+            graphics2D.drawString(">", x - 40, y);
+        }
+        //Back to the title screen
+        text = "Quit";
+        x = getXforCenteredText(text);
+        y += 55;
+        graphics2D.drawString(text,x,y);
+        if(commandNum == 1) {
+            graphics2D.drawString(">", x - 40, y);
+        }
+
+
+
+
+        //Back to title field
+    }
+    public void drawInventory() {
+        // FRAME
+        int frameX = gamePanel.tileSize * 11;
+        int frameY = gamePanel.tileSize + 25;
+        int frameWidth = gamePanel.tileSize * 6;
+        int frameHeight = gamePanel.tileSize * 5;
+        drawSubWindow(frameX, frameY, frameWidth, frameHeight);
+
+        // SLOT
+        final int slotXstart = frameX + 25;
+        final int slotYstart = frameY + 25;
+        int slotX = slotXstart;
+        int slotY = slotYstart;
+        int slotSize = gamePanel.tileSize ;
+
+        // Grid dimensions
+        final int columns = 5;
+
+        // DRAW PLAYER'S ITEMS (only up to maxSlots)
+        for(int i = 0; i < gamePanel.player.inventory.size(); i++) {
+            Entity item = gamePanel.player.inventory.get(i);
+
+            if(gamePanel.player.inventory.get(i) == gamePanel.player.currentWeapon || gamePanel.player.inventory.get(i) == gamePanel.player.currentShield) {
+                graphics2D.setColor(new Color(240,190,90));
+                graphics2D.fillRoundRect(slotX,slotY,gamePanel.tileSize,gamePanel.tileSize, 10, 10);
+            }
+
+            // Draw item image with proper scaling
+            if (item != null && item.down1 != null) {
+                graphics2D.drawImage(item.down1, slotX, slotY, slotSize, slotSize, null);
+            } else {
+                // Draw empty slot or debug indicator
+                graphics2D.setColor(Color.GRAY);
+                graphics2D.fillRect(slotX, slotY, slotSize, slotSize);
+            }
+
+            // Move to next column
+            slotX += slotSize;
+
+            // Move to next row when we reach the end of a row
+            if ((i + 1) % columns == 0) {
+                slotX = slotXstart;
+                slotY += slotSize;
+            }
+        }
+
+        // CURSOR
+        int cursorX = slotXstart + (slotSize * slotCol);
+        int cursorY = slotYstart + (slotSize * slotRow);
+
+        // DRAW CURSOR
+        graphics2D.setColor(Color.WHITE);
+        graphics2D.setStroke(new BasicStroke(3));
+        graphics2D.drawRoundRect(cursorX, cursorY, slotSize, slotSize, 10, 10);
+
+        // DESCRIPTION FRAME
+
+        int dFrameX = frameX;
+        int dFrameY = frameY + frameHeight + 30;
+        int dFrameWidth = frameWidth;
+        int dFrameHeight = gamePanel.tileSize * 3;
+        //DRAW DESCRIPTION TEXT
+        int textX = dFrameX + 20;
+        int textY = dFrameY + gamePanel.tileSize;
+        graphics2D.setFont(graphics2D.getFont().deriveFont(20F));
+
+        int itemIndex = getItemIndexOnSlot();
+
+        if(itemIndex < gamePanel.player.inventory.size()) {
+
+            drawSubWindow(dFrameX,dFrameY,dFrameWidth,dFrameHeight);
+
+            for(String line: gamePanel.player.inventory.get(itemIndex).description.split("\n")){
+                graphics2D.drawString(line,textX,textY);
+                textY += 32;
+            }
+        }
+    }
+    public void drawPlayerLife() {
+        int x = gamePanel.tileSize / 2;
+        int y = gamePanel.tileSize / 2;
+
+        // --- DRAW MAX LIFE (empty hearts) ---
+        for (int i = 0; i < gamePanel.player.maxLife / 2; i++) {
+            graphics2D.drawImage(heart_blank, x, y, null);
+            x += gamePanel.tileSize;
+        }
+
+        // --- DRAW CURRENT LIFE ---
+        x = gamePanel.tileSize / 2;
+        int remainingLife = gamePanel.player.life;
+        for (int i = 0; i < gamePanel.player.maxLife / 2; i++) {
+            if (remainingLife >= 2) {
+                graphics2D.drawImage(heart_full, x, y, null);
+                remainingLife -= 2;
+            } else if (remainingLife == 1) {
+                graphics2D.drawImage(heart_half, x, y, null);
+                remainingLife -= 1;
+            }
+            x += gamePanel.tileSize;
+        }
+
+        // --- DRAW MANA ---
+        x = gamePanel.tileSize / 2;
+        y += gamePanel.tileSize + 6; // a bit below hearts
+
+        // Max mana (empty crystals)
+        for (int i = 0; i < gamePanel.player.maxMana; i++) {
+            graphics2D.drawImage(crystal_blank, x, y, gamePanel.tileSize, gamePanel.tileSize, null);
+            x += gamePanel.tileSize;
+        }
+
+        // Current mana (full crystals)
+        x = gamePanel.tileSize / 2;
+        for (int i = 0; i < gamePanel.player.mana; i++) {
+            graphics2D.drawImage(crystal_full, x, y, gamePanel.tileSize, gamePanel.tileSize, null);
+            x += gamePanel.tileSize;
+        }
+    }
+    public void drawFPS() {
+        graphics2D.setColor(Color.WHITE);
+        graphics2D.setFont(graphics2D.getFont().deriveFont(32F));
+        graphics2D.drawString("FPS: " + gamePanel.fpsCount, gamePanel.screenWidth - gamePanel.tileSize * 3, gamePanel.tileSize);
+
+    }
+    public void drawSubWindow(int x, int y, int width, int height) {
+
+        Color color = new Color(0, 0, 0, 190);
+        graphics2D.setColor(color);
+        graphics2D.fillRoundRect(x, y, width, height, 35, 35);
+
+        color = new Color(255, 255, 255);
+        graphics2D.setColor(color);
+        graphics2D.setStroke(new BasicStroke(5));
+        graphics2D.drawRoundRect(x + 5, y + 5, width - 10, height - 10, 25, 25);
+    }
     public void drawMessage() {
 
             int messageX = gamePanel.tileSize;
@@ -226,130 +530,7 @@
             }
 
         }
-    public void drawTitleScreen() {
-
-            if (titleScreenState == 0) {
-                graphics2D.setColor(new Color(100, 163, 232));
-                graphics2D.fillRect(0, 0, gamePanel.screenWidth, gamePanel.screenHeight);
-
-                //TITLE NAME
-                graphics2D.setFont(graphics2D.getFont().deriveFont(Font.BOLD, 96F));
-                String text = "Dungeon Escape";
-                int x = getXforCenteredText(text);
-                int y = gamePanel.screenHeight / 2 - gamePanel.tileSize * 3;
-
-                //SHADOW
-                graphics2D.setColor(Color.black);
-                graphics2D.drawString(text, x + 6, y + 6);
-
-                //MAIN COLOR
-                graphics2D.setColor(Color.WHITE);
-                graphics2D.drawString(text, x, y);
-
-                //TITLE CARD
-                x = gamePanel.screenWidth / 2 - gamePanel.tileSize;
-                y += gamePanel.tileSize;
-                graphics2D.drawImage(gamePanel.player.down1, x, y, gamePanel.tileSize * 2, gamePanel.tileSize * 2, null);
-
-                //MENU
-                graphics2D.setFont(graphics2D.getFont().deriveFont(Font.BOLD, 40F));
-
-                text = "NEW GAME";
-                x = getXforCenteredText(text);
-                y += gamePanel.tileSize * 3;
-                graphics2D.drawString(text, x, y);
-                if (commandNum == 0) {
-                    graphics2D.drawString(">", x - gamePanel.tileSize, y);
-                }
-
-                text = "LOAD GAME";
-                x = getXforCenteredText(text);
-                y += gamePanel.tileSize;
-                graphics2D.drawString(text, x, y);
-                if (commandNum == 1) {
-                    graphics2D.drawString(">", x - gamePanel.tileSize, y);
-                }
-
-                text = "SETTINGS";
-                x = getXforCenteredText(text);
-                y += gamePanel.tileSize;
-                graphics2D.drawString(text, x, y);
-                if (commandNum == 2) {
-                    graphics2D.drawString(">", x - gamePanel.tileSize, y);
-                }
-
-                text = "QUIT GAME";
-                x = getXforCenteredText(text);
-                y += gamePanel.tileSize;
-                graphics2D.drawString(text, x, y);
-                if (commandNum == 3) {
-                    graphics2D.drawString(">", x - gamePanel.tileSize, y);
-                }
-            } else if (titleScreenState == 1) {
-
-                graphics2D.setColor(Color.WHITE);
-                graphics2D.setFont(graphics2D.getFont().deriveFont(42f));
-
-                String text = "Select your class: ";
-                int x = getXforCenteredText(text);
-                int y = gamePanel.tileSize * 3;
-                graphics2D.drawString(text, x, y);
-
-                text = "Fighter";
-                x = getXforCenteredText(text);
-                y += gamePanel.tileSize * 2;
-                graphics2D.drawString(text, x, y);
-                if (commandNum == 0) {
-                    graphics2D.drawString(">", x - gamePanel.tileSize, y);
-                }
-
-                text = "Thief";
-                x = getXforCenteredText(text);
-                y += gamePanel.tileSize;
-                graphics2D.drawString(text, x, y);
-                if (commandNum == 1) {
-                    graphics2D.drawString(">", x - gamePanel.tileSize, y);
-                }
-
-                text = "Wizard";
-                x = getXforCenteredText(text);
-                y += gamePanel.tileSize;
-                graphics2D.drawString(text, x, y);
-                if (commandNum == 2) {
-                    graphics2D.drawString(">", x - gamePanel.tileSize, y);
-                }
-
-                text = "Back";
-                x = getXforCenteredText(text);
-                y += gamePanel.tileSize * 2;
-                graphics2D.drawString(text, x, y);
-                if (commandNum == 3) {
-                    graphics2D.drawString(">", x - gamePanel.tileSize, y);
-                }
-            }
-        }
-    public void drawOptionsScreen() {
-
-        graphics2D.setColor(Color.WHITE);
-        graphics2D.setFont(graphics2D.getFont().deriveFont(32F));
-
-        int frameX = gamePanel.tileSize * 6;
-        int frameY = gamePanel.tileSize ;
-        int frameWidth = gamePanel.tileSize * 8;
-        int frameHeight = gamePanel.tileSize * 10;
-        drawSubWindow(frameX,frameY,frameWidth,frameHeight);
-
-        switch (subState) {
-            case 0: options_top(frameX,frameY); break;
-            case 1: options_fullScreenNotification(frameX,frameY); break;
-            case 2: options_displayControls(frameX,frameY); break;
-            case 3: options_quitGameConfirmation(frameX, frameY);
-
-        }
-        gamePanel.keyHandler.enterPressed = false;
-    }
-
-        public void options_top(int frameX, int frameY) {
+    public void options_top(int frameX, int frameY) {
             int textX, textY;
 
             String text = "Options";
@@ -436,8 +617,6 @@
 
             gamePanel.config.saveConfig();
         }
-
-
     public void options_fullScreenNotification(int frameX, int frameY) {
 
         int textX = frameX + gamePanel.tileSize;
@@ -460,7 +639,6 @@
             }
         }
     }
-
     public void options_displayControls(int frameX, int frameY) {
 
         int textX;
@@ -555,139 +733,8 @@
             }
         }
     }
-    public void drawInventory() {
-        // FRAME
-        int frameX = gamePanel.tileSize * 11;
-        int frameY = gamePanel.tileSize + 25;
-        int frameWidth = gamePanel.tileSize * 6;
-        int frameHeight = gamePanel.tileSize * 5;
-        drawSubWindow(frameX, frameY, frameWidth, frameHeight);
-
-        // SLOT
-        final int slotXstart = frameX + 25;
-        final int slotYstart = frameY + 25;
-        int slotX = slotXstart;
-        int slotY = slotYstart;
-        int slotSize = gamePanel.tileSize ;
-
-        // Grid dimensions
-        final int columns = 5;
-
-        // DRAW PLAYER'S ITEMS (only up to maxSlots)
-        for(int i = 0; i < gamePanel.player.inventory.size(); i++) {
-            Entity item = gamePanel.player.inventory.get(i);
-
-            if(gamePanel.player.inventory.get(i) == gamePanel.player.currentWeapon || gamePanel.player.inventory.get(i) == gamePanel.player.currentShield) {
-                graphics2D.setColor(new Color(240,190,90));
-                graphics2D.fillRoundRect(slotX,slotY,gamePanel.tileSize,gamePanel.tileSize, 10, 10);
-            }
-
-            // Draw item image with proper scaling
-            if (item != null && item.down1 != null) {
-                graphics2D.drawImage(item.down1, slotX, slotY, slotSize, slotSize, null);
-            } else {
-                // Draw empty slot or debug indicator
-                graphics2D.setColor(Color.GRAY);
-                graphics2D.fillRect(slotX, slotY, slotSize, slotSize);
-            }
-
-            // Move to next column
-            slotX += slotSize;
-
-            // Move to next row when we reach the end of a row
-            if ((i + 1) % columns == 0) {
-                slotX = slotXstart;
-                slotY += slotSize;
-            }
-        }
-
-        // CURSOR
-        int cursorX = slotXstart + (slotSize * slotCol);
-        int cursorY = slotYstart + (slotSize * slotRow);
-
-        // DRAW CURSOR
-        graphics2D.setColor(Color.WHITE);
-        graphics2D.setStroke(new BasicStroke(3));
-        graphics2D.drawRoundRect(cursorX, cursorY, slotSize, slotSize, 10, 10);
-
-        // DESCRIPTION FRAME
-
-        int dFrameX = frameX;
-        int dFrameY = frameY + frameHeight + 30;
-        int dFrameWidth = frameWidth;
-        int dFrameHeight = gamePanel.tileSize * 3;
-        //DRAW DESCRIPTION TEXT
-        int textX = dFrameX + 20;
-        int textY = dFrameY + gamePanel.tileSize;
-        graphics2D.setFont(graphics2D.getFont().deriveFont(20F));
-
-        int itemIndex = getItemIndexOnSlot();
-
-        if(itemIndex < gamePanel.player.inventory.size()) {
-
-            drawSubWindow(dFrameX,dFrameY,dFrameWidth,dFrameHeight);
-
-            for(String line: gamePanel.player.inventory.get(itemIndex).description.split("\n")){
-                graphics2D.drawString(line,textX,textY);
-                textY += 32;
-            }
-        }
-    }
     public int getItemIndexOnSlot() {
         return slotCol + (slotRow * 5);
-    }
-
-    public void drawPlayerLife() {
-        int x = gamePanel.tileSize / 2;
-        int y = gamePanel.tileSize / 2;
-
-        // --- DRAW MAX LIFE (empty hearts) ---
-        for (int i = 0; i < gamePanel.player.maxLife / 2; i++) {
-            graphics2D.drawImage(heart_blank, x, y, null);
-            x += gamePanel.tileSize;
-        }
-
-        // --- DRAW CURRENT LIFE ---
-        x = gamePanel.tileSize / 2;
-        int remainingLife = gamePanel.player.life;
-        for (int i = 0; i < gamePanel.player.maxLife / 2; i++) {
-            if (remainingLife >= 2) {
-                graphics2D.drawImage(heart_full, x, y, null);
-                remainingLife -= 2;
-            } else if (remainingLife == 1) {
-                graphics2D.drawImage(heart_half, x, y, null);
-                remainingLife -= 1;
-            }
-            x += gamePanel.tileSize;
-        }
-
-        // --- DRAW MANA ---
-        x = gamePanel.tileSize / 2;
-        y += gamePanel.tileSize + 6; // a bit below hearts
-
-        // Max mana (empty crystals)
-        for (int i = 0; i < gamePanel.player.maxMana; i++) {
-            graphics2D.drawImage(crystal_blank, x, y, gamePanel.tileSize, gamePanel.tileSize, null);
-            x += gamePanel.tileSize;
-        }
-
-        // Current mana (full crystals)
-        x = gamePanel.tileSize / 2;
-        for (int i = 0; i < gamePanel.player.mana; i++) {
-            graphics2D.drawImage(crystal_full, x, y, gamePanel.tileSize, gamePanel.tileSize, null);
-            x += gamePanel.tileSize;
-        }
-    }
-    public void drawSubWindow(int x, int y, int width, int height) {
-
-        Color color = new Color(0, 0, 0, 190);
-        graphics2D.setColor(color);
-        graphics2D.fillRoundRect(x, y, width, height, 35, 35);
-
-        color = new Color(255, 255, 255);
-        graphics2D.setColor(color);
-        graphics2D.setStroke(new BasicStroke(5));
-        graphics2D.drawRoundRect(x + 5, y + 5, width - 10, height - 10, 25, 25);
     }
     public int getXforCenteredText(String text) {
 
@@ -709,10 +756,4 @@
         return x;
     }
 
-    public void drawFPS() {
-        graphics2D.setColor(Color.WHITE);
-        graphics2D.setFont(graphics2D.getFont().deriveFont(32F));
-        graphics2D.drawString("FPS: " + gamePanel.fpsCount, gamePanel.screenWidth - gamePanel.tileSize * 3, gamePanel.tileSize);
-
-    }
 }

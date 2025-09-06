@@ -2,6 +2,7 @@
 
     import game.GamePanel;
     import game.KeyHandler;
+    import game.Sound;
     import game.UtilityTool;
     import object.*;
 
@@ -21,7 +22,6 @@
     public boolean attackCanceled = false;
     public ArrayList<Entity> inventory = new ArrayList<>();
     int maxInventorySize = 20;
-
     public Player(GamePanel gamePanel, KeyHandler keyHandler) {
 
         super(gamePanel);
@@ -68,10 +68,24 @@
         defense = getDefense(); // Influenced by player's dexterity and shield's defense stats
 
     }
+
+    public void setDefaultPositions() {
+        worldX = gamePanel.tileSize * 23;
+        worldY = gamePanel.tileSize * 21;
+        direction = "down";
+
+    }
+
+    public void restoreLifeAndMana() {
+        life = maxLife;
+        mana = maxMana;
+        invincible = false;
+    }
+
     public void setItems() {
 
+        inventory.clear();
         inventory.add(currentWeapon);
-        inventory.add(currentShield);
         inventory.add(new OBJ_Key(gamePanel));
         inventory.add(new OBJ_Axe(gamePanel));
 
@@ -126,9 +140,17 @@
     }
 
     public void update() {
-        // Only update when in play state
-        if (gamePanel.gameState == gamePanel.playState) {
-            // Handle attack input
+
+
+        if (gamePanel.gameState == gamePanel.playState ) {
+            if(!gamePanel.sound.musicThemeFlag) {
+                gamePanel.sound.stopSE(13);
+                gamePanel.sound.playMusic(0);
+                gamePanel.sound.musicThemeFlag = true;
+                gamePanel.sound.gameOverFlag = false;
+            }
+
+
             if (gamePanel.keyHandler.attackPressed && !attacking) {
                 boolean nearNPC = false;
                 int npcIndex = gamePanel.checker.checkEntity(this, gamePanel.npc);
@@ -242,6 +264,13 @@
             }
             if(mana > maxMana) {
                 mana = maxMana;
+            }
+            if(life <= 0) {
+                gamePanel.gameState = gamePanel.gameOverState;
+                gamePanel.sound.stopMusic();
+                gamePanel.sound.playSoundEffect(13);
+                gamePanel.sound.gameOverFlag = true;
+                gamePanel.sound.musicThemeFlag = false;
             }
         }
         if(shotAvailableCounter < 120) {
@@ -479,7 +508,7 @@
             }
         }
         }
-        public void damageInteractiveTile(int i) {
+    public void damageInteractiveTile(int i) {
 
             if(i != 999 && gamePanel.iTile[i].destructible && !gamePanel.iTile[i].invincible && gamePanel.iTile[i].isCorrectItem(this)) {
 

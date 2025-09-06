@@ -44,9 +44,15 @@ public class KeyHandler implements KeyListener {
         else if(gamePanel.gameState == gamePanel.titleState) {
             titleState(code);
         }
+        //OPTION STATE
         else if(gamePanel.gameState == gamePanel.optionsState) {
             optionState(code);
         }
+        //GAME OVER STATE
+        else if(gamePanel.gameState == gamePanel.gameOverState) {
+            gameOverState(code);
+        }
+
     }
 
     public void titleState(int code) {
@@ -58,40 +64,8 @@ public class KeyHandler implements KeyListener {
         }
     }
 
-    private void handleMainMenu(int code) {
-
-        if(code == KeyEvent.VK_W){
-            gamePanel.ui.commandNum--;
-            if(gamePanel.ui.commandNum < 0) {
-                gamePanel.ui.commandNum = 3;
-            }
-        }
-        if(code == KeyEvent.VK_S){
-            gamePanel.ui.commandNum++;
-            if(gamePanel.ui.commandNum > 3) {
-                gamePanel.ui.commandNum = 0;
-            }
-        }
-        if(code == KeyEvent.VK_ENTER) {
-            switch(gamePanel.ui.commandNum) {
-                case 0: // New Game
-                    gamePanel.ui.titleScreenState = 1;
-                    // Reset selection for character screen
-                    break;
-                case 1: // Load Game (example)
-                    // Add load game functionality
-                    break;
-                case 2: // Options (example)
-                    // Add options functionality
-                    break;
-                case 3: // Quit
-                    System.exit(0);
-                    break;
-            }
-        }
-    }
-
     public void playState(int code) {
+
         if(code == KeyEvent.VK_W){
             upPressed = true;
         }
@@ -236,6 +210,36 @@ public class KeyHandler implements KeyListener {
         }
     }
 
+    public void gameOverState(int code) {
+
+        if(code == KeyEvent.VK_W) {
+            gamePanel.ui.commandNum--;
+            if(gamePanel.ui.commandNum < 0) {
+                gamePanel.ui.commandNum = 1;
+            }
+            gamePanel.sound.playSoundEffect(9);
+        }
+
+        if(code == KeyEvent.VK_S) {
+            gamePanel.ui.commandNum++;
+            if(gamePanel.ui.commandNum > 1) {
+                gamePanel.ui.commandNum = 0;
+            }
+            gamePanel.sound.playSoundEffect(9);
+        }
+        if(code == KeyEvent.VK_ENTER) {
+            if(gamePanel.ui.commandNum == 0) {
+                gamePanel.gameState = gamePanel.playState;
+                gamePanel.retry();
+            }
+            else if(gamePanel.ui.commandNum == 1) {
+                gamePanel.gameState = gamePanel.titleState;
+                gamePanel.restart();
+            }
+        }
+
+    }
+
     @Override
     public void keyReleased(KeyEvent e) {
         int code = e.getKeyCode();
@@ -280,6 +284,39 @@ public class KeyHandler implements KeyListener {
                 case 3: // Back
                     gamePanel.ui.titleScreenState = 0;
                     gamePanel.ui.commandNum = 0; // Reset to "New Game" selection
+                    break;
+            }
+        }
+    }
+
+    private void handleMainMenu(int code) {
+
+        if(code == KeyEvent.VK_W){
+            gamePanel.ui.commandNum--;
+            if(gamePanel.ui.commandNum < 0) {
+                gamePanel.ui.commandNum = 3;
+            }
+        }
+        if(code == KeyEvent.VK_S){
+            gamePanel.ui.commandNum++;
+            if(gamePanel.ui.commandNum > 3) {
+                gamePanel.ui.commandNum = 0;
+            }
+        }
+        if(code == KeyEvent.VK_ENTER) {
+            switch(gamePanel.ui.commandNum) {
+                case 0: // New Game
+                    gamePanel.ui.titleScreenState = 1;
+                    // Reset selection for character screen
+                    break;
+                case 1: // Load Game (example)
+                    // Add load game functionality
+                    break;
+                case 2: // Options (example)
+                    // Add options functionality
+                    break;
+                case 3: // Quit
+                    System.exit(0);
                     break;
             }
         }

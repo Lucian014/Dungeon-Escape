@@ -42,7 +42,7 @@ public class GamePanel extends JPanel implements Runnable{
     public TileManager tileManager = new TileManager(this);
     public AssetSetter assetSetter = new AssetSetter(this);
     public CollisionChecker checker = new CollisionChecker(this);
-    Sound sound = Sound.getInstance();
+    public Sound sound = Sound.getInstance();
     public UI ui = new UI(this);
     public EventHandler eventHandler =  new EventHandler(this);
     public Config config = new Config(this);
@@ -65,6 +65,8 @@ public class GamePanel extends JPanel implements Runnable{
     public final int dialogueState = 3;
     public final int characterState = 4;
     public final int optionsState = 5;
+    public final int gameOverState = 6;
+
 
     public GamePanel(){
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -80,14 +82,32 @@ public class GamePanel extends JPanel implements Runnable{
         assetSetter.setObject();
         assetSetter.setInteractiveTile();
         gameState = titleState;
-        playMusic(0);
 
         tempScreen = new BufferedImage(screenWidth,screenHeight,BufferedImage.TYPE_INT_ARGB);
         graphics2D = (Graphics2D) tempScreen.getGraphics();
-
+        //sound.playMusic(0);
         if(fullScreenOn){
             setFullScreen();
         }
+    }
+
+    public void retry() {
+
+        player.setDefaultPositions();
+        player.restoreLifeAndMana();
+        assetSetter.setNPC();
+        assetSetter.setMonster();
+    }
+
+    public void restart() {
+
+        player.setDefaultValues();
+        player.setDefaultPositions();
+        player.setItems();
+        player.setDefaultPositions();
+        player.restoreLifeAndMana();
+        assetSetter.setNPC();
+        assetSetter.setMonster();
     }
 
     public void setFullScreen() {
@@ -188,7 +208,6 @@ public class GamePanel extends JPanel implements Runnable{
                 }
             }
 
-
             if(gameState == pauseState) {
 
             }
@@ -210,6 +229,7 @@ public class GamePanel extends JPanel implements Runnable{
                     interactiveTile.draw(graphics2D);
                 }
             }
+
 
             //ADD PLAYER
             entityList.add(player);
@@ -291,13 +311,6 @@ public class GamePanel extends JPanel implements Runnable{
         g.dispose();
     }
 
-    public void playMusic(int i) {
-        sound.playMusic(i);
-    }
-
-    public void stopMusic() {
-        sound.stopMusic();
-    }
 
     public void playSE(int i) {
         sound.playSoundEffect(i);
