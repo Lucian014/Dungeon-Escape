@@ -19,6 +19,9 @@ public class Sound {
     private float musicVolume;
     private float seVolume;
 
+    public boolean musicThemeFlag = false;
+    public boolean gameOverFlag = false;
+
     // Private constructor to prevent external instantiation
     private Sound() {
         initializeSoundURLs();
@@ -48,6 +51,7 @@ public class Sound {
         soundURL[10] = getClass().getResource("/sounds/drinkpotion.wav");
         soundURL[11] = getClass().getResource("/sounds/fireball.wav");
         soundURL[12] = getClass().getResource("/sounds/cuttree.wav");
+        soundURL[13] = getClass().getResource("/sounds/death.wav");
     }
 
     public void setFile(int i) {
@@ -128,7 +132,6 @@ public class Sound {
         if (!clips.containsKey(i)) {
             setFile(i);
         }
-
         if (clips.containsKey(i)) {
             Clip clip = clips.get(i);
             if (clip.isRunning()) {
@@ -204,6 +207,12 @@ public class Sound {
             }
         }
     }
-
-
+    public void stopSE(int i) {
+        if (clips.containsKey(i)) {
+            Clip soundEffect = clips.get(i);
+            if (soundEffect != null && soundEffect.isRunning()) {
+                soundEffect.stop();
+            }
+        }
+    }
 }
