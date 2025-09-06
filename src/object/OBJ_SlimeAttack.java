@@ -3,6 +3,8 @@ package object;
 import game.GamePanel;
 import game.Projectile;
 
+import java.awt.*;
+
 public class OBJ_SlimeAttack extends Projectile {
 
     GamePanel gamePanel;
@@ -31,5 +33,22 @@ public class OBJ_SlimeAttack extends Projectile {
         right1 = setup("projectiles/slime_attack_1",gamePanel.tileSize,gamePanel.tileSize);
         right2 = setup("projectiles/slime_attack_2",gamePanel.tileSize,gamePanel.tileSize);
 
+    }
+
+    public Color getParticleColor() {
+        return new Color(62, 134, 49);
+    }
+    public int getParticleSize() {
+        int size = 10; // 6 pixels
+        return size;
+    }
+    public int getParticleSpeed() {
+        int speed = 1;
+        return speed;
+    }
+
+    public int getParticleMaxLife() {
+        int maxLife = 20;
+        return maxLife;
     }
 }

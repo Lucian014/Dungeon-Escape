@@ -3,10 +3,7 @@
     import game.GamePanel;
     import game.KeyHandler;
     import game.UtilityTool;
-    import object.OBJ_Fireball;
-    import object.OBJ_Key;
-    import object.OBJ_Shield_Wood;
-    import object.OBJ_Sword_Normal;
+    import object.*;
 
     import javax.imageio.ImageIO;
     import java.awt.*;
@@ -76,6 +73,7 @@
         inventory.add(currentWeapon);
         inventory.add(currentShield);
         inventory.add(new OBJ_Key(gamePanel));
+        inventory.add(new OBJ_Axe(gamePanel));
 
     }
     public int getAttack() {
@@ -130,7 +128,6 @@
     public void update() {
         // Only update when in play state
         if (gamePanel.gameState == gamePanel.playState) {
-
             // Handle attack input
             if (gamePanel.keyHandler.attackPressed && !attacking) {
                 boolean nearNPC = false;
@@ -177,19 +174,25 @@
                 // Reset collision flag
                 collisionOn = false;
 
-                // Check collisions
+                // Check Tile Collision
                 gamePanel.checker.checkTile(this, dx, dy);
+
+                //Check Object collision
                 int objIndex = gamePanel.checker.checkObject(this, true);
                 pickUpObject(objIndex);
 
+                // Check NPC Collision
                 int npcIndex = gamePanel.checker.checkEntity(this, gamePanel.npc);
                 if (npcIndex != 999 && gamePanel.keyHandler.enterPressed) {
                     interactNPC(npcIndex);
                     gamePanel.keyHandler.enterPressed = false; // consume input
                 }
-
+                // Check Monster Collision
                 int monsterIndex = gamePanel.checker.checkEntity(this, gamePanel.monster);
                 contactMonster(monsterIndex);
+
+                // Check Interactive Tile Collision
+                int iTileIndex = gamePanel.checker.checkEntity(this, gamePanel.iTile);
 
                 // Move only if no collision
                 if (!collisionOn) {
@@ -287,6 +290,9 @@
                 damageMonster(monsterIndex, attack); // plays monster hit sound (SE 5)
             }
 
+            int iTileIndex = gamePanel.checker.checkEntity(this, gamePanel.iTile);
+            damageInteractiveTile(iTileIndex);
+
             // Restore original values
             worldX = currentWorldX;
             worldY = currentWorldY;
@@ -342,6 +348,8 @@
             attacking = true;
         }
     }
+
+
     public void draw(Graphics2D g2){
 
         BufferedImage image = null;
@@ -450,11 +458,9 @@
     }
 
     public void damageMonster(int monsterIndex, int attack) {
-
         if(monsterIndex != 999) {
             if(!gamePanel.monster[monsterIndex].invincible) {
                 gamePanel.playSE(5);
-
                 int damage = attack - gamePanel.monster[monsterIndex].defense;
                 if(damage < 0) {
                     damage = 0;
@@ -472,6 +478,22 @@
                 }
             }
         }
+        }
+        public void damageInteractiveTile(int i) {
+
+            if(i != 999 && gamePanel.iTile[i].destructible && !gamePanel.iTile[i].invincible && gamePanel.iTile[i].isCorrectItem(this)) {
+
+                gamePanel.iTile[i].playSE();
+                gamePanel.iTile[i].life--;
+                gamePanel.iTile[i].invincible = true;
+
+                //Generate particles
+                generateParticle(gamePanel.iTile[i], gamePanel.iTile[i]);
+
+                if(gamePanel.iTile[i].life == 0) {
+                    gamePanel.iTile[i] = gamePanel.iTile[i].getDestroyedForm();
+                }
+            }
     }
     public void checkLevelUp() {
         if(exp >= nextLevelExp) {
