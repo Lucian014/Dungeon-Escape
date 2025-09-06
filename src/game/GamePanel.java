@@ -17,7 +17,7 @@ public class GamePanel extends JPanel implements Runnable{
     final int originalTileSize = 16; // 16x16 tile
     final int scale = 3;
     int FPS = 60;
-
+    public int fpsCount = 0;
 
     public final int tileSize = originalTileSize * scale; //48x48 tile
     public final int maxScreenCol = 20;
@@ -34,6 +34,8 @@ public class GamePanel extends JPanel implements Runnable{
     int screenHeight2 = screenHeight;
     BufferedImage tempScreen;
     Graphics2D graphics2D;
+    public  boolean fullScreenOn = false;
+
     //SYSTEM
     Thread gameThread;
     public KeyHandler keyHandler = new KeyHandler(this);
@@ -57,11 +59,11 @@ public class GamePanel extends JPanel implements Runnable{
     //GAME STATE
     public int gameState;
     public final int titleState = 0;
-    public int playState = 1;
-    public int pauseState = 2;
-    public int dialogueState = 3;
-    public int characterState = 4;
-    public int fpsCount = 0;
+    public final int playState = 1;
+    public final int pauseState = 2;
+    public final int dialogueState = 3;
+    public final int characterState = 4;
+    public final int optionsState = 5;
 
     public GamePanel(){
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));

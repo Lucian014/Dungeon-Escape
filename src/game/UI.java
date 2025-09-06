@@ -26,6 +26,9 @@
     public int titleScreenState = 0; // 0: the first screen, 1: 2nd screen
     public int slotCol = 0;
     public int slotRow = 0;
+    int subState = 0;
+
+
 
     public UI(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
@@ -85,6 +88,10 @@
         if (gamePanel.gameState == gamePanel.characterState) {
             drawCharacterScreen();
             drawInventory();
+        }
+
+        if(gamePanel.gameState == gamePanel.optionsState) {
+            drawOptionsScreen();
         }
     }
 
@@ -321,6 +328,233 @@
                 }
             }
         }
+    public void drawOptionsScreen() {
+
+        graphics2D.setColor(Color.WHITE);
+        graphics2D.setFont(graphics2D.getFont().deriveFont(32F));
+
+        int frameX = gamePanel.tileSize * 6;
+        int frameY = gamePanel.tileSize ;
+        int frameWidth = gamePanel.tileSize * 8;
+        int frameHeight = gamePanel.tileSize * 10;
+        drawSubWindow(frameX,frameY,frameWidth,frameHeight);
+
+        switch (subState) {
+            case 0: options_top(frameX,frameY); break;
+            case 1: options_fullScreenNotification(frameX,frameY); break;
+            case 2: options_displayControls(frameX,frameY); break;
+            case 3: options_quitGameConfirmation(frameX, frameY);
+
+        }
+        gamePanel.keyHandler.enterPressed = false;
+    }
+
+    public void options_top(int frameX,int frameY) {
+        int textX,textY;
+
+        String text = "Options";
+        textX = getXforCenteredText(text);
+        textY = frameY + gamePanel.tileSize;
+        graphics2D.drawString(text,textX,textY);
+
+        //FULL SCREEN ON/OFF
+        textX = frameX + gamePanel.tileSize - 15;
+        textY += gamePanel.tileSize * 2;
+        graphics2D.drawString("Full Screen", textX, textY);
+        if(commandNum == 0) {
+            graphics2D.drawString(">", textX - 20, textY);
+            if (gamePanel.keyHandler.enterPressed) {
+                gamePanel.fullScreenOn = !gamePanel.fullScreenOn;
+                subState = 1;
+            }
+        }
+        //MUSIC
+        textY += gamePanel.tileSize;
+        graphics2D.drawString("Music", textX, textY);
+        if(commandNum == 1) {
+            graphics2D.drawString(">", textX - 20, textY);
+        }
+        //SE
+
+        textY += gamePanel.tileSize;
+        graphics2D.drawString("Sound Effects", textX, textY);
+        if(commandNum == 2) {
+            graphics2D.drawString(">", textX - 20, textY);
+        }
+        //CONTROL
+
+        textY += gamePanel.tileSize;
+        graphics2D.drawString("Controls", textX, textY);
+        if(commandNum == 3) {
+            graphics2D.drawString(">", textX - 20, textY);
+            if(gamePanel.keyHandler.enterPressed) {
+                subState = 2;
+                commandNum = 0;
+            }
+        }
+
+        //END GAME
+
+        textY += gamePanel.tileSize;
+        graphics2D.drawString("Quit Game", textX, textY);
+        if(commandNum == 4) {
+            graphics2D.drawString(">", textX - 20, textY);
+            if(gamePanel.keyHandler.enterPressed){
+                subState = 3;
+                commandNum = 0;
+            }
+        }
+        //BACK
+        textY += gamePanel.tileSize * 2;
+        graphics2D.drawString("Back", textX, textY);
+        if(commandNum == 5) {
+            graphics2D.drawString(">", textX - 20, textY);
+            if(gamePanel.keyHandler.enterPressed) {
+                gamePanel.gameState = gamePanel.playState;
+                commandNum = 0;
+            }
+        }
+
+        //FULL SCREEN CHECK BOX
+        textX = frameX + gamePanel.tileSize * 7;
+        textY = frameY + gamePanel.tileSize * 2 + 24;
+        graphics2D.setStroke(new BasicStroke(3));
+        graphics2D.drawRect(textX,textY,28,28);
+        if(gamePanel.fullScreenOn) {
+            graphics2D.fillRect(textX,textY,28,28);
+        }
+        //MUSIC VOLUME
+        textX = frameX + gamePanel.tileSize * 6 + 4;
+        textY += gamePanel.tileSize;
+        graphics2D.drawRect(textX - gamePanel.tileSize,textY,120, 24);
+        int volumeWidth = 24 * gamePanel.music.volumeScale;
+        graphics2D.fillRect(textX - gamePanel.tileSize,textY,volumeWidth,24);
+
+        //SE VOLUME
+        textY += gamePanel.tileSize;
+        graphics2D.drawRect(textX - gamePanel.tileSize,textY,120, 24);
+        volumeWidth = 24 * gamePanel.se.volumeScale;
+        graphics2D.fillRect(textX - gamePanel.tileSize,textY,volumeWidth,24);
+
+    }
+
+    public void options_fullScreenNotification(int frameX, int frameY) {
+
+        int textX = frameX + gamePanel.tileSize;
+        int textY = frameY + gamePanel. tileSize * 3;
+
+        currentDialogue = "The change will take \neffect after restarting \nthe game. ";
+
+        for(String line: currentDialogue.split("\n")) {
+            graphics2D.drawString(line,textX,textY);
+            textY += 40;
+        }
+
+        //BACK
+        textY = frameY + gamePanel.tileSize * 9;
+        graphics2D.drawString("Back", textX, textY);
+        if(commandNum == 0) {
+            graphics2D.drawString(">", textX - 25, textY);
+            if(gamePanel.keyHandler.enterPressed) {
+                subState = 0;
+            }
+        }
+    }
+
+    public void options_displayControls(int frameX, int frameY) {
+
+        int textX;
+        int textY;
+
+        //TITLE
+        String text = "Controls";
+        textX = getXforCenteredText(text);
+        textY = frameY + gamePanel.tileSize;
+        graphics2D.drawString(text, textX, textY);
+
+        textX = frameX + gamePanel.tileSize;
+        textY += gamePanel.tileSize;
+        graphics2D.drawString("Move", textX, textY);
+        textY += gamePanel.tileSize;
+        graphics2D.drawString("Confirm", textX, textY);
+        textY += gamePanel.tileSize;
+        graphics2D.drawString("Attack", textX, textY);
+        textY += gamePanel.tileSize;
+        graphics2D.drawString("Shoot", textX, textY);
+        textY += gamePanel.tileSize;
+        graphics2D.drawString("Character Screen", textX, textY);
+        textY += gamePanel.tileSize;
+        graphics2D.drawString("Pause", textX, textY);
+        textY += gamePanel.tileSize;
+        graphics2D.drawString("Options", textX, textY);
+        textY += gamePanel.tileSize;
+
+        textX = frameX + gamePanel.tileSize * 6;
+        textY = frameY + gamePanel.tileSize * 2;
+        graphics2D.drawString("WASD", textX, textY);
+        textY += gamePanel.tileSize;
+        graphics2D.drawString("ENTER", textX, textY);
+        textY += gamePanel.tileSize;
+        graphics2D.drawString("SPACE", textX, textY);
+        textY += gamePanel.tileSize;
+        graphics2D.drawString("F", textX, textY);
+        textY += gamePanel.tileSize;
+        graphics2D.drawString("C", textX, textY);
+        textY += gamePanel.tileSize;
+        graphics2D.drawString("P", textX, textY);
+        textY += gamePanel.tileSize;
+        graphics2D.drawString("ESC", textX, textY);
+        textY += gamePanel.tileSize;
+
+        //BACK
+        textX = frameX + gamePanel.tileSize;
+        textY = frameY + gamePanel.tileSize * 9;
+        graphics2D.drawString("Back", textX, textY);
+        if (commandNum == 0) {
+            graphics2D.drawString(">", textX - 25, textY);
+            if (gamePanel.keyHandler.enterPressed) {
+                subState = 0;
+                commandNum = 3;
+            }
+        }
+    }
+    public void options_quitGameConfirmation(int frameX,int frameY) {
+
+        int textX = frameX + gamePanel.tileSize;
+        int textY = frameY + gamePanel.tileSize * 3;
+
+        currentDialogue = "Quit the game and \nreturn to the title screen?";
+
+        for(String line: currentDialogue.split("\n")) {
+            graphics2D.drawString(line,textX,textY);
+            textY += 40;
+        }
+
+        //YES
+        String text = "Yes";
+        textX = getXforCenteredText(text);
+        textY += gamePanel.tileSize * 3;
+        graphics2D.drawString(text,textX,textY);
+        if(commandNum == 0) {
+            graphics2D.drawString(">", textX - 25, textY);
+            if(gamePanel.keyHandler.enterPressed) {
+                subState = 0;
+                gamePanel.gameState = gamePanel.titleState;
+            }
+        }
+        //NO
+        text = "No";
+        textX = getXforCenteredText(text);
+        textY += gamePanel.tileSize ;
+        graphics2D.drawString(text,textX,textY);
+        if(commandNum == 1) {
+            graphics2D.drawString(">", textX - 25, textY);
+            if(gamePanel.keyHandler.enterPressed) {
+                subState = 0;
+                commandNum = 4;
+            }
+        }
+    }
     public void drawInventory() {
         // FRAME
         int frameX = gamePanel.tileSize * 11;
