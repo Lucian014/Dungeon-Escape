@@ -1,6 +1,8 @@
 package game;
 
 import entity.NPC_Priest;
+import interactive_tile.IT_DryTree;
+import interactive_tile.InteractiveTile;
 import monster.MON_GreenSlime;
 import object.*;
 
@@ -82,6 +84,18 @@ public class AssetSetter {
         i++;
 
 
+    }
+
+    public void setInteractiveTile() {
+
+        int i = 0;
+        gamePanel.iTile[i] = new IT_DryTree(gamePanel,27,12);i++;
+        gamePanel.iTile[i] = new IT_DryTree(gamePanel,28,12);i++;
+        gamePanel.iTile[i] = new IT_DryTree(gamePanel,29,12);i++;
+        gamePanel.iTile[i] = new IT_DryTree(gamePanel,30,12);i++;
+        gamePanel.iTile[i] = new IT_DryTree(gamePanel,31,12);i++;
+        gamePanel.iTile[i] = new IT_DryTree(gamePanel,32,12);i++;
+        gamePanel.iTile[i] = new IT_DryTree(gamePanel,33,12);i++;
     }
 
 }

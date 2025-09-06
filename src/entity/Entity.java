@@ -222,6 +222,7 @@ public class Entity {
         gamePanel.checker.checkObject(this, false);
         gamePanel.checker.checkEntity(this,gamePanel.npc);
         gamePanel.checker.checkEntity(this,gamePanel.monster);
+        gamePanel.checker.checkEntity(this, gamePanel.iTile);
         boolean contactPlayer = gamePanel.checker.checkPlayer(this);
 
         if(this.type == type_monster && contactPlayer){
@@ -250,6 +251,11 @@ public class Entity {
             shotAvailableCounter++;
         }
     }
+
+    public Color getParticleColor() {return null;}
+    public int getParticleSize() {return 0;}
+    public int getParticleSpeed() {return 0;}
+    public int getParticleMaxLife() {return 0;}
 
     public void damagePlayer(int attack) {
         if(!gamePanel.player.invincible) {
@@ -283,6 +289,25 @@ public class Entity {
         if(dyingCounter > i * 8) {
             alive = false;
         }
+    }
+
+    public void generateParticle(Entity generator, Entity target) {
+
+        Color color = generator.getParticleColor();
+        int size = generator.getParticleSize();
+        int speed = generator.getParticleSpeed();
+        int maxLife = generator.getParticleMaxLife();
+
+        Particle particle1 = new Particle(gamePanel,generator,color,size,speed,maxLife, -2, -1);
+        Particle particle2 = new Particle(gamePanel,generator,color,size,speed,maxLife, 2, -1);
+        Particle particle3 = new Particle(gamePanel,generator,color,size,speed,maxLife, -2, 1);
+        Particle particle4 = new Particle(gamePanel,generator,color,size,speed,maxLife, 2, 1);
+
+        gamePanel.particleList.add(particle1);
+        gamePanel.particleList.add(particle2);
+        gamePanel.particleList.add(particle3);
+        gamePanel.particleList.add(particle4);
+
     }
 
     public void changeAlpha(Graphics2D graphics2D, float alphaValue) {
