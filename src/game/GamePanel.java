@@ -45,6 +45,7 @@ public class GamePanel extends JPanel implements Runnable{
     Sound sound = Sound.getInstance();
     public UI ui = new UI(this);
     public EventHandler eventHandler =  new EventHandler(this);
+    public Config config = new Config(this);
 
     //ENTITY AND OBJECT
     public Player player = new Player(this, keyHandler);
@@ -84,7 +85,9 @@ public class GamePanel extends JPanel implements Runnable{
         tempScreen = new BufferedImage(screenWidth,screenHeight,BufferedImage.TYPE_INT_ARGB);
         graphics2D = (Graphics2D) tempScreen.getGraphics();
 
-        // setFullScreen();
+        if(fullScreenOn){
+            setFullScreen();
+        }
     }
 
     public void setFullScreen() {

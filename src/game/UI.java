@@ -421,19 +421,22 @@
                 graphics2D.fillRect(textX, textY, 28, 28);
             }
 
-            //MUSIC VOLUME - FIXED: Use getMusicVolumeScale()
+            //MUSIC VOLUME
             textX = frameX + gamePanel.tileSize * 6 + 4;
             textY += gamePanel.tileSize;
             graphics2D.drawRect(textX - gamePanel.tileSize, textY, 120, 24);
             int musicVolumeWidth = 24 * gamePanel.sound.getMusicVolumeScale(); // Changed this line
             graphics2D.fillRect(textX - gamePanel.tileSize, textY, musicVolumeWidth, 24);
 
-            //SE VOLUME - FIXED: Use getSEVolumeScale()
+            //SE VOLUME
             textY += gamePanel.tileSize;
             graphics2D.drawRect(textX - gamePanel.tileSize, textY, 120, 24);
             int seVolumeWidth = 24 * gamePanel.sound.getSEVolumeScale(); // Changed this line
             graphics2D.fillRect(textX - gamePanel.tileSize, textY, seVolumeWidth, 24);
+
+            gamePanel.config.saveConfig();
         }
+
 
     public void options_fullScreenNotification(int frameX, int frameY) {
 
