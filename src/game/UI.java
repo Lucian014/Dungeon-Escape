@@ -53,6 +53,9 @@
         messageCounter.add(0);
     }
     public void draw(Graphics2D graphics2D) {
+
+
+
         this.graphics2D = graphics2D;
         graphics2D.setFont(maruMonica);
         graphics2D.setColor(Color.WHITE);
@@ -65,6 +68,8 @@
         if (gamePanel.gameState == gamePanel.playState) {
             drawPlayerLife();
             drawMessage();
+            drawFPS();
+
         }
         //DIALOGUE STATE
         if (gamePanel.gameState == gamePanel.dialogueState) {
@@ -318,7 +323,7 @@
         }
     public void drawInventory() {
         // FRAME
-        int frameX = gamePanel.tileSize * 9;
+        int frameX = gamePanel.tileSize * 11;
         int frameY = gamePanel.tileSize + 25;
         int frameWidth = gamePanel.tileSize * 6;
         int frameHeight = gamePanel.tileSize * 5;
@@ -329,7 +334,7 @@
         final int slotYstart = frameY + 25;
         int slotX = slotXstart;
         int slotY = slotYstart;
-        int slotSize = gamePanel.tileSize ; // Use consistent size
+        int slotSize = gamePanel.tileSize ;
 
         // Grid dimensions
         final int columns = 5;
@@ -470,4 +475,10 @@
         return x;
     }
 
+    public void drawFPS() {
+        graphics2D.setColor(Color.WHITE);
+        graphics2D.setFont(graphics2D.getFont().deriveFont(32F));
+        graphics2D.drawString("FPS: " + gamePanel.fpsCount, gamePanel.screenWidth - gamePanel.tileSize * 3, gamePanel.tileSize);
+
     }
+}

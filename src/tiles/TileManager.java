@@ -138,7 +138,8 @@ public class TileManager {
                     worldX - gamePanel.tileSize< gamePanel.player.worldX + gamePanel.player.screenX  &&
                     worldY + gamePanel.tileSize> gamePanel.player.worldY - gamePanel.player.screenY  &&
                     worldY - gamePanel.tileSize< gamePanel.player.worldY + gamePanel.player.screenY ){
-                g2.drawImage(tile[tileNum].image, screenX, screenY, null);
+                    g2.drawImage(tile[tileNum].image, screenX, screenY, null);
+
             }
             worldCol++;
 
