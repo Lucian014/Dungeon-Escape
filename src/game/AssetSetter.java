@@ -14,15 +14,15 @@ public class AssetSetter {
 
     public void setObject() {
         int i = 0;
-        gamePanel.object[i] = new OBJ_Key(gamePanel);
+        gamePanel.object[i] = new OBJ_Coin_Bronze(gamePanel);
         gamePanel.object[i].worldX = 25 * gamePanel.tileSize;
         gamePanel.object[i].worldY = 23 * gamePanel.tileSize;
         i++;
-        gamePanel.object[i] = new OBJ_Key(gamePanel);
+        gamePanel.object[i] = new OBJ_Coin_Bronze(gamePanel);
         gamePanel.object[i].worldX = 21 * gamePanel.tileSize;;
         gamePanel.object[i].worldY = 19 * gamePanel.tileSize;;
         i++;
-        gamePanel.object[i] = new OBJ_Key(gamePanel);
+        gamePanel.object[i] = new OBJ_Coin_Bronze(gamePanel);
         gamePanel.object[i].worldX = 26 * gamePanel.tileSize;;
         gamePanel.object[i].worldY = 21 * gamePanel.tileSize;;
         i++;
@@ -37,6 +37,14 @@ public class AssetSetter {
         gamePanel.object[i] = new OBJ_Potion_Red(gamePanel);
         gamePanel.object[i].worldX = 37 * gamePanel.tileSize;;
         gamePanel.object[i].worldY = 21 * gamePanel.tileSize;;
+        i++;
+        gamePanel.object[i] = new OBJ_Heart(gamePanel);
+        gamePanel.object[i].worldX = 22 * gamePanel.tileSize;;
+        gamePanel.object[i].worldY = 29 * gamePanel.tileSize;;
+        i++;
+        gamePanel.object[i] = new OBJ_ManaCrystal(gamePanel);
+        gamePanel.object[i].worldX = 22 * gamePanel.tileSize;;
+        gamePanel.object[i].worldY = 31 * gamePanel.tileSize;;
         i++;
     }
 

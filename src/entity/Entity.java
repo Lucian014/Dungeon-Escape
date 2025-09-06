@@ -62,7 +62,7 @@ public class Entity {
     public int defenseValue;
     public String description = "";
     public int useCost;
-
+    public int value;
     //TYPE
     public int type;
     public final int type_player = 0;
@@ -72,6 +72,7 @@ public class Entity {
     public final int type_axe = 4;
     public final int type_shield = 5;
     public final int type_consumable = 6;
+    public final int type_pickUpOnly = 7;
 
     public Entity(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
@@ -188,6 +189,21 @@ public class Entity {
 
     public void use(Entity entity) {}
 
+    public void checkDrop() {
+
+    }
+
+    public void dropItem(Entity droppedItem) {
+        for(int i = 0; i < gamePanel.object.length; i++) {
+            if(gamePanel.object[i] == null) {
+                gamePanel.object[i] = droppedItem;
+                gamePanel.object[i].worldX = worldX;
+                gamePanel.object[i].worldY = worldY;
+                break;
+            }
+        }
+    }
+
     public void update() {
 
         setAction();
@@ -268,6 +284,7 @@ public class Entity {
             alive = false;
         }
     }
+
     public void changeAlpha(Graphics2D graphics2D, float alphaValue) {
         graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValue));
     }

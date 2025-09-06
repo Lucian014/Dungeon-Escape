@@ -4,14 +4,15 @@ import entity.Entity;
 import game.GamePanel;
 
 public class OBJ_Potion_Red extends Entity {
+
     GamePanel gamePanel;
-    int value = 5;
 
     public OBJ_Potion_Red(GamePanel gamePanel) {
         super(gamePanel);
         this.gamePanel = gamePanel;
         type = type_consumable;
         name = "Red Potion";
+        value = 5;
         down1 = setup("items/potion_red",gamePanel.tileSize,gamePanel.tileSize);
         description = "[Red Potion]\nHeals you by " + value + " .";
     }
@@ -20,9 +21,6 @@ public class OBJ_Potion_Red extends Entity {
         gamePanel.gameState = gamePanel.dialogueState;
         gamePanel.ui.currentDialogue = "You drink the "+ name + " !\n" + "Your life has been recovered by " + value + " .";
         entity.life += value;
-        if(gamePanel.player.life > gamePanel.player.maxLife) {
-            gamePanel.player.life = gamePanel.player.maxLife;
-        }
         gamePanel.playSE(10);
     }
 }
