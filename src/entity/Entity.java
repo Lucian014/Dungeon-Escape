@@ -194,11 +194,11 @@ public class Entity {
     }
 
     public void dropItem(Entity droppedItem) {
-        for(int i = 0; i < gamePanel.object.length; i++) {
-            if(gamePanel.object[i] == null) {
-                gamePanel.object[i] = droppedItem;
-                gamePanel.object[i].worldX = worldX;
-                gamePanel.object[i].worldY = worldY;
+        for(int i = 0; i < gamePanel.object[1].length; i++) {
+            if(gamePanel.object[gamePanel.currentMap][i] == null) {
+                gamePanel.object[gamePanel.currentMap][i] = droppedItem;
+                gamePanel.object[gamePanel.currentMap][i].worldX = worldX;
+                gamePanel.object[gamePanel.currentMap][i].worldY = worldY;
                 break;
             }
         }

@@ -2,12 +2,14 @@ package game;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EventHandler {
     GamePanel gamePanel;
     Rectangle eventRect;
     int eventRectDefaultX, eventRectDefaultY;
-    ArrayList<Event> events;
+    Map<Integer, ArrayList<Event>> mapEvents; // Changed to store ArrayList of events per map
 
     public EventHandler(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
@@ -19,22 +21,33 @@ public class EventHandler {
         eventRect.height = 2;
         eventRectDefaultX = eventRect.x;
         eventRectDefaultY = eventRect.y;
-
-        events = new ArrayList<>();
+        mapEvents = new HashMap<>();
         setupEvents();
     }
 
     private void setupEvents() {
-        // PIT EVENT at col 27, row 15
-        events.add(new Event(27, 15, "right", this::damagePit, true));
-        // HEALING POOL at col 23, row 12
-        events.add(new Event(23, 12, "up", this::healingPool, true));
-        //TELEPORT at col 27 row 16
-        //events.add(new Event(27,15, "right", this::teleport, true));
+        // Create ArrayList for map 0 events
+        ArrayList<Event> map0Events = new ArrayList<>();
+        map0Events.add(new Event(0, 27, 16, "right", this::damagePit, true));
+        map0Events.add(new Event(0, 23, 12, "up", this::healingPool, true));
+        map0Events.add(new Event(0,10,39,"any", () -> teleport(1,12,13),true));
+        // Put the ArrayList in the map
+        mapEvents.put(0, map0Events);
+
+        // You can add events for other maps like this:
+        // ArrayList<Event> map1Events = new ArrayList<>();
+        // map1Events.add(new Event(1, 10, 10, "any", this::teleport, true));
+        // mapEvents.put(1, map1Events);
     }
 
     public void checkEvent() {
-        for (Event event : events) {
+        int currentMap = gamePanel.currentMap;
+
+        // Get events for the current map only
+        ArrayList<Event> currentMapEvents = mapEvents.get(currentMap);
+        if (currentMapEvents == null) return; // No events for this map
+
+        for (Event event : currentMapEvents) {
             boolean currentlyInArea = hit(event.col, event.row, event.reqDirection);
 
             if (currentlyInArea && !event.playerInArea) {
@@ -60,7 +73,7 @@ public class EventHandler {
         eventRect.y = eventRow * gamePanel.tileSize + eventRect.y;
 
         if(gamePanel.player.solidArea.intersects(eventRect)) {
-            if(gamePanel.player.direction.equals(reqDirection) || reqDirection.contentEquals("any")) {
+            if(gamePanel.player.direction.equals(reqDirection) || reqDirection.equals("any")) {
                 hit = true;
             }
         }
@@ -80,18 +93,18 @@ public class EventHandler {
     }
 
     public void healingPool() {
-            gamePanel.gameState = gamePanel.dialogueState;
-            gamePanel.ui.currentDialogue = "You drink the water.\nYour life has been recovered";
-            gamePanel.player.life = gamePanel.player.maxLife;
-            gamePanel.player.mana = gamePanel.player.maxMana;
-            gamePanel.assetSetter.setMonster();
+        gamePanel.gameState = gamePanel.dialogueState;
+        gamePanel.ui.currentDialogue = "You drink the water.\nYour life has been recovered";
+        gamePanel.player.life = gamePanel.player.maxLife;
+        gamePanel.player.mana = gamePanel.player.maxMana;
+        gamePanel.assetSetter.setMonster();
     }
 
-    public void teleport() {
-
+    public void teleport(int map, int col, int row) {
         gamePanel.gameState = gamePanel.dialogueState;
+        gamePanel.currentMap = map;
         gamePanel.ui.currentDialogue = "Teleport!";
-        gamePanel.player.worldX = gamePanel.tileSize * 37;
-        gamePanel.player.worldY = gamePanel.tileSize * 10;
+        gamePanel.player.worldX = gamePanel.tileSize * col;
+        gamePanel.player.worldY = gamePanel.tileSize * row;
     }
 }

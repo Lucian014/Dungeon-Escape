@@ -46,7 +46,7 @@
     public void setDefaultValues() {
 
         worldX = gamePanel.tileSize * 23;
-        worldY = gamePanel.tileSize * 21;
+        worldY = gamePanel.tileSize * 13;
         speed = 4;
         direction = "down";
 
@@ -341,23 +341,23 @@
         if(i != 999) {
 
             //PICKUP ONLY ITEMS
-            if(gamePanel.object[i].type == type_pickUpOnly) {
+            if(gamePanel.object[gamePanel.currentMap][i].type == type_pickUpOnly) {
 
-                gamePanel.object[i].use(this);
-                gamePanel.object[i] = null;
+                gamePanel.object[gamePanel.currentMap][i].use(this);
+                gamePanel.object[gamePanel.currentMap][i] = null;
             } else {
 
                 String text;
                 if(inventory.size() != maxInventorySize) {
-                    inventory.add(gamePanel.object[i]);
+                    inventory.add(gamePanel.object[gamePanel.currentMap][i]);
                     gamePanel.playSE(1);
-                    text = "Got a " + gamePanel.object[i].name + "!";
+                    text = "Got a " + gamePanel.object[gamePanel.currentMap][i].name + "!";
                 }
                 else {
                     text = "You cannot carry other stuff anymore!";
                 }
                 gamePanel.ui.addMessage(text);
-                gamePanel.object[i] = null;
+                gamePanel.object[gamePanel.currentMap][i] = null;
             }
             //INVENTORY ITEMS
 
@@ -369,7 +369,7 @@
         if(gamePanel.keyHandler.enterPressed){
         if(i != 999) {
                 gamePanel.gameState = gamePanel.dialogueState;
-                gamePanel.npc[i].speak();
+                gamePanel.npc[gamePanel.currentMap][i].speak();
             }
             gamePanel.keyHandler.enterPressed = false;
             } else {
@@ -474,9 +474,9 @@
     public void contactMonster(int i) {
 
         if(i != 999) {
-            if(!invincible && !gamePanel.monster[i].dying) {
+            if(!invincible && !gamePanel.monster[gamePanel.currentMap][i].dying) {
                 gamePanel.playSE(6);
-                int damage = gamePanel.monster[i].attack - defense;
+                int damage = gamePanel.monster[gamePanel.currentMap][i].attack - defense;
                 if(damage < 0) {
                     damage = 0;
                 }
@@ -488,21 +488,21 @@
 
     public void damageMonster(int monsterIndex, int attack) {
         if(monsterIndex != 999) {
-            if(!gamePanel.monster[monsterIndex].invincible) {
+            if(!gamePanel.monster[gamePanel.currentMap][monsterIndex].invincible) {
                 gamePanel.playSE(5);
-                int damage = attack - gamePanel.monster[monsterIndex].defense;
+                int damage = attack - gamePanel.monster[gamePanel.currentMap][monsterIndex].defense;
                 if(damage < 0) {
                     damage = 0;
                 }
-                gamePanel.monster[monsterIndex].life -= damage;
+                gamePanel.monster[gamePanel.currentMap][monsterIndex].life -= damage;
                 gamePanel.ui.addMessage(damage + " damage!");
-                gamePanel.monster[monsterIndex].invincible = true;
-                gamePanel.monster[monsterIndex].damageReaction();
-                if(gamePanel.monster[monsterIndex].life <= 0) {
-                    gamePanel.monster[monsterIndex].dying = true;
-                    gamePanel.ui.addMessage("You killed the " + gamePanel.monster[monsterIndex].name + " !" );
-                    gamePanel.ui.addMessage("Exp + " + gamePanel.monster[monsterIndex].exp + " !" );
-                    exp += gamePanel.monster[monsterIndex].exp;
+                gamePanel.monster[gamePanel.currentMap][monsterIndex].invincible = true;
+                gamePanel.monster[gamePanel.currentMap][monsterIndex].damageReaction();
+                if(gamePanel.monster[gamePanel.currentMap][monsterIndex].life <= 0) {
+                    gamePanel.monster[gamePanel.currentMap][monsterIndex].dying = true;
+                    gamePanel.ui.addMessage("You killed the " + gamePanel.monster[gamePanel.currentMap][monsterIndex].name + " !" );
+                    gamePanel.ui.addMessage("Exp + " + gamePanel.monster[gamePanel.currentMap][monsterIndex].exp + " !" );
+                    exp += gamePanel.monster[gamePanel.currentMap][monsterIndex].exp;
                     checkLevelUp();
                 }
             }
@@ -510,17 +510,17 @@
         }
     public void damageInteractiveTile(int i) {
 
-            if(i != 999 && gamePanel.iTile[i].destructible && !gamePanel.iTile[i].invincible && gamePanel.iTile[i].isCorrectItem(this)) {
+            if(i != 999 && gamePanel.iTile[gamePanel.currentMap][i].destructible && !gamePanel.iTile[gamePanel.currentMap][i].invincible && gamePanel.iTile[gamePanel.currentMap][i].isCorrectItem(this)) {
 
-                gamePanel.iTile[i].playSE();
-                gamePanel.iTile[i].life--;
-                gamePanel.iTile[i].invincible = true;
+                gamePanel.iTile[gamePanel.currentMap][i].playSE();
+                gamePanel.iTile[gamePanel.currentMap][i].life--;
+                gamePanel.iTile[gamePanel.currentMap][i].invincible = true;
 
                 //Generate particles
-                generateParticle(gamePanel.iTile[i], gamePanel.iTile[i]);
+                generateParticle(gamePanel.iTile[gamePanel.currentMap][i], gamePanel.iTile[gamePanel.currentMap][i]);
 
-                if(gamePanel.iTile[i].life == 0) {
-                    gamePanel.iTile[i] = gamePanel.iTile[i].getDestroyedForm();
+                if(gamePanel.iTile[gamePanel.currentMap][i].life == 0) {
+                    gamePanel.iTile[gamePanel.currentMap][i] = gamePanel.iTile[gamePanel.currentMap][i].getDestroyedForm();
                 }
             }
     }

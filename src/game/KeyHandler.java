@@ -87,6 +87,7 @@ public class KeyHandler implements KeyListener {
         if(code == KeyEvent.VK_ENTER) {
             enterPressed = true;
         }
+
         if(code == KeyEvent.VK_SPACE) {
             attackPressed = true;
         }
@@ -95,6 +96,12 @@ public class KeyHandler implements KeyListener {
                 showDebugText = true;
             } else if (showDebugText) {
                 showDebugText = false;
+            }
+        }
+        if(code == KeyEvent.VK_R) {
+            switch (gamePanel.currentMap) {
+                case 0: gamePanel.tileManager.loadMap("/maps/map.txt",0); break;
+                case 1: gamePanel.tileManager.loadMap("/maps/interior", 1); break;
             }
         }
         if(code == KeyEvent.VK_F) {
