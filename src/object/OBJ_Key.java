@@ -11,6 +11,6 @@ public class OBJ_Key extends Entity {
         name =  "Key";
         down1 = setup("items/key",1,1);
         description = "[" + name + "]\nIt opens chests or doors.";
-
+        price = 50;
     }
 }

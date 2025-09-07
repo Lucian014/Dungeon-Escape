@@ -1,5 +1,7 @@
 package game;
 
+import entity.Entity;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,16 +11,21 @@ public class EventHandler {
     GamePanel gamePanel;
     Rectangle eventRect;
     int eventRectDefaultX, eventRectDefaultY;
-    Map<Integer, ArrayList<Event>> mapEvents; // Changed to store ArrayList of events per map
+    Map<Integer, ArrayList<Event>> mapEvents;
+    private long lastTeleportTime = 0;
+    int tempMap,tempCol,tempRow;
+
+    // Debug visualization toggle
+    public boolean showEventDebug = false;
 
     public EventHandler(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
 
         eventRect = new Rectangle();
-        eventRect.x = 23;
-        eventRect.y = 23;
-        eventRect.width = 2;
-        eventRect.height = 2;
+        eventRect.x = 24;
+        eventRect.y = 15;
+        eventRect.width = 8;
+        eventRect.height = 8;
         eventRectDefaultX = eventRect.x;
         eventRectDefaultY = eventRect.y;
         mapEvents = new HashMap<>();
@@ -26,39 +33,158 @@ public class EventHandler {
     }
 
     private void setupEvents() {
-        // Create ArrayList for map 0 events
+        // MAP 0 EVENTS
         ArrayList<Event> map0Events = new ArrayList<>();
         map0Events.add(new Event(0, 27, 16, "right", this::damagePit, true));
         map0Events.add(new Event(0, 23, 12, "up", this::healingPool, true));
-        map0Events.add(new Event(0,10,39,"any", () -> teleport(1,12,13),true));
-        // Put the ArrayList in the map
+        map0Events.add(new Event(0, 10, 39, "any", () -> teleport(1, 12, 13), true));
+
         mapEvents.put(0, map0Events);
 
-        // You can add events for other maps like this:
-        // ArrayList<Event> map1Events = new ArrayList<>();
-        // map1Events.add(new Event(1, 10, 10, "any", this::teleport, true));
-        // mapEvents.put(1, map1Events);
+        // MAP 1 EVENTS
+        ArrayList<Event> map1Events = new ArrayList<>();
+        map1Events.add(new Event(1, 12, 13, "down", () -> teleport(0, 10, 39), true));
+        map1Events.add(new Event(1, 12, 9, "up",() -> speak(gamePanel.npc[1][0]),true));
+
+        mapEvents.put(1, map1Events);
+    }
+
+    // Method to draw event trigger areas for debugging
+    public void drawEventDebug(Graphics2D g2) {
+        if (!showEventDebug) return;
+
+        int currentMap = gamePanel.currentMap;
+        ArrayList<Event> currentMapEvents = mapEvents.get(currentMap);
+        if (currentMapEvents == null) return;
+
+        // Save original stroke and composite
+        Stroke originalStroke = g2.getStroke();
+        Composite originalComposite = g2.getComposite();
+
+        for (Event event : currentMapEvents) {
+            // Calculate screen position for this event
+            int worldX = event.col * gamePanel.tileSize;
+            int worldY = event.row * gamePanel.tileSize;
+
+            int screenX = worldX - gamePanel.player.worldX + gamePanel.player.screenX;
+            int screenY = worldY - gamePanel.player.worldY + gamePanel.player.screenY;
+
+            // Only draw if the event tile is visible on screen
+            if (screenX > -gamePanel.tileSize && screenX < gamePanel.screenWidth &&
+                    screenY > -gamePanel.tileSize && screenY < gamePanel.screenHeight) {
+
+                // Draw different colors for different event types
+                Color eventColor = getEventColor(event);
+
+                // Draw semi-transparent tile overlay
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
+                g2.setColor(eventColor);
+                g2.fillRect(screenX, screenY, gamePanel.tileSize, gamePanel.tileSize);
+
+                // Draw border
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f));
+                g2.setStroke(new BasicStroke(2));
+                g2.drawRect(screenX, screenY, gamePanel.tileSize, gamePanel.tileSize);
+
+                // Draw the actual event rectangle (the tiny trigger area)
+                g2.setColor(Color.RED);
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
+                int eventRectX = screenX + eventRectDefaultX;
+                int eventRectY = screenY + eventRectDefaultY;
+                g2.fillRect(eventRectX, eventRectY, eventRect.width, eventRect.height);
+
+                // Draw direction indicator
+                drawDirectionIndicator(g2, screenX, screenY, event.reqDirection, eventColor);
+
+                // Draw event info text
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+                g2.setColor(Color.WHITE);
+                g2.setFont(new Font("Arial", Font.BOLD, 10));
+                String eventInfo = "(" + event.col + "," + event.row + ")";
+                g2.drawString(eventInfo, screenX + 2, screenY + 12);
+                g2.drawString(event.reqDirection, screenX + 2, screenY + 24);
+            }
+        }
+
+        // Restore original graphics settings
+        g2.setStroke(originalStroke);
+        g2.setComposite(originalComposite);
+    }
+
+    private Color getEventColor(Event event) {
+        // Determine color based on event type (you can customize this)
+        if (event.action.toString().contains("teleport")) {
+            return Color.BLUE;
+        } else if (event.action.toString().contains("speak")) {
+            return Color.GREEN;
+        } else if (event.action.toString().contains("damagePit")) {
+            return Color.RED;
+        } else if (event.action.toString().contains("healingPool")) {
+            return Color.CYAN;
+        }
+        return Color.YELLOW; // Default color
+    }
+
+    private void drawDirectionIndicator(Graphics2D g2, int screenX, int screenY, String direction, Color color) {
+        g2.setColor(color);
+        g2.setStroke(new BasicStroke(3));
+
+        int centerX = screenX + gamePanel.tileSize / 2;
+        int centerY = screenY + gamePanel.tileSize / 2;
+        int arrowSize = 8;
+
+        switch (direction.toLowerCase()) {
+            case "up":
+                g2.drawLine(centerX, centerY - arrowSize, centerX, centerY + arrowSize);
+                g2.drawLine(centerX, centerY - arrowSize, centerX - 4, centerY - arrowSize + 4);
+                g2.drawLine(centerX, centerY - arrowSize, centerX + 4, centerY - arrowSize + 4);
+                break;
+            case "down":
+                g2.drawLine(centerX, centerY - arrowSize, centerX, centerY + arrowSize);
+                g2.drawLine(centerX, centerY + arrowSize, centerX - 4, centerY + arrowSize - 4);
+                g2.drawLine(centerX, centerY + arrowSize, centerX + 4, centerY + arrowSize - 4);
+                break;
+            case "left":
+                g2.drawLine(centerX - arrowSize, centerY, centerX + arrowSize, centerY);
+                g2.drawLine(centerX - arrowSize, centerY, centerX - arrowSize + 4, centerY - 4);
+                g2.drawLine(centerX - arrowSize, centerY, centerX - arrowSize + 4, centerY + 4);
+                break;
+            case "right":
+                g2.drawLine(centerX - arrowSize, centerY, centerX + arrowSize, centerY);
+                g2.drawLine(centerX + arrowSize, centerY, centerX + arrowSize - 4, centerY - 4);
+                g2.drawLine(centerX + arrowSize, centerY, centerX + arrowSize - 4, centerY + 4);
+                break;
+            case "any":
+                // Draw a circle for "any" direction
+                g2.drawOval(centerX - arrowSize/2, centerY - arrowSize/2, arrowSize, arrowSize);
+                break;
+        }
+    }
+
+    // Toggle method for debugging (call this when you press a debug key)
+    public void toggleEventDebug() {
+        showEventDebug = !showEventDebug;
+        System.out.println("Event debug visualization: " + (showEventDebug ? "ON" : "OFF"));
     }
 
     public void checkEvent() {
         int currentMap = gamePanel.currentMap;
-
-        // Get events for the current map only
         ArrayList<Event> currentMapEvents = mapEvents.get(currentMap);
-        if (currentMapEvents == null) return; // No events for this map
+        if (currentMapEvents == null) return;
 
         for (Event event : currentMapEvents) {
             boolean currentlyInArea = hit(event.col, event.row, event.reqDirection);
 
             if (currentlyInArea && !event.playerInArea) {
-                // Player just entered the event area
                 event.playerInArea = true;
-                if (!event.hasBeenTriggered || event.canRetrigger) {
+                long TELEPORT_COOLDOWN = 1000;
+                if ((!event.hasBeenTriggered || event.canRetrigger) &&
+                        System.currentTimeMillis() - lastTeleportTime > TELEPORT_COOLDOWN) {
                     event.action.run();
                     event.hasBeenTriggered = true;
+                    lastTeleportTime = System.currentTimeMillis();
                 }
             } else if (!currentlyInArea && event.playerInArea) {
-                // Player just left the event area
                 event.playerInArea = false;
             }
         }
@@ -101,10 +227,16 @@ public class EventHandler {
     }
 
     public void teleport(int map, int col, int row) {
-        gamePanel.gameState = gamePanel.dialogueState;
-        gamePanel.currentMap = map;
-        gamePanel.ui.currentDialogue = "Teleport!";
-        gamePanel.player.worldX = gamePanel.tileSize * col;
-        gamePanel.player.worldY = gamePanel.tileSize * row;
+        gamePanel.gameState = gamePanel.transitionState;
+        tempMap = map;
+        tempCol = col;
+        tempRow = row;
+        gamePanel.sound.playSoundEffect(14);
+    }
+
+    public void speak(Entity entity) {
+            gamePanel.gameState = gamePanel.dialogueState;
+            entity.speak();
+
     }
 }

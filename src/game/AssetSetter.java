@@ -2,6 +2,7 @@ package game;
 
 import entity.Entity;
 import entity.NPC_Priest;
+import entity.NPC_merchant;
 import interactive_tile.IT_DryTree;
 import interactive_tile.InteractiveTile;
 import monster.MON_GreenSlime;
@@ -67,7 +68,7 @@ public class AssetSetter {
 
         //MAP 2 NPCS
         mapNum = 1;
-        gamePanel.npc[mapNum][0] = createEntity(NPC_Priest.class, 21, 7);
+        gamePanel.npc[mapNum][0] = createEntity(NPC_merchant.class, 12, 7);
 
     }
 

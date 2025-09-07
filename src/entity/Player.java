@@ -20,8 +20,6 @@
     public final int screenY;
     int standCounter = 0;
     public boolean attackCanceled = false;
-    public ArrayList<Entity> inventory = new ArrayList<>();
-    int maxInventorySize = 20;
     public Player(GamePanel gamePanel, KeyHandler keyHandler) {
 
         super(gamePanel);
@@ -42,14 +40,12 @@
         getPlayerAttackImage();
         setItems();
     }
-
     public void setDefaultValues() {
 
-        worldX = gamePanel.tileSize * 23;
-        worldY = gamePanel.tileSize * 13;
+        worldX = gamePanel.tileSize * 13;
+        worldY = gamePanel.tileSize * 41;
         speed = 4;
         direction = "down";
-
         //PLAYER STATUS
         maxLife = 6; // 2 lives = 1 heart
         life = maxLife;
@@ -60,7 +56,7 @@
         dexterity = 1; // The greater the dex, the less damage he receives.
         exp = 0;
         nextLevelExp = 5;
-        coin = 0;
+        coin = 1000;
         currentWeapon = new OBJ_Sword_Normal(gamePanel);
         currentShield = new OBJ_Shield_Wood(gamePanel);
         projectile = new OBJ_Fireball(gamePanel);
@@ -366,18 +362,11 @@
     }
 
     public void interactNPC(int i) {
-        if(gamePanel.keyHandler.enterPressed){
-        if(i != 999) {
-                gamePanel.gameState = gamePanel.dialogueState;
-                gamePanel.npc[gamePanel.currentMap][i].speak();
-            }
-            gamePanel.keyHandler.enterPressed = false;
-            } else {
-            gamePanel.playSE(7);
-            attacking = true;
+        if (i != 999) {
+            gamePanel.gameState = gamePanel.dialogueState;
+            gamePanel.npc[gamePanel.currentMap][i].speak();
         }
     }
-
 
     public void draw(Graphics2D g2){
 
@@ -446,7 +435,7 @@
     }
     public void selectItem() {
 
-        int itemIndex = gamePanel.ui.getItemIndexOnSlot();
+        int itemIndex = gamePanel.ui.getItemIndexOnSlot(gamePanel.ui.playerSlotCol,gamePanel.ui.playerSlotRow);
 
         if(itemIndex < inventory.size()) {
 
