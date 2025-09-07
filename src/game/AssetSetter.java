@@ -46,41 +46,51 @@ public class AssetSetter {
 
     public void setObject() {
         int i = 0;
-
+        int mapNum = 0;
         // Using the parameterized factory - much cleaner!
-        gamePanel.object[i++] = createEntity(OBJ_Coin_Bronze.class, 25, 23);
-        gamePanel.object[i++] = createEntity(OBJ_Coin_Bronze.class, 21, 19);
-        gamePanel.object[i++] = createEntity(OBJ_Coin_Bronze.class, 26, 21);
-        gamePanel.object[i++] = createEntity(OBJ_Axe.class, 33, 21);
-        gamePanel.object[i++] = createEntity(OBJ_Shield_Blue.class, 35, 21);
-        gamePanel.object[i++] = createEntity(OBJ_Potion_Red.class, 37, 21);
-        gamePanel.object[i++] = createEntity(OBJ_Heart.class,22,29);
-        gamePanel.object[i++] = createEntity(OBJ_ManaCrystal.class,22,31);
+        gamePanel.object[mapNum][i++] = createEntity(OBJ_Coin_Bronze.class, 25, 23);
+        gamePanel.object[mapNum][i++] = createEntity(OBJ_Coin_Bronze.class, 21, 19);
+        gamePanel.object[mapNum][i++] = createEntity(OBJ_Coin_Bronze.class, 26, 21);
+        gamePanel.object[mapNum][i++] = createEntity(OBJ_Axe.class, 33, 21);
+        gamePanel.object[mapNum][i++] = createEntity(OBJ_Shield_Blue.class, 35, 21);
+        gamePanel.object[mapNum][i++] = createEntity(OBJ_Potion_Red.class, 37, 21);
+        gamePanel.object[mapNum][i++] = createEntity(OBJ_Heart.class,22,29);
+        gamePanel.object[mapNum][i++] = createEntity(OBJ_ManaCrystal.class,22,31);
 
     }
 
     public void setNPC() {
-        gamePanel.npc[0] = createEntity(NPC_Priest.class, 21, 21);
+        int mapNum = 0;
+
+        //MAP 1 NPCs
+        gamePanel.npc[mapNum][0] = createEntity(NPC_Priest.class, 21, 21);
+
+        //MAP 2 NPCS
+        mapNum = 1;
+        gamePanel.npc[mapNum][0] = createEntity(NPC_Priest.class, 21, 7);
+
     }
 
     public void setMonster() {
         int i = 0;
-        gamePanel.monster[i++] = createEntity(MON_GreenSlime.class, 23, 16);
-        gamePanel.monster[i++] = createEntity(MON_GreenSlime.class, 24, 37);
-        gamePanel.monster[i++] = createEntity(MON_GreenSlime.class, 21, 38);
-        gamePanel.monster[i++] = createEntity(MON_GreenSlime.class, 34, 42);
-        gamePanel.monster[i++] = createEntity(MON_GreenSlime.class, 38, 42);
+        int mapNum = 0;
+        gamePanel.monster[mapNum][i++] = createEntity(MON_GreenSlime.class, 23, 16);
+        gamePanel.monster[mapNum][i++] = createEntity(MON_GreenSlime.class, 24, 37);
+        gamePanel.monster[mapNum][i++] = createEntity(MON_GreenSlime.class, 21, 38);
+        gamePanel.monster[mapNum][i++] = createEntity(MON_GreenSlime.class, 34, 42);
+        gamePanel.monster[mapNum][i++] = createEntity(MON_GreenSlime.class, 38, 42);
     }
 
     public void setInteractiveTile() {
         int i = 0;
+        int mapNum = 0;
         // Using the special interactive tile factory
-        gamePanel.iTile[i++] = createInteractiveTile(IT_DryTree.class,27, 12);
-        gamePanel.iTile[i++] = createInteractiveTile(IT_DryTree.class,28, 12);
-        gamePanel.iTile[i++] = createInteractiveTile(IT_DryTree.class,29, 12);
-        gamePanel.iTile[i++] = createInteractiveTile(IT_DryTree.class,31, 21);
-        gamePanel.iTile[i++] = createInteractiveTile(IT_DryTree.class,31, 12);
-        gamePanel.iTile[i++] = createInteractiveTile(IT_DryTree.class,32, 12);
-        gamePanel.iTile[i++] = createInteractiveTile(IT_DryTree.class,33, 12);
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DryTree.class,27, 12);
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DryTree.class,28, 12);
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DryTree.class,29, 12);
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DryTree.class,31, 21);
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DryTree.class,31, 12);
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DryTree.class,32, 12);
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DryTree.class,33, 12);
     }
 }

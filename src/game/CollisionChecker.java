@@ -28,15 +28,15 @@ public class CollisionChecker {
 
         // Check vertical collision
         if (dy < 0) { // moving up
-            tileNum1 = gamePanel.tileManager.mapTileNum[leftCol][topRow];
-            tileNum2 = gamePanel.tileManager.mapTileNum[rightCol][topRow];
+            tileNum1 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][leftCol][topRow];
+            tileNum2 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][rightCol][topRow];
             if (gamePanel.tileManager.tile[tileNum1].collision || gamePanel.tileManager.tile[tileNum2].collision) {
                 entity.collisionOn = true;
             }
         }
         if (dy > 0) { // moving down
-            tileNum1 = gamePanel.tileManager.mapTileNum[leftCol][bottomRow];
-            tileNum2 = gamePanel.tileManager.mapTileNum[rightCol][bottomRow];
+            tileNum1 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][leftCol][bottomRow];
+            tileNum2 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][rightCol][bottomRow];
             if (gamePanel.tileManager.tile[tileNum1].collision || gamePanel.tileManager.tile[tileNum2].collision) {
                 entity.collisionOn = true;
             }
@@ -44,15 +44,15 @@ public class CollisionChecker {
 
         // Check horizontal collision
         if (dx < 0) { // moving left
-            tileNum1 = gamePanel.tileManager.mapTileNum[leftCol][topRow];
-            tileNum2 = gamePanel.tileManager.mapTileNum[leftCol][bottomRow];
+            tileNum1 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][leftCol][topRow];
+            tileNum2 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][leftCol][bottomRow];
             if (gamePanel.tileManager.tile[tileNum1].collision || gamePanel.tileManager.tile[tileNum2].collision) {
                 entity.collisionOn = true;
             }
         }
         if (dx > 0) { // moving right
-            tileNum1 = gamePanel.tileManager.mapTileNum[rightCol][topRow];
-            tileNum2 = gamePanel.tileManager.mapTileNum[rightCol][bottomRow];
+            tileNum1 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][rightCol][topRow];
+            tileNum2 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][rightCol][bottomRow];
             if (gamePanel.tileManager.tile[tileNum1].collision || gamePanel.tileManager.tile[tileNum2].collision) {
                 entity.collisionOn = true;
             }
@@ -61,22 +61,22 @@ public class CollisionChecker {
     public int checkObject(Entity entity, boolean player) {
         int index = 999;
 
-        for (int i = 0; i < gamePanel.object.length; i++) {
-            if (gamePanel.object[i] != null) {
+        for (int i = 0; i < gamePanel.object[1].length; i++) {
+            if (gamePanel.object[gamePanel.currentMap][i] != null) {
 
                 // Backup entity solid area
                 int entitySolidX = entity.solidArea.x;
                 int entitySolidY = entity.solidArea.y;
 
                 // Backup object solid area
-                int objectSolidX = gamePanel.object[i].solidArea.x;
-                int objectSolidY = gamePanel.object[i].solidArea.y;
+                int objectSolidX = gamePanel.object[gamePanel.currentMap][i].solidArea.x;
+                int objectSolidY = gamePanel.object[gamePanel.currentMap][i].solidArea.y;
 
                 // Get positions in world
                 entity.solidArea.x = entity.worldX + entity.solidAreaDefaultX;
                 entity.solidArea.y = entity.worldY + entity.solidAreaDefaultY;
-                gamePanel.object[i].solidArea.x = gamePanel.object[i].worldX + gamePanel.object[i].solidAreaDefaultX;
-                gamePanel.object[i].solidArea.y = gamePanel.object[i].worldY + gamePanel.object[i].solidAreaDefaultY;
+                gamePanel.object[gamePanel.currentMap][i].solidArea.x = gamePanel.object[gamePanel.currentMap][i].worldX + gamePanel.object[gamePanel.currentMap][i].solidAreaDefaultX;
+                gamePanel.object[gamePanel.currentMap][i].solidArea.y = gamePanel.object[gamePanel.currentMap][i].worldY + gamePanel.object[gamePanel.currentMap][i].solidAreaDefaultY;
 
                 // Simulate movement
                 switch (entity.direction) {
@@ -86,8 +86,8 @@ public class CollisionChecker {
                     case "right": entity.solidArea.x += entity.speed; break;
                 }
 
-                if (entity.solidArea.intersects(gamePanel.object[i].solidArea)) {
-                    if (gamePanel.object[i].collision) {
+                if (entity.solidArea.intersects(gamePanel.object[gamePanel.currentMap][i].solidArea)) {
+                    if (gamePanel.object[gamePanel.currentMap][i].collision) {
                         entity.collisionOn = true;
                     }
                     if (player) {
@@ -98,14 +98,14 @@ public class CollisionChecker {
                 // Reset solid areas
                 entity.solidArea.x = entitySolidX;
                 entity.solidArea.y = entitySolidY;
-                gamePanel.object[i].solidArea.x = objectSolidX;
-                gamePanel.object[i].solidArea.y = objectSolidY;
+                gamePanel.object[gamePanel.currentMap][i].solidArea.x = objectSolidX;
+                gamePanel.object[gamePanel.currentMap][i].solidArea.y = objectSolidY;
             }
         }
         return index;
     }
     //NPC OR MONSTER
-    public int checkEntity(Entity entity, Entity[] target) {
+    public int checkEntity(Entity entity, Entity[][] target) {
         int index = 999;
 
         // Store original solid area positions
@@ -124,13 +124,13 @@ public class CollisionChecker {
             case "right": entityArea.x += entity.speed; break;
         }
 
-        for (int i = 0; i < target.length; i++) {
-            if (target[i] != null && target[i] != entity) {
-                int targetLeftWorldX = target[i].worldX + target[i].solidAreaDefaultX;
-                int targetTopWorldY = target[i].worldY + target[i].solidAreaDefaultY;
+        for (int i = 0; i < target[1].length; i++) {
+            if (target[gamePanel.currentMap][i] != null && target[gamePanel.currentMap][i] != entity) {
+                int targetLeftWorldX = target[gamePanel.currentMap][i].worldX + target[gamePanel.currentMap][i].solidAreaDefaultX;
+                int targetTopWorldY = target[gamePanel.currentMap][i].worldY + target[gamePanel.currentMap][i].solidAreaDefaultY;
 
                 Rectangle targetArea = new Rectangle(targetLeftWorldX, targetTopWorldY,
-                        target[i].solidArea.width, target[i].solidArea.height);
+                        target[gamePanel.currentMap][i].solidArea.width, target[gamePanel.currentMap][i].solidArea.height);
 
                 if (entityArea.intersects(targetArea)) {
                     entity.collisionOn = true;

@@ -8,8 +8,10 @@ public class Event {
     public boolean canRetrigger;
     public boolean hasBeenTriggered;
     public boolean playerInArea;
+    public int mapId;
 
-    public Event(int col, int row, String reqDirection, Runnable action, boolean canRetrigger) {
+    public Event(int mapId,int col, int row, String reqDirection, Runnable action, boolean canRetrigger) {
+        this.mapId = mapId;
         this.col = col;
         this.row = row;
         this.reqDirection = reqDirection;
