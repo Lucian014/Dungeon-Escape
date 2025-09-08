@@ -49,38 +49,48 @@ public class MON_GreenSlime extends Entity {
     public void setAction() {
 
         actionLockCounter++;
+        if(onPath) {
+            int goalCol = (gamePanel.player.worldX + gamePanel.player.solidArea.x )/ gamePanel.tileSize;
+            int goalRow = (gamePanel.player.worldY + gamePanel.player.solidArea.y ) / gamePanel.tileSize;
 
-        if(actionLockCounter == 80){
-            Random random = new Random();
-            int i = random.nextInt(100) + 1;
-            if (i <= 25) {
-                direction = "up";
+            searchPath(goalCol,goalRow);
+
+            int i = new Random().nextInt(200) + 1;
+            if(i > 196 && !projectile.alive && shotAvailableCounter >= 30) {
+                projectile.set(worldX,worldY,direction,true,this);
+                gamePanel.projectileList.add(projectile);
+                shotAvailableCounter = 0;
             }
-            if(i > 25 && i <= 50) {
-                direction = "down";
+            if(shotAvailableCounter < 30) {
+                shotAvailableCounter++;
             }
-            if(i > 50 && i <= 75) {
-                direction = "left";
+        } else {
+
+            if(actionLockCounter == 80){
+                Random random = new Random();
+                int i = random.nextInt(100) + 1;
+                if (i <= 25) {
+                    direction = "up";
+                }
+                if(i > 25 && i <= 50) {
+                    direction = "down";
+                }
+                if(i > 50 && i <= 75) {
+                    direction = "left";
+                }
+                if(i > 75) {
+                    direction = "right";
+                }
+                actionLockCounter = 0;
             }
-            if(i > 75) {
-                direction = "right";
-            }
-            actionLockCounter = 0;
         }
-        int i = new Random().nextInt(100) + 1;
-        if(i > 99 && !projectile.alive && shotAvailableCounter >= 30) {
-            projectile.set(worldX,worldY,direction,true,this);
-            gamePanel.projectileList.add(projectile);
-            shotAvailableCounter = 0;
-        }
-        if(shotAvailableCounter < 30) {
-            shotAvailableCounter++;
-        }
+
+
     }
     public void damageReaction() {
 
         actionLockCounter = 0;
-        direction = gamePanel.player.direction;
+        onPath = true;
     }
 
     public void checkDrop() {

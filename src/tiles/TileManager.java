@@ -16,7 +16,7 @@ public class TileManager {
     GamePanel gamePanel;
     public Tile[] tile;
     public int[][][] mapTileNum;
-
+    boolean drawPath = true;
     public TileManager(GamePanel gamePanel){
         this.gamePanel = gamePanel;
         tile = new Tile[100];
@@ -125,8 +125,6 @@ public class TileManager {
 
         int worldCol = 0;
         int worldRow = 0;
-
-
         while(worldCol < gamePanel.maxWorldCol && worldRow < gamePanel.maxWorldRow){
 
             int tileNum = mapTileNum[gamePanel.currentMap][worldCol][worldRow];
@@ -140,8 +138,8 @@ public class TileManager {
                     worldX - gamePanel.tileSize< gamePanel.player.worldX + gamePanel.player.screenX  &&
                     worldY + gamePanel.tileSize> gamePanel.player.worldY - gamePanel.player.screenY  &&
                     worldY - gamePanel.tileSize< gamePanel.player.worldY + gamePanel.player.screenY ){
-                    g2.drawImage(tile[tileNum].image, screenX, screenY, null);
 
+                    g2.drawImage(tile[tileNum].image, screenX, screenY, null);
             }
             worldCol++;
 
@@ -150,6 +148,18 @@ public class TileManager {
                 worldRow++;
             }
         }
+        if(drawPath) {
+            g2.setColor(new Color(255, 0, 0,70));
 
+            for(int i = 0; i < gamePanel.pathFinder.pathList.size(); i++) {
+
+                int worldX = gamePanel.pathFinder.pathList.get(i).col * gamePanel.tileSize;
+                int worldY = gamePanel.pathFinder.pathList.get(i).row * gamePanel.tileSize;
+                int screenX = worldX - gamePanel.player.worldX + gamePanel.player.screenX;
+                int screenY = worldY - gamePanel.player.worldY + gamePanel.player.screenY;
+
+                g2.fillRect(screenX, screenY, gamePanel.tileSize, gamePanel.tileSize);
+            }
+        }
     }
 }
