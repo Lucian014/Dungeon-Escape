@@ -468,6 +468,24 @@
             // Draw item image with proper scaling
             if (item != null && item.down1 != null) {
                 graphics2D.drawImage(item.down1, slotX, slotY, slotSize, slotSize, null);
+
+                if(item.amount > 1 && entity == gamePanel.player) {
+                    graphics2D.setFont(graphics2D.getFont().deriveFont(Font.BOLD, 32F));
+                    int amountX;
+                    int amountY;
+
+                    String s = "" + item.amount;
+                    amountX = getXforAllignToRight(s, slotX + 44);
+                    amountY = slotY + gamePanel.tileSize;
+
+                    //SHADOW
+                    graphics2D.setColor(new Color(60,60,60));
+                    graphics2D.drawString(s, amountX, amountY);
+
+                    //NUMBER
+                    graphics2D.setColor(Color.WHITE);
+                    graphics2D.drawString(s, amountX - 3, amountY - 3);
+                }
             } else {
                 // Draw an empty slot or debug indicator
                 graphics2D.setColor(Color.GRAY);
@@ -893,19 +911,16 @@
                         currentDialogue = "You need " + coinDifference + " more coins to buy the " + npc.inventory.get(itemIndex).name;
                         drawDialogueScreen();
                     }
-                    // Check if inventory is full (use else if to prevent both conditions executing)
-                    else if(gamePanel.player.inventory.size() >= gamePanel.player.maxInventorySize) {
-                        subState = 0;
-                        gamePanel.gameState = gamePanel.dialogueState;
-                        currentDialogue = "You cannot carry any more stuff!";
-                        drawDialogueScreen();
-                    }
-                    // If both checks pass, complete the purchase
                     else {
-                        gamePanel.player.coin -= price;  // Use the price variable consistently
-                        gamePanel.player.inventory.add(npc.inventory.get(itemIndex));
+                        if(gamePanel.player.canObtainItem(npc.inventory.get(itemIndex))) {
+                            gamePanel.player.coin -= npc.inventory.get(itemIndex).price;
+                        }
+                        else {
+                            subState = 0;
+                            gamePanel.gameState = gamePanel.dialogueState;
+                            currentDialogue = "You cannot carry any more stuff!";
+                        }
                     }
-
                     // Reset enter key to prevent multiple purchases
                     gamePanel.keyHandler.enterPressed = false;
                 }
@@ -952,7 +967,7 @@
                     // Check if item is equipped
                     if(gamePanel.player.inventory.get(itemIndex) == gamePanel.player.currentWeapon ||
                             gamePanel.player.inventory.get(itemIndex) == gamePanel.player.currentShield) {
-                        subState = 0;  // ✅ FIXED: Added missing subState reset
+                        subState = 0;
                         commandNum = 0;
                         gamePanel.gameState = gamePanel.dialogueState;
                         currentDialogue = "You cannot sell an equipped item";
@@ -960,7 +975,12 @@
                     }
                     // If not equipped, complete the sale
                     else {
-                        gamePanel.player.inventory.remove(itemIndex);
+                        if(gamePanel.player.inventory.get(itemIndex).amount > 1) {
+                            gamePanel.player.inventory.get(itemIndex).amount--;
+                        }
+                        else {
+                            gamePanel.player.inventory.remove(itemIndex);
+                        }
                         gamePanel.player.coin += price;  // Use consistent price variable
                     }
 
