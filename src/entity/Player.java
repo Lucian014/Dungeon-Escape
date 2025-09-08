@@ -314,7 +314,7 @@
 
             // Check monster collision
             int monsterIndex = gamePanel.checker.checkEntity(this, gamePanel.monster);
-            damageMonster(monsterIndex, attack,currentWeapon.knockBackPower);
+            damageMonster(monsterIndex, attack,currentWeapon.knockBackPower, direction);
 
             int iTileIndex = gamePanel.checker.checkEntity(this, gamePanel.iTile);
             damageInteractiveTile(iTileIndex);
@@ -480,12 +480,12 @@
         }
     }
 
-    public void damageMonster(int monsterIndex, int attack, int knockBackPower) {
+    public void damageMonster(int monsterIndex, int attack, int knockBackPower,String direction) {
         if(monsterIndex != 999) {
             if(!gamePanel.monster[gamePanel.currentMap][monsterIndex].invincible) {
                 gamePanel.playSE(5);
                 if(knockBackPower > 0) {
-                    knockBack(gamePanel.monster[gamePanel.currentMap][monsterIndex],knockBackPower);
+                    knockBack(gamePanel.monster[gamePanel.currentMap][monsterIndex],knockBackPower,direction);
                 }
                 int damage = attack - gamePanel.monster[gamePanel.currentMap][monsterIndex].defense;
                 if(damage < 0) {
@@ -506,7 +506,7 @@
         }
     }
 
-    public void knockBack(Entity entity, int knockBackPower) {
+    public void knockBack(Entity entity, int knockBackPower, String direction) {
 
         entity.direction = direction;
         entity.speed += knockBackPower;

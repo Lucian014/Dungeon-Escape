@@ -242,7 +242,7 @@ public class Entity {
                 speed = defaultSpeed;
             }
             else if (!collision) {
-                switch (gamePanel.player.direction) {
+                switch (direction) {
                     case "up":    worldY -= speed; break;
                     case "down":  worldY += speed; break;
                     case "left":  worldX -= speed; break;
