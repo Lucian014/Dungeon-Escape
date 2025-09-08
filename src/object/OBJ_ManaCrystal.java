@@ -18,10 +18,11 @@ public class OBJ_ManaCrystal extends Entity {
         image2 = setup("items/manacrystal_blank",gamePanel.tileSize,gamePanel.tileSize);
     }
 
-    public void use(Entity entity) {
+    public boolean use(Entity entity) {
 
         gamePanel.playSE(1);
         gamePanel.ui.addMessage("Mana +" + value);
         entity.mana += value;
+        return true;
     }
 }

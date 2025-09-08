@@ -18,8 +18,37 @@ public class AssetSetter {
         this.gamePanel = gamePanel;
     }
 
-    private <T extends Entity> T createEntity(Class<T> entityClass, int worldX, int worldY) {
+    private <T extends Entity> T createEntity(Class<T> entityClass, int worldX, int worldY, Object... params) {
         try {
+            // Handle OBJ_Chest specifically
+            if (entityClass == OBJ_Chest.class && params.length > 0 && params[0] instanceof Entity) {
+                OBJ_Chest chest = new OBJ_Chest(gamePanel, (Entity) params[0]);
+                chest.worldX = worldX * gamePanel.tileSize;
+                chest.worldY = worldY * gamePanel.tileSize;
+                return entityClass.cast(chest);
+            }
+
+            // For other entities with parameters
+            if (params.length > 0) {
+                Class<?>[] paramTypes = new Class<?>[params.length + 1];
+                paramTypes[0] = GamePanel.class;
+                for (int i = 0; i < params.length; i++) {
+                    paramTypes[i + 1] = params[i].getClass();
+                }
+
+                Constructor<T> constructor = entityClass.getConstructor(paramTypes);
+
+                Object[] allParams = new Object[params.length + 1];
+                allParams[0] = gamePanel;
+                System.arraycopy(params, 0, allParams, 1, params.length);
+
+                T entity = constructor.newInstance(allParams);
+                entity.worldX = worldX * gamePanel.tileSize;
+                entity.worldY = worldY * gamePanel.tileSize;
+                return entity;
+            }
+
+            // For entities without parameters
             Constructor<T> constructor = entityClass.getConstructor(GamePanel.class);
             T entity = constructor.newInstance(gamePanel);
             entity.worldX = worldX * gamePanel.tileSize;
@@ -31,7 +60,6 @@ public class AssetSetter {
             return null;
         }
     }
-
     private <T extends InteractiveTile> T createInteractiveTile(Class<T> tileClass, int col, int row) {
         try {
             Constructor<T> constructor = tileClass.getConstructor(
@@ -48,7 +76,6 @@ public class AssetSetter {
     public void setObject() {
         int i = 0;
         int mapNum = 0;
-        // Using the parameterized factory - much cleaner!
         gamePanel.object[mapNum][i++] = createEntity(OBJ_Coin_Bronze.class, 25, 23);
         gamePanel.object[mapNum][i++] = createEntity(OBJ_Coin_Bronze.class, 21, 19);
         gamePanel.object[mapNum][i++] = createEntity(OBJ_Coin_Bronze.class, 26, 21);
@@ -57,7 +84,9 @@ public class AssetSetter {
         gamePanel.object[mapNum][i++] = createEntity(OBJ_Potion_Red.class, 37, 21);
         gamePanel.object[mapNum][i++] = createEntity(OBJ_Heart.class,22,29);
         gamePanel.object[mapNum][i++] = createEntity(OBJ_ManaCrystal.class,22,31);
-
+        gamePanel.object[mapNum][i++] = createEntity(OBJ_Door.class,14,28);
+        gamePanel.object[mapNum][i++] = createEntity(OBJ_Door.class,12,12);
+        gamePanel.object[mapNum][i++] = createEntity(OBJ_Chest.class,30,12, new OBJ_Key(gamePanel));
     }
 
     public void setNPC() {
@@ -85,7 +114,7 @@ public class AssetSetter {
     public void setInteractiveTile() {
         int i = 0;
         int mapNum = 0;
-        // Using the special interactive tile factory
+
         gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DryTree.class,27, 12);
         gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DryTree.class,28, 12);
         gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DryTree.class,29, 12);
@@ -93,5 +122,12 @@ public class AssetSetter {
         gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DryTree.class,31, 12);
         gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DryTree.class,32, 12);
         gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DryTree.class,33, 12);
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DryTree.class,25, 32);
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DryTree.class,26, 32);
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DryTree.class,27, 32);
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DryTree.class,27, 31);
+
+
+
     }
 }
