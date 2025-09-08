@@ -62,6 +62,8 @@ public class Entity {
     public Entity currentWeapon;
     public Entity currentShield;
     public Projectile projectile;
+    public Entity currentLight;
+
     //ITEM ATTRIBUTES
     public ArrayList<Entity> inventory = new ArrayList<>();
     public final int maxInventorySize = 20;
@@ -74,6 +76,7 @@ public class Entity {
     public int knockBackPower = 0;
     public boolean stackable = false;
     public int amount = 1;
+    public int lightRadius;
 
     //TYPE
     public int type;
@@ -86,6 +89,7 @@ public class Entity {
     public final int type_consumable = 6;
     public final int type_pickUpOnly = 7;
     public final int type_obstacle = 8;
+    public final int type_light = 9;
 
     public Entity(GamePanel gamePanel) {
         this.gamePanel = gamePanel;

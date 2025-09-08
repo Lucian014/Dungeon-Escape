@@ -13,6 +13,7 @@
 
     public final int screenX;
     public final int screenY;
+    public boolean lightUpdated = false;
     public Player(GamePanel gamePanel, KeyHandler keyHandler) {
 
         super(gamePanel);
@@ -129,7 +130,18 @@
 
     }
 
-        public void update() {
+    public void getSleepingImage(BufferedImage image) {
+        up1 = image;
+        up2 = image;
+        down1 = image;
+        down2 = image;
+        left1 = image;
+        left2 = image;
+        right1 = image;
+        right2 = image;
+    }
+
+    public void update() {
 
 
             if (gamePanel.gameState == gamePanel.playState ) {
@@ -191,8 +203,8 @@
                         if (npcIndex != 999 && gamePanel.keyHandler.enterPressed) {
                             interactNPC(npcIndex);
                             gamePanel.keyHandler.enterPressed = false; // consume input
-
-
+                        } else if (gamePanel.keyHandler.enterPressed) {
+                            gamePanel.keyHandler.enterPressed = false;
                         }
                         if (!collisionOn) {
                             switch (direction) {
@@ -464,6 +476,14 @@
                 currentShield = selectedItem;
                 defense = getDefense();
 
+            }
+            if(selectedItem.type == type_light) {
+                if(currentLight == selectedItem) {
+                    currentLight = null;
+                } else {
+                    currentLight = selectedItem;
+                }
+                lightUpdated = true;
             }
             if(selectedItem.type == type_consumable) {
 
