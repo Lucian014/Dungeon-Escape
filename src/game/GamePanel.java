@@ -1,5 +1,6 @@
 package game;
 
+import ai.PathFinder;
 import entity.Entity;
 import entity.Player;
 import interactive_tile.InteractiveTile;
@@ -48,7 +49,7 @@ public class GamePanel extends JPanel implements Runnable{
     public UI ui = new UI(this);
     public EventHandler eventHandler =  new EventHandler(this);
     public Config config = new Config(this);
-
+    public PathFinder pathFinder = new PathFinder(this);
     //ENTITY AND OBJECT
     public Player player = new Player(this, keyHandler);
     public Entity[][] object= new Entity[maxMap][20];

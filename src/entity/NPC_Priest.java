@@ -2,6 +2,7 @@ package entity;
 
 import game.GamePanel;
 
+import java.awt.*;
 import java.util.Random;
 
 public class NPC_Priest extends Entity{
@@ -10,9 +11,12 @@ public class NPC_Priest extends Entity{
         super(gamePanel);
 
         direction = "down";
-        speed = 1;
+        speed = 2;
         getImage();
         setDialogue();
+        solidArea = new Rectangle(8,16,30,30);
+        solidAreaDefaultX = solidArea.x;
+        solidAreaDefaultY = solidArea.y;
     }
 
     public void setDialogue(){
@@ -37,26 +41,38 @@ public class NPC_Priest extends Entity{
 
     public void setAction() {
 
-        actionLockCounter++;
-        if(actionLockCounter == 80){
-            Random random = new Random();
-            int i = random.nextInt(100) + 1;
-            if (i <= 25) {
-                direction = "up";
+        if (onPath) {
+
+            int goalCol = (gamePanel.player.worldX + gamePanel.player.solidArea.x) / gamePanel.tileSize;
+            int goalRow = (gamePanel.player.worldY + gamePanel.player.solidArea.y) / gamePanel.tileSize;
+
+            searchPath(goalCol, goalRow);
+
+        } else {
+
+            actionLockCounter++;
+            if (actionLockCounter == 120) {
+                Random random = new Random();
+                int i = random.nextInt(100) + 1;
+                if (i <= 25) {
+                    direction = "up";
+                }
+                if (i > 25 && i <= 50) {
+                    direction = "down";
+                }
+                if (i > 50 && i <= 75) {
+                    direction = "left";
+                }
+                if (i > 75) {
+                    direction = "right";
+                }
+                actionLockCounter = 0;
             }
-            if(i > 25 && i <= 50) {
-                direction = "down";
-            }
-            if(i > 50 && i <= 75) {
-                direction = "left";
-            }
-            if(i > 75) {
-                direction = "right";
-            }
-            actionLockCounter = 0;
         }
     }
     public void speak() {
         super.speak();
+
+        onPath = true;
     }
 }

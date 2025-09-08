@@ -12,51 +12,58 @@ public class CollisionChecker {
         this.gamePanel = gamePanel;
     }
 
-    public void checkTile(Entity entity, int dx, int dy) {
-        // Current solid area position in world
-        int leftWorldX = entity.worldX + entity.solidArea.x + dx;
-        int rightWorldX = entity.worldX + entity.solidArea.x + entity.solidArea.width + dx;
-        int topWorldY = entity.worldY + entity.solidArea.y + dy;
-        int bottomWorldY = entity.worldY + entity.solidArea.y + entity.solidArea.height + dy;
+    public void checkTile(Entity entity) {
+        entity.collisionOn = false;
+
+        int predictedX = entity.worldX;
+        int predictedY = entity.worldY;
+
+        switch(entity.direction) {
+            case "up": predictedY -= entity.speed; break;
+            case "down": predictedY += entity.speed; break;
+            case "left": predictedX -= entity.speed; break;
+            case "right": predictedX += entity.speed; break;
+        }
+
+        int leftWorldX = predictedX + entity.solidArea.x;
+        int rightWorldX = predictedX + entity.solidArea.x + entity.solidArea.width;
+        int topWorldY = predictedY + entity.solidArea.y;
+        int bottomWorldY = predictedY + entity.solidArea.y + entity.solidArea.height;
 
         int leftCol = leftWorldX / gamePanel.tileSize;
-        int rightCol = rightWorldX / gamePanel.tileSize;
+        int rightCol = (rightWorldX - 1) / gamePanel.tileSize;
         int topRow = topWorldY / gamePanel.tileSize;
-        int bottomRow = bottomWorldY / gamePanel.tileSize;
+        int bottomRow = (bottomWorldY - 1) / gamePanel.tileSize;
 
-        int tileNum1, tileNum2;
+            switch(entity.direction) {
+                case "up":
+                    int topLeftTile = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][leftCol][topRow];
+                    int topRightTile = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][rightCol][topRow];
+                    entity.collisionOn = gamePanel.tileManager.tile[topLeftTile].collision ||
+                            gamePanel.tileManager.tile[topRightTile].collision;
+                    break;
 
-        // Check vertical collision
-        if (dy < 0) { // moving up
-            tileNum1 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][leftCol][topRow];
-            tileNum2 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][rightCol][topRow];
-            if (gamePanel.tileManager.tile[tileNum1].collision || gamePanel.tileManager.tile[tileNum2].collision) {
-                entity.collisionOn = true;
-            }
-        }
-        if (dy > 0) { // moving down
-            tileNum1 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][leftCol][bottomRow];
-            tileNum2 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][rightCol][bottomRow];
-            if (gamePanel.tileManager.tile[tileNum1].collision || gamePanel.tileManager.tile[tileNum2].collision) {
-                entity.collisionOn = true;
-            }
-        }
+                case "down":
+                    int bottomLeftTile = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][leftCol][bottomRow];
+                    int bottomRightTile = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][rightCol][bottomRow];
+                    entity.collisionOn = gamePanel.tileManager.tile[bottomLeftTile].collision ||
+                            gamePanel.tileManager.tile[bottomRightTile].collision;
+                    break;
 
-        // Check horizontal collision
-        if (dx < 0) { // moving left
-            tileNum1 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][leftCol][topRow];
-            tileNum2 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][leftCol][bottomRow];
-            if (gamePanel.tileManager.tile[tileNum1].collision || gamePanel.tileManager.tile[tileNum2].collision) {
-                entity.collisionOn = true;
+                case "left":
+                    int leftTopTile = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][leftCol][topRow];
+                    int leftBottomTile = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][leftCol][bottomRow];
+                    entity.collisionOn = gamePanel.tileManager.tile[leftTopTile].collision ||
+                            gamePanel.tileManager.tile[leftBottomTile].collision;
+                    break;
+
+                case "right":
+                    int rightTopTile = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][rightCol][topRow];
+                    int rightBottomTile = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][rightCol][bottomRow];
+                    entity.collisionOn = gamePanel.tileManager.tile[rightTopTile].collision ||
+                            gamePanel.tileManager.tile[rightBottomTile].collision;
+                    break;
             }
-        }
-        if (dx > 0) { // moving right
-            tileNum1 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][rightCol][topRow];
-            tileNum2 = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][rightCol][bottomRow];
-            if (gamePanel.tileManager.tile[tileNum1].collision || gamePanel.tileManager.tile[tileNum2].collision) {
-                entity.collisionOn = true;
-            }
-        }
     }
     public int checkObject(Entity entity, boolean player) {
         int index = 999;
@@ -124,7 +131,7 @@ public class CollisionChecker {
             case "right": entityArea.x += entity.speed; break;
         }
 
-        for (int i = 0; i < target[1].length; i++) {
+        for (int i = 0; i < target[gamePanel.currentMap].length; i++) {
             if (target[gamePanel.currentMap][i] != null && target[gamePanel.currentMap][i] != entity) {
                 int targetLeftWorldX = target[gamePanel.currentMap][i].worldX + target[gamePanel.currentMap][i].solidAreaDefaultX;
                 int targetTopWorldY = target[gamePanel.currentMap][i].worldY + target[gamePanel.currentMap][i].solidAreaDefaultY;

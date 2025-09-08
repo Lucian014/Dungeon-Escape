@@ -135,144 +135,148 @@
 
     }
 
-    public void update() {
+        public void update() {
 
 
-        if (gamePanel.gameState == gamePanel.playState ) {
-            if(!gamePanel.sound.musicThemeFlag) {
-                gamePanel.sound.stopSE(13);
-                gamePanel.sound.playMusic(0);
-                gamePanel.sound.musicThemeFlag = true;
-                gamePanel.sound.gameOverFlag = false;
-            }
-
-
-            if (gamePanel.keyHandler.attackPressed && !attacking) {
-                boolean nearNPC = false;
-                int npcIndex = gamePanel.checker.checkEntity(this, gamePanel.npc);
-
-
-                if (npcIndex != 999) {
-                    nearNPC = true;
-                }
-                if (!nearNPC) {
-                    attacking = true;
-                    spriteCounter = 0;
+            if (gamePanel.gameState == gamePanel.playState ) {
+                if(!gamePanel.sound.musicThemeFlag) {
+                    gamePanel.sound.stopSE(13);
+                    gamePanel.sound.playMusic(0);
+                    gamePanel.sound.musicThemeFlag = true;
+                    gamePanel.sound.gameOverFlag = false;
                 }
 
-                // Consume attack input
-                gamePanel.keyHandler.attackPressed = false;
-            }
 
-            if (attacking) {
-                // Only handle attack animation
-                attack();
-            } else {
-                int dx = 0;
-                int dy = 0;
+                if (gamePanel.keyHandler.attackPressed && !attacking) {
+                    boolean nearNPC = false;
+                    int npcIndex = gamePanel.checker.checkEntity(this, gamePanel.npc);
 
-                // Collect movement input
-                if (gamePanel.keyHandler.upPressed) {
-                    dy -= speed;
-                    direction = "up";
-                }
-                if (gamePanel.keyHandler.downPressed) {
-                    dy += speed;
-                    direction = "down";
-                }
-                if (gamePanel.keyHandler.leftPressed) {
-                    dx -= speed;
-                    direction = "left";
-                }
-                if (gamePanel.keyHandler.rightPressed) {
-                    dx += speed;
-                    direction = "right";
-                }
 
-                // Reset collision flag
-                collisionOn = false;
-
-                // Check Tile Collision
-                gamePanel.checker.checkTile(this, dx, dy);
-
-                //Check Object collision
-                int objIndex = gamePanel.checker.checkObject(this, true);
-                pickUpObject(objIndex);
-
-                // Check NPC Collision
-                int npcIndex = gamePanel.checker.checkEntity(this, gamePanel.npc);
-                if (npcIndex != 999 && gamePanel.keyHandler.enterPressed) {
-                    interactNPC(npcIndex);
-                    gamePanel.keyHandler.enterPressed = false; // consume input
-                }
-                // Check Monster Collision
-                int monsterIndex = gamePanel.checker.checkEntity(this, gamePanel.monster);
-                contactMonster(monsterIndex);
-
-                // Check Interactive Tile Collision
-                int iTileIndex = gamePanel.checker.checkEntity(this, gamePanel.iTile);
-
-                // Move only if no collision
-                if (!collisionOn) {
-                    worldX += dx;
-                    worldY += dy;
-                }
-
-                // Check events
-                gamePanel.eventHandler.checkEvent();
-
-                // Walking animation
-                if (dx != 0 || dy != 0) {
-                    spriteCounter++;
-                    if (spriteCounter > 14) {
-                        spriteNum = (spriteNum == 1) ? 2 : 1;
+                    if (npcIndex != 999) {
+                        nearNPC = true;
+                    }
+                    if (!nearNPC) {
+                        attacking = true;
                         spriteCounter = 0;
                     }
+
+                    // Consume attack input
+                    gamePanel.keyHandler.attackPressed = false;
+                }
+
+                if (attacking) {
+                    // Only handle attack animation
+                    attack();
+                } else {
+                    // Collect movement input
+                    if (gamePanel.keyHandler.upPressed) {
+                        direction = "up";
+                    }
+                    if (gamePanel.keyHandler.downPressed) {
+                        direction = "down";
+                    }
+                    if (gamePanel.keyHandler.leftPressed) {
+                        direction = "left";
+                    }
+                    if (gamePanel.keyHandler.rightPressed) {
+                        direction = "right";
+                    }
+
+                    // Reset collision flag
+                    collisionOn = false;
+                    boolean moving = gamePanel.keyHandler.upPressed || gamePanel.keyHandler.downPressed ||
+                            gamePanel.keyHandler.leftPressed || gamePanel.keyHandler.rightPressed;
+                    if (moving) {
+                        // Check Tile Collision
+                        gamePanel.checker.checkTile(this);
+                        int npcIndex = gamePanel.checker.checkEntity(this, gamePanel.npc);
+                        if (npcIndex != 999 && gamePanel.keyHandler.enterPressed) {
+                            interactNPC(npcIndex);
+                            gamePanel.keyHandler.enterPressed = false; // consume input
+                        }
+                        if (!collisionOn) {
+                            switch (direction) {
+                                case "up": worldY -= speed;break;
+                                case "down": worldY += speed;break;
+                                case "left": worldX -= speed;break;
+                                case "right": worldX += speed;break;
+                            }
+                        }
+                        if (worldX != 0 || worldY != 0) {
+                            spriteCounter++;
+                            if (spriteCounter > 14) {
+                                spriteNum = (spriteNum == 1) ? 2 : 1;
+                                spriteCounter = 0;
+                            }
+                        }
+                    }
+                    //Check Object collision
+                    int objIndex = gamePanel.checker.checkObject(this, true);
+                    pickUpObject(objIndex);
+
+                    // Check NPC Collision
+                    int npcIndex = gamePanel.checker.checkEntity(this, gamePanel.npc);
+                    if (npcIndex != 999 && gamePanel.keyHandler.enterPressed) {
+                        interactNPC(npcIndex);
+                        gamePanel.keyHandler.enterPressed = false; // consume input
+                    }
+                    // Check Monster Collision
+                    int monsterIndex = gamePanel.checker.checkEntity(this, gamePanel.monster);
+                    contactMonster(monsterIndex);
+
+                    // Check Interactive Tile Collision
+                    int iTileIndex = gamePanel.checker.checkEntity(this, gamePanel.iTile);
+
+
+                    // Check events
+                    gamePanel.eventHandler.checkEvent();
+
+                    // Walking animation
+
+                }
+
+                if(gamePanel.keyHandler.shotKeyPressed && !projectile.alive && shotAvailableCounter == 120 && projectile.haveResource(this)) {
+
+                    //SET DEFAULT COORDINATES, DIRECTION AND USER
+                    projectile.set(worldX, worldY, direction, true, this);
+
+                    //SUBTRACT THE COST(MANA, AMMO)
+                    projectile.subtractResource(this);
+                    //ADD IT TO THE LIST
+                    gamePanel.projectileList.add(projectile);
+                    gamePanel.playSE(11);
+
+                    shotAvailableCounter = 0;
+
+                    gamePanel.keyHandler.shotKeyPressed = false;
+                }
+
+                // Invincibility timer
+                if (invincible) {
+                    invincibleCounter++;
+                    if (invincibleCounter == 60) {
+                        invincible = false;
+                        invincibleCounter = 0;
+                    }
+                }
+                if(life > maxLife) {
+                    life = maxLife;
+                }
+                if(mana > maxMana) {
+                    mana = maxMana;
+                }
+                if(life <= 0) {
+                    gamePanel.gameState = gamePanel.gameOverState;
+                    gamePanel.sound.stopMusic();
+                    gamePanel.sound.playSoundEffect(13);
+                    gamePanel.sound.gameOverFlag = true;
+                    gamePanel.sound.musicThemeFlag = false;
                 }
             }
-
-            if(gamePanel.keyHandler.shotKeyPressed && !projectile.alive && shotAvailableCounter == 120 && projectile.haveResource(this)) {
-
-                //SET DEFAULT COORDINATES, DIRECTION AND USER
-                projectile.set(worldX, worldY, direction, true, this);
-
-                //SUBTRACT THE COST(MANA, AMMO)
-                projectile.subtractResource(this);
-                //ADD IT TO THE LIST
-                gamePanel.projectileList.add(projectile);
-                gamePanel.playSE(11);
-
-                shotAvailableCounter = 0;
-
-                gamePanel.keyHandler.shotKeyPressed = false;
-            }
-
-            // Invincibility timer
-            if (invincible) {
-                invincibleCounter++;
-                if (invincibleCounter == 60) {
-                    invincible = false;
-                    invincibleCounter = 0;
-                }
-            }
-            if(life > maxLife) {
-                life = maxLife;
-            }
-            if(mana > maxMana) {
-                mana = maxMana;
-            }
-            if(life <= 0) {
-                gamePanel.gameState = gamePanel.gameOverState;
-                gamePanel.sound.stopMusic();
-                gamePanel.sound.playSoundEffect(13);
-                gamePanel.sound.gameOverFlag = true;
-                gamePanel.sound.musicThemeFlag = false;
+            if(shotAvailableCounter < 120) {
+                shotAvailableCounter++;
             }
         }
-        if(shotAvailableCounter < 120) {
-            shotAvailableCounter++;
-        }
-    }
 
 
     public void attack() {
@@ -330,6 +334,7 @@
             spriteCounter = 0;
             attacking = false;
         }
+
     }
 
     public void pickUpObject(int i) {
