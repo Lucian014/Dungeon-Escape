@@ -16,7 +16,8 @@ public class MON_GreenSlime extends Entity {
         this.gamePanel = gamePanel;
         type = type_monster;
         name = "Green Slime";
-        speed = 1;
+        defaultSpeed = 1;
+        speed = defaultSpeed;
         maxLife = 6;
         life = maxLife;
         attack = 5;
@@ -58,7 +59,15 @@ public class MON_GreenSlime extends Entity {
             int i = new Random().nextInt(200) + 1;
             if(i > 196 && !projectile.alive && shotAvailableCounter >= 30) {
                 projectile.set(worldX,worldY,direction,true,this);
-                gamePanel.projectileList.add(projectile);
+
+                //CHECK VACANCY
+                for(i = 0; i < gamePanel.projectile[1].length; i++) {
+                    if(gamePanel.projectile[1][i] == null) {
+                        gamePanel.projectile[gamePanel.currentMap][i] = projectile;
+                        break;
+                    }
+                }
+
                 shotAvailableCounter = 0;
             }
             if(shotAvailableCounter < 30) {

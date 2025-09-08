@@ -2,15 +2,10 @@
 
     import game.GamePanel;
     import game.KeyHandler;
-    import game.Sound;
-    import game.UtilityTool;
     import object.*;
-
-    import javax.imageio.ImageIO;
     import java.awt.*;
     import java.awt.image.BufferedImage;
-    import java.io.IOException;
-    import java.util.ArrayList;
+
 
     public class Player extends Entity {
 
@@ -18,8 +13,6 @@
 
     public final int screenX;
     public final int screenY;
-    int standCounter = 0;
-    public boolean attackCanceled = false;
     public Player(GamePanel gamePanel, KeyHandler keyHandler) {
 
         super(gamePanel);
@@ -42,9 +35,10 @@
     }
     public void setDefaultValues() {
 
-        worldX = gamePanel.tileSize * 13;
-        worldY = gamePanel.tileSize * 41;
-        speed = 4;
+        worldX = gamePanel.tileSize * 23;
+        worldY = gamePanel.tileSize * 21;
+        defaultSpeed = 4;
+        speed = defaultSpeed;
         direction = "down";
         //PLAYER STATUS
         maxLife = 6; // 2 lives = 1 heart
@@ -213,7 +207,6 @@
                     //Check Object collision
                     int objIndex = gamePanel.checker.checkObject(this, true);
                     pickUpObject(objIndex);
-
                     // Check NPC Collision
                     int npcIndex = gamePanel.checker.checkEntity(this, gamePanel.npc);
                     if (npcIndex != 999 && gamePanel.keyHandler.enterPressed) {
@@ -225,8 +218,7 @@
                     contactMonster(monsterIndex);
 
                     // Check Interactive Tile Collision
-                    int iTileIndex = gamePanel.checker.checkEntity(this, gamePanel.iTile);
-
+                    gamePanel.checker.checkEntity(this, gamePanel.iTile);
 
                     // Check events
                     gamePanel.eventHandler.checkEvent();
@@ -242,8 +234,15 @@
 
                     //SUBTRACT THE COST(MANA, AMMO)
                     projectile.subtractResource(this);
-                    //ADD IT TO THE LIST
-                    gamePanel.projectileList.add(projectile);
+
+                    //CHECK VACANCY
+                    for(int i = 0; i < gamePanel.projectile[1].length; i++) {
+                        if(gamePanel.projectile[gamePanel.currentMap][i] == null) {
+                            gamePanel.projectile[gamePanel.currentMap][i] = projectile;
+                            break;
+                        }
+                    }
+
                     gamePanel.playSE(11);
 
                     shotAvailableCounter = 0;
@@ -315,12 +314,13 @@
 
             // Check monster collision
             int monsterIndex = gamePanel.checker.checkEntity(this, gamePanel.monster);
-            if (monsterIndex != 999) {
-                damageMonster(monsterIndex, attack); // plays monster hit sound (SE 5)
-            }
+            damageMonster(monsterIndex, attack,currentWeapon.knockBackPower);
 
             int iTileIndex = gamePanel.checker.checkEntity(this, gamePanel.iTile);
             damageInteractiveTile(iTileIndex);
+
+            int projectileIndex = gamePanel.checker.checkEntity(this, gamePanel.projectile);
+            damageProjectile(projectileIndex);
 
             // Restore original values
             worldX = currentWorldX;
@@ -480,10 +480,13 @@
         }
     }
 
-    public void damageMonster(int monsterIndex, int attack) {
+    public void damageMonster(int monsterIndex, int attack, int knockBackPower) {
         if(monsterIndex != 999) {
             if(!gamePanel.monster[gamePanel.currentMap][monsterIndex].invincible) {
                 gamePanel.playSE(5);
+                if(knockBackPower > 0) {
+                    knockBack(gamePanel.monster[gamePanel.currentMap][monsterIndex],knockBackPower);
+                }
                 int damage = attack - gamePanel.monster[gamePanel.currentMap][monsterIndex].defense;
                 if(damage < 0) {
                     damage = 0;
@@ -501,7 +504,17 @@
                 }
             }
         }
-        }
+    }
+
+    public void knockBack(Entity entity, int knockBackPower) {
+
+        entity.direction = direction;
+        entity.speed += knockBackPower;
+        entity.knockBack = true;
+
+
+    }
+
     public void damageInteractiveTile(int i) {
 
             if(i != 999 && gamePanel.iTile[gamePanel.currentMap][i].destructible && !gamePanel.iTile[gamePanel.currentMap][i].invincible && gamePanel.iTile[gamePanel.currentMap][i].isCorrectItem(this)) {
@@ -517,6 +530,15 @@
                     gamePanel.iTile[gamePanel.currentMap][i] = gamePanel.iTile[gamePanel.currentMap][i].getDestroyedForm();
                 }
             }
+    }
+
+    public void damageProjectile(int i) {
+
+        if(i != 999) {
+            Entity projectile = gamePanel.projectile[gamePanel.currentMap][i];
+            projectile.alive = false;
+            generateParticle(projectile, projectile);
+        }
     }
     public void checkLevelUp() {
         if(exp >= nextLevelExp) {

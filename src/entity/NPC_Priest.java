@@ -43,8 +43,8 @@ public class NPC_Priest extends Entity{
 
         if (onPath) {
 
-            int goalCol = (gamePanel.player.worldX + gamePanel.player.solidArea.x) / gamePanel.tileSize;
-            int goalRow = (gamePanel.player.worldY + gamePanel.player.solidArea.y) / gamePanel.tileSize;
+            int goalCol = 12;
+            int goalRow = 9;
 
             searchPath(goalCol, goalRow);
 
