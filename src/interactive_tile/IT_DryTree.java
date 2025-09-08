@@ -13,10 +13,11 @@ public class IT_DryTree extends InteractiveTile{
         this.gamePanel = gamePanel;
         this.worldX = col * gamePanel.tileSize;
         this.worldY = row * gamePanel.tileSize;
-
+        collision = true;
         down1 = setup("tiles_interactive/drytree",gamePanel.tileSize,gamePanel.tileSize);
         destructible = true;
         life = 2;
+
     }
     public boolean isCorrectItem(Entity entity) {
 

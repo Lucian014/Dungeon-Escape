@@ -71,21 +71,15 @@ public class CollisionChecker {
         for (int i = 0; i < gamePanel.object[1].length; i++) {
             if (gamePanel.object[gamePanel.currentMap][i] != null) {
 
-                // Backup entity solid area
-                int entitySolidX = entity.solidArea.x;
-                int entitySolidY = entity.solidArea.y;
-
-                // Backup object solid area
-                int objectSolidX = gamePanel.object[gamePanel.currentMap][i].solidArea.x;
-                int objectSolidY = gamePanel.object[gamePanel.currentMap][i].solidArea.y;
-
-                // Get positions in world
+                // Get entity's solid area position
                 entity.solidArea.x = entity.worldX + entity.solidAreaDefaultX;
                 entity.solidArea.y = entity.worldY + entity.solidAreaDefaultY;
+
+                // Get object's solid area position
                 gamePanel.object[gamePanel.currentMap][i].solidArea.x = gamePanel.object[gamePanel.currentMap][i].worldX + gamePanel.object[gamePanel.currentMap][i].solidAreaDefaultX;
                 gamePanel.object[gamePanel.currentMap][i].solidArea.y = gamePanel.object[gamePanel.currentMap][i].worldY + gamePanel.object[gamePanel.currentMap][i].solidAreaDefaultY;
 
-                // Simulate movement
+
                 switch (entity.direction) {
                     case "up":    entity.solidArea.y -= entity.speed; break;
                     case "down":  entity.solidArea.y += entity.speed; break;
@@ -101,12 +95,11 @@ public class CollisionChecker {
                         index = i; // so player can pick up object
                     }
                 }
-
                 // Reset solid areas
-                entity.solidArea.x = entitySolidX;
-                entity.solidArea.y = entitySolidY;
-                gamePanel.object[gamePanel.currentMap][i].solidArea.x = objectSolidX;
-                gamePanel.object[gamePanel.currentMap][i].solidArea.y = objectSolidY;
+                entity.solidArea.x = entity.solidAreaDefaultX;
+                entity.solidArea.y = entity.solidAreaDefaultY;
+                gamePanel.object[gamePanel.currentMap][i].solidArea.x = gamePanel.object[gamePanel.currentMap][i].solidAreaDefaultX;
+                gamePanel.object[gamePanel.currentMap][i].solidArea.y = gamePanel.object[gamePanel.currentMap][i].solidAreaDefaultY;
             }
         }
         return index;

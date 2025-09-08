@@ -78,6 +78,7 @@
         inventory.add(currentWeapon);
         inventory.add(new OBJ_Key(gamePanel));
         inventory.add(new OBJ_Axe(gamePanel));
+        inventory.add(new OBJ_Key(gamePanel));
 
     }
     public int getAttack() {
@@ -183,10 +184,16 @@
                     if (moving) {
                         // Check Tile Collision
                         gamePanel.checker.checkTile(this);
+                        int objIndex = gamePanel.checker.checkObject(this, true);
+                        pickUpObject(objIndex);
                         int npcIndex = gamePanel.checker.checkEntity(this, gamePanel.npc);
+                        gamePanel.checker.checkEntity(this, gamePanel.iTile);
+
                         if (npcIndex != 999 && gamePanel.keyHandler.enterPressed) {
                             interactNPC(npcIndex);
                             gamePanel.keyHandler.enterPressed = false; // consume input
+
+
                         }
                         if (!collisionOn) {
                             switch (direction) {
@@ -207,6 +214,7 @@
                     //Check Object collision
                     int objIndex = gamePanel.checker.checkObject(this, true);
                     pickUpObject(objIndex);
+
                     // Check NPC Collision
                     int npcIndex = gamePanel.checker.checkEntity(this, gamePanel.npc);
                     if (npcIndex != 999 && gamePanel.keyHandler.enterPressed) {
@@ -218,7 +226,6 @@
                     contactMonster(monsterIndex);
 
                     // Check Interactive Tile Collision
-                    gamePanel.checker.checkEntity(this, gamePanel.iTile);
 
                     // Check events
                     gamePanel.eventHandler.checkEvent();
@@ -340,14 +347,18 @@
     public void pickUpObject(int i) {
 
         if(i != 999) {
-
             //PICKUP ONLY ITEMS
             if(gamePanel.object[gamePanel.currentMap][i].type == type_pickUpOnly) {
-
                 gamePanel.object[gamePanel.currentMap][i].use(this);
                 gamePanel.object[gamePanel.currentMap][i] = null;
-            } else {
-
+            }
+                //OBSTACLE
+                else if(gamePanel.object[gamePanel.currentMap][i].type == type_obstacle) {
+                    if(keyHandler.enterPressed) {
+                        gamePanel.object[gamePanel.currentMap][i].interact();
+                    }
+                } else {
+                //INVENTORY ITEMS
                 String text;
                 if(inventory.size() != maxInventorySize) {
                     inventory.add(gamePanel.object[gamePanel.currentMap][i]);
@@ -361,8 +372,6 @@
                 gamePanel.object[gamePanel.currentMap][i] = null;
             }
             //INVENTORY ITEMS
-
-
         }
     }
 
@@ -460,8 +469,9 @@
             }
             if(selectedItem.type == type_consumable) {
 
-                selectedItem.use(this);
-                inventory.remove(itemIndex);
+                if(selectedItem.use(this)){
+                    inventory.remove(itemIndex);
+                }
             }
         }
     }
