@@ -82,6 +82,7 @@ public class AssetSetter {
         gamePanel.object[mapNum][i++] = createEntity(OBJ_Axe.class, 33, 21);
         gamePanel.object[mapNum][i++] = createEntity(OBJ_Shield_Blue.class, 35, 21);
         gamePanel.object[mapNum][i++] = createEntity(OBJ_Potion_Red.class, 37, 21);
+        gamePanel.object[mapNum][i++] = createEntity(OBJ_Potion_Red.class, 38, 21);
         gamePanel.object[mapNum][i++] = createEntity(OBJ_Heart.class,22,29);
         gamePanel.object[mapNum][i++] = createEntity(OBJ_ManaCrystal.class,22,31);
         gamePanel.object[mapNum][i++] = createEntity(OBJ_Door.class,14,28);

@@ -15,6 +15,7 @@ public class OBJ_Key extends Entity {
         description = "[" + name + "]\nIt opens chests or doors.";
         price = 50;
         type = type_consumable;
+        stackable = true;
     }
 
     public boolean use(Entity entity) {

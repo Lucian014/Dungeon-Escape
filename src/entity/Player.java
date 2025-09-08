@@ -78,7 +78,6 @@
         inventory.add(currentWeapon);
         inventory.add(new OBJ_Key(gamePanel));
         inventory.add(new OBJ_Axe(gamePanel));
-        inventory.add(new OBJ_Key(gamePanel));
 
     }
     public int getAttack() {
@@ -360,9 +359,8 @@
                 } else {
                 //INVENTORY ITEMS
                 String text;
-                if(inventory.size() != maxInventorySize) {
-                    inventory.add(gamePanel.object[gamePanel.currentMap][i]);
-                    gamePanel.playSE(1);
+                if(canObtainItem(gamePanel.object[gamePanel.currentMap][i])) {
+                    gamePanel.sound.playSoundEffect(1);
                     text = "Got a " + gamePanel.object[gamePanel.currentMap][i].name + "!";
                 }
                 else {
@@ -470,11 +468,54 @@
             if(selectedItem.type == type_consumable) {
 
                 if(selectedItem.use(this)){
-                    inventory.remove(itemIndex);
+                    if(selectedItem.amount > 1) {
+                        selectedItem.amount--;
+                    }
+                    else {
+                        inventory.remove(itemIndex);
+                    }
                 }
             }
         }
     }
+    public int searchItemInInventory(String itemName) {
+
+        int itemIndex = 999;
+
+        for(int i = 0; i < inventory.size(); i++) {
+            if(inventory.get(i).name.equals(itemName)) {
+                itemIndex = i;
+                break;
+            }
+        }
+        return itemIndex;
+    }
+
+    public boolean canObtainItem(Entity item) {
+
+        boolean canObtain = false;
+        //CHECK IF STACKABLE
+        if (item.stackable) {
+            int index = searchItemInInventory(item.name);
+            if (index != 999) {
+                inventory.get(index).amount++;
+                canObtain = true;
+            } else { //NEW ITEM
+                if (inventory.size() != maxInventorySize) {
+                    inventory.add(item);
+                    canObtain = true;
+                }
+            }
+        }
+        else { //NOT STACKABLE
+            if (inventory.size() != maxInventorySize) {
+                inventory.add(item);
+                canObtain = true;
+            }
+        }
+        return canObtain;
+    }
+
     public void contactMonster(int i) {
 
         if(i != 999) {
