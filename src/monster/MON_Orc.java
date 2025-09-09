@@ -31,6 +31,8 @@ public class MON_Orc extends Entity {
         solidAreaDefaultY = solidArea.y;
         attackArea.width = 48;
         attackArea.height = 48;
+        motion1_duration = 10;
+        motion2_duration = 50;
         getImage();
         getAttackImage();
     }
@@ -59,19 +61,20 @@ public class MON_Orc extends Entity {
     }
 
     public void setAction() {
+        // Always check for attacks first, regardless of path state
+        if(!attacking) {
+            checkAttackOrNot(20, gamePanel.tileSize * 2, gamePanel.tileSize * 1);
+        }
 
-        if(onPath) {
-            //Check if it stops chasing
-            checkStopChasingOrNot(gamePanel.player, 15,100);
-            //Search the direction to the player
-            searchPath(getGoalCol(gamePanel.player),getGoalRow(gamePanel.player));
-
-        } else {
-            //Check if it starts chasing
-            checkStartChasingOrNot(gamePanel.player, 5,100);
-
-            //Get a random direction
-            getRandomDirection();
+        // Then handle movement/pathfinding
+        if(!attacking) {  // Only do AI movement if not attacking
+            if(onPath) {
+                checkStopChasingOrNot(gamePanel.player, 15,100);
+                searchPath(getGoalCol(gamePanel.player),getGoalRow(gamePanel.player));
+            } else {
+                checkStartChasingOrNot(gamePanel.player, 5,100);
+                getRandomDirection();
+            }
         }
     }
     public void damageReaction() {

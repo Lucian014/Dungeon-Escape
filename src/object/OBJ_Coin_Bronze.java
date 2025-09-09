@@ -13,7 +13,7 @@ public class OBJ_Coin_Bronze extends Entity {
 
         type = type_pickUpOnly;
         name = "Bronze Coin";
-        down1 = setup("items/coin_bronze",gamePanel.tileSize,gamePanel.tileSize);
+        down1 = setup("items/coin_bronze",1,1);
         value = 1;
 
     }

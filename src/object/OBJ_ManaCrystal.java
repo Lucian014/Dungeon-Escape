@@ -13,9 +13,9 @@ public class OBJ_ManaCrystal extends Entity {
         type = type_pickUpOnly;
         name = "Mana Crystal";
         value = 2;
-        down1 = setup("items/manacrystal_full",gamePanel.tileSize,gamePanel.tileSize);
-        image = setup("items/manacrystal_full",gamePanel.tileSize,gamePanel.tileSize);
-        image2 = setup("items/manacrystal_blank",gamePanel.tileSize,gamePanel.tileSize);
+        down1 = setup("items/manacrystal_full",1,1);
+        image = setup("items/manacrystal_full",1,1);
+        image2 = setup("items/manacrystal_blank",1,1);
     }
 
     public boolean use(Entity entity) {

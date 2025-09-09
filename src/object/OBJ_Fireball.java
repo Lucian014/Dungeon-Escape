@@ -26,14 +26,14 @@ public class OBJ_Fireball extends Projectile {
 
     public void getImage() {
 
-        up1 = setup("projectiles/fireball_up_1",gamePanel.tileSize,gamePanel.tileSize);
-        up2 = setup("projectiles/fireball_up_2",gamePanel.tileSize,gamePanel.tileSize);
-        down1 = setup("projectiles/fireball_down_1",gamePanel.tileSize,gamePanel.tileSize);
-        down2 = setup("projectiles/fireball_down_2",gamePanel.tileSize,gamePanel.tileSize);
-        left1 = setup("projectiles/fireball_left_1",gamePanel.tileSize,gamePanel.tileSize);
-        left2 = setup("projectiles/fireball_left_2",gamePanel.tileSize,gamePanel.tileSize);
-        right1 = setup("projectiles/fireball_right_1",gamePanel.tileSize,gamePanel.tileSize);
-        right2 = setup("projectiles/fireball_right_2",gamePanel.tileSize,gamePanel.tileSize);
+        up1 = setup("projectiles/fireball_up_1",1,1);
+        up2 = setup("projectiles/fireball_up_2",1,1);
+        down1 = setup("projectiles/fireball_down_1",1,1);
+        down2 = setup("projectiles/fireball_down_2",1,1);
+        left1 = setup("projectiles/fireball_left_1",1,1);
+        left2 = setup("projectiles/fireball_left_2",1,1);
+        right1 = setup("projectiles/fireball_right_1",1,1);
+        right2 = setup("projectiles/fireball_right_2",1,1);
 
     }
     public boolean haveResource(Entity user) {
