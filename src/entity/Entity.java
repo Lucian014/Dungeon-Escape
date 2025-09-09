@@ -6,17 +6,17 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Random;
 
 public class Entity {
 
     GamePanel gamePanel;
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
-    public BufferedImage attackUp1, attackUp2, attackDown1,attackDown2,attackLeft1,attackLeft2,attackRight1,attackRight2;
+    public BufferedImage attackUp1, attackUp2, attackDown1,attackDown2,attackLeft1,attackLeft2,attackRight1,attackRight2, guardUp,guardDown,guardLeft,guardRight;
     public BufferedImage image, image2,image3;
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
     public Rectangle attackArea = new Rectangle(0,0,0,0);
-
     public int solidAreaDefaultX, solidAreaDefaultY;
     public boolean collisionOn = false;
     String[] dialogues = new String[20];
@@ -36,6 +36,9 @@ public class Entity {
     public boolean onPath = false;
     public boolean knockBack = false;
     public String knockBackDirection;
+    public boolean guarding = false;
+    public boolean transparent = false;
+    public boolean offBalance = false;
     //COUNTER
     public int spriteCounter = 0;
     public int invincibleCounter = 0;
@@ -44,6 +47,9 @@ public class Entity {
     int hpBarCounter = 0;
     public int shotAvailableCounter = 0;
     int knockBackCounter = 0;
+    public int guardCounter = 0;
+    int offBalanceCounter = 0;
+
 
     //CHARACTER STATS
     public int maxLife;
@@ -426,6 +432,13 @@ public class Entity {
         if (shotAvailableCounter < 90) {
             shotAvailableCounter++;
         }
+        if(offBalance) {
+            offBalanceCounter++;
+            if(offBalanceCounter > 60) {
+                offBalance = false;
+                offBalanceCounter = 0;
+            }
+        }
     }
     public void attack() {
         spriteCounter++;
@@ -530,15 +543,46 @@ public class Entity {
     public int getParticleSize() {return 0;}
     public int getParticleSpeed() {return 0;}
     public int getParticleMaxLife() {return 0;}
-
+    public String getOppositeDirection(String direction) {
+        String oppositeDirection = "";
+        switch (direction) {
+            case "up": oppositeDirection = "down"; break;
+            case "down": oppositeDirection = "up"; break;
+            case "left": oppositeDirection = "right"; break;
+            case "right": oppositeDirection = "left"; break;
+        }
+        return oppositeDirection;
+    }
     public void damagePlayer(int attack) {
         if(!gamePanel.player.invincible) {
             //We can give damage
             gamePanel.playSE(6);
             int damage = attack - gamePanel.player.defense;
 
-            if(damage < 0) {
-                damage = 0;
+            //Get an opposite direction of this attacker
+            String canGuardDirection = getOppositeDirection(direction);
+            if(gamePanel.player.guarding && gamePanel.player.direction.equals(canGuardDirection)) {
+                //PARRY
+                if(gamePanel.player.guardCounter < 10) {
+                    damage = 0;
+                    gamePanel.sound.playSoundEffect(17);
+                    setKnockBack(this, gamePanel.player, knockBackPower);
+                    offBalance = true;
+                    spriteCounter =- 60;
+                }
+                else {
+                    damage /= 3;
+                    gamePanel.sound.playSoundEffect(16);
+                }
+
+            } else {
+                gamePanel.sound.playSoundEffect(5);
+                if(damage < 1) {
+                    damage = 1;
+                }
+            }
+            if(damage != 0) {
+                setKnockBack(gamePanel.player, this, knockBackPower);
             }
             gamePanel.player.life -= damage;
             gamePanel.player.invincible = true;

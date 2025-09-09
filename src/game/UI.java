@@ -443,7 +443,7 @@
                 counter = 0;
                 gamePanel.manager.lighting.dayState = gamePanel.manager.lighting.day;
                 gamePanel.gameState = gamePanel.playState;
-                gamePanel.player.getPlayerImage();
+                gamePanel.player.getImage();
             }
         }
     }

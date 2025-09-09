@@ -30,8 +30,9 @@
 
 
         setDefaultValues();
-        getPlayerImage();
-        getPlayerAttackImage();
+        getImage();
+        getAttackImage();
+        getGuardingImage();
         setItems();
     }
     public void setDefaultValues() {
@@ -92,7 +93,8 @@
 
         return defense = dexterity * currentShield.defenseValue;
     }
-    public void getPlayerImage() {
+
+    public void getImage() {
         up1 = setup("player/player/boy_up_1", 1, 1);
         up2 = setup("player/player/boy_up_2", 1, 1);
         down1 = setup("player/player/boy_down_1", 1, 1);
@@ -102,8 +104,7 @@
         right1 = setup("player/player/boy_right_1", 1, 1);
         right2 = setup("player/player/boy_right_2", 1, 1);
     }
-
-    public void getPlayerAttackImage() {
+    public void getAttackImage() {
 
         if(currentWeapon.type == type_sword){
 
@@ -131,7 +132,13 @@
         }
 
     }
+    public void getGuardingImage() {
+        guardUp = setup("player/player/boy_guard_up", 1, 1);
+        guardDown = setup("player/player/boy_guard_down", 1, 1);
+        guardLeft = setup("player/player/boy_guard_left", 1, 1);
+        guardRight = setup("player/player/boy_guard_right", 1, 1);
 
+    }
     public void getSleepingImage(BufferedImage image) {
         up1 = image;
         up2 = image;
@@ -145,160 +152,192 @@
 
     public void update() {
 
+        if (gamePanel.gameState == gamePanel.playState ) {
+            if(!gamePanel.sound.musicThemeFlag) {
+                gamePanel.sound.stopSE(13);
+                gamePanel.sound.playMusic(0);
+                gamePanel.sound.musicThemeFlag = true;
+                gamePanel.sound.gameOverFlag = false;
+            }
 
-            if (gamePanel.gameState == gamePanel.playState ) {
-                if(!gamePanel.sound.musicThemeFlag) {
-                    gamePanel.sound.stopSE(13);
-                    gamePanel.sound.playMusic(0);
-                    gamePanel.sound.musicThemeFlag = true;
-                    gamePanel.sound.gameOverFlag = false;
+
+            if (gamePanel.keyHandler.attackPressed && !attacking) {
+                boolean nearNPC = false;
+                int npcIndex = gamePanel.checker.checkEntity(this, gamePanel.npc);
+
+                if (npcIndex != 999) {
+                    nearNPC = true;
+                }
+                if (!nearNPC) {
+                    attacking = true;
+                    spriteCounter = 0;
                 }
 
+                // Consume attack input
+                gamePanel.keyHandler.attackPressed = false;
+            }
 
-                if (gamePanel.keyHandler.attackPressed && !attacking) {
-                    boolean nearNPC = false;
-                    int npcIndex = gamePanel.checker.checkEntity(this, gamePanel.npc);
+            if(knockBack) {
+                collisionOn = false;
+                gamePanel.checker.checkObject(this, true);
+                gamePanel.checker.checkEntity(this, gamePanel.npc);
+                gamePanel.checker.checkEntity(this, gamePanel.monster);
+                gamePanel.checker.checkEntity(this, gamePanel.iTile);
+                gamePanel.checker.checkTile(this);
 
-
-                    if (npcIndex != 999) {
-                        nearNPC = true;
-                    }
-                    if (!nearNPC) {
-                        attacking = true;
-                        spriteCounter = 0;
-                    }
-
-                    // Consume attack input
-                    gamePanel.keyHandler.attackPressed = false;
+                if(collisionOn) {
+                    knockBackCounter = 0;
+                    knockBack = false;
+                    speed = defaultSpeed;
                 }
 
-                if (attacking) {
-                    // Only handle attack animation
-                    attack();
-                } else {
-                    // Collect movement input
-                    if (gamePanel.keyHandler.upPressed) {
-                        direction = "up";
+                else if (!collision) {
+                    switch (knockBackDirection) {
+                        case "up":    worldY -= speed; break;
+                        case "down":  worldY += speed; break;
+                        case "left":  worldX -= speed; break;
+                        case "right": worldX += speed; break;
                     }
-                    if (gamePanel.keyHandler.downPressed) {
-                        direction = "down";
-                    }
-                    if (gamePanel.keyHandler.leftPressed) {
-                        direction = "left";
-                    }
-                    if (gamePanel.keyHandler.rightPressed) {
-                        direction = "right";
-                    }
+                }
+                knockBackCounter++;
+                if(knockBackCounter > 10) {
+                    knockBackCounter = 0;
+                    knockBack = false;
+                    speed = defaultSpeed;
+                }
+            }
+            else if (attacking) {
+                // Only handle attack animation
+                attack();
+            }
+            else if(gamePanel.keyHandler.guardKeyPressed) {
+                guarding = true;
+                guardCounter++;
 
-                    // Reset collision flag
-                    collisionOn = false;
-                    boolean moving = gamePanel.keyHandler.upPressed || gamePanel.keyHandler.downPressed ||
-                            gamePanel.keyHandler.leftPressed || gamePanel.keyHandler.rightPressed;
-                    if (moving) {
-                        // Check Tile Collision
-                        gamePanel.checker.checkTile(this);
-                        int objIndex = gamePanel.checker.checkObject(this, true);
-                        pickUpObject(objIndex);
-                        int npcIndex = gamePanel.checker.checkEntity(this, gamePanel.npc);
-                        gamePanel.checker.checkEntity(this, gamePanel.iTile);
 
-                        if (npcIndex != 999 && gamePanel.keyHandler.enterPressed) {
-                            interactNPC(npcIndex);
-                            gamePanel.keyHandler.enterPressed = false; // consume input
-                        } else if (gamePanel.keyHandler.enterPressed) {
-                            gamePanel.keyHandler.enterPressed = false;
-                        }
-                        if (!collisionOn) {
-                            switch (direction) {
-                                case "up": worldY -= speed;break;
-                                case "down": worldY += speed;break;
-                                case "left": worldX -= speed;break;
-                                case "right": worldX += speed;break;
-                            }
-                        }
-                        if (worldX != 0 || worldY != 0) {
-                            spriteCounter++;
-                            if (spriteCounter > 14) {
-                                spriteNum = (spriteNum == 1) ? 2 : 1;
-                                spriteCounter = 0;
-                            }
-                        }
-                    }
-                    //Check Object collision
+            }
+            else {
+                // Collect movement input
+                if (gamePanel.keyHandler.upPressed) {
+                    direction = "up";
+                }
+                if (gamePanel.keyHandler.downPressed) {
+                    direction = "down";
+                }
+                if (gamePanel.keyHandler.leftPressed) {
+                    direction = "left";
+                }
+                if (gamePanel.keyHandler.rightPressed) {
+                    direction = "right";
+                }
+
+                // Reset collision flag
+                collisionOn = false;
+                boolean moving = gamePanel.keyHandler.upPressed || gamePanel.keyHandler.downPressed ||
+                        gamePanel.keyHandler.leftPressed || gamePanel.keyHandler.rightPressed;
+                if (moving) {
+                    // Check Tile Collision
+                    gamePanel.checker.checkTile(this);
                     int objIndex = gamePanel.checker.checkObject(this, true);
                     pickUpObject(objIndex);
-
-                    // Check NPC Collision
                     int npcIndex = gamePanel.checker.checkEntity(this, gamePanel.npc);
+                    gamePanel.checker.checkEntity(this, gamePanel.iTile);
+
                     if (npcIndex != 999 && gamePanel.keyHandler.enterPressed) {
                         interactNPC(npcIndex);
                         gamePanel.keyHandler.enterPressed = false; // consume input
+                    } else if (gamePanel.keyHandler.enterPressed) {
+                        gamePanel.keyHandler.enterPressed = false;
                     }
-                    // Check Monster Collision
-                    int monsterIndex = gamePanel.checker.checkEntity(this, gamePanel.monster);
-                    contactMonster(monsterIndex);
-
-                    // Check Interactive Tile Collision
-
-                    // Check events
-                    gamePanel.eventHandler.checkEvent();
-
-                    // Walking animation
-
-                }
-
-                if(gamePanel.keyHandler.shotKeyPressed && !projectile.alive && shotAvailableCounter == 120 && projectile.haveResource(this)) {
-
-                    //SET DEFAULT COORDINATES, DIRECTION AND USER
-                    projectile.set(worldX, worldY, direction, true, this);
-
-                    //SUBTRACT THE COST(MANA, AMMO)
-                    projectile.subtractResource(this);
-
-                    //CHECK VACANCY
-                    for(int i = 0; i < gamePanel.projectile[1].length; i++) {
-                        if(gamePanel.projectile[gamePanel.currentMap][i] == null) {
-                            gamePanel.projectile[gamePanel.currentMap][i] = projectile;
-                            break;
+                    if (!collisionOn) {
+                        switch (direction) {
+                            case "up": worldY -= speed;break;
+                            case "down": worldY += speed;break;
+                            case "left": worldX -= speed;break;
+                            case "right": worldX += speed;break;
                         }
                     }
-
-                    gamePanel.playSE(11);
-
-                    shotAvailableCounter = 0;
-
-                    gamePanel.keyHandler.shotKeyPressed = false;
-                }
-
-                // Invincibility timer
-                if (invincible) {
-                    invincibleCounter++;
-                    if (invincibleCounter == 60) {
-                        invincible = false;
-                        invincibleCounter = 0;
+                    if (worldX != 0 || worldY != 0) {
+                        spriteCounter++;
+                        if (spriteCounter > 14) {
+                            spriteNum = (spriteNum == 1) ? 2 : 1;
+                            spriteCounter = 0;
+                        }
                     }
                 }
-                if(life > maxLife) {
-                    life = maxLife;
+                //Check Object collision
+                int objIndex = gamePanel.checker.checkObject(this, true);
+                pickUpObject(objIndex);
+                // Check NPC Collision
+                int npcIndex = gamePanel.checker.checkEntity(this, gamePanel.npc);
+                if (npcIndex != 999 && gamePanel.keyHandler.enterPressed) {
+                    interactNPC(npcIndex);
+                    gamePanel.keyHandler.enterPressed = false; // consume input
                 }
-                if(mana > maxMana) {
-                    mana = maxMana;
+                // Check Monster Collision
+                int monsterIndex = gamePanel.checker.checkEntity(this, gamePanel.monster);
+                contactMonster(monsterIndex);
+                // Check Interactive Tile Collision
+                gamePanel.checker.checkEntity(this, gamePanel.iTile);
+                // Check events
+                gamePanel.eventHandler.checkEvent();
+
+                // Walking animation
+                guarding = false;
+                guardCounter = 0;
+                gamePanel.keyHandler.guardKeyPressed = false;
+            }
+
+            if(gamePanel.keyHandler.shotKeyPressed && !projectile.alive && shotAvailableCounter == 120 && projectile.haveResource(this)) {
+
+                //SET DEFAULT COORDINATES, DIRECTION AND USER
+                projectile.set(worldX, worldY, direction, true, this);
+
+                //SUBTRACT THE COST(MANA, AMMO)
+                projectile.subtractResource(this);
+
+                //CHECK VACANCY
+                for(int i = 0; i < gamePanel.projectile[1].length; i++) {
+                    if(gamePanel.projectile[gamePanel.currentMap][i] == null) {
+                        gamePanel.projectile[gamePanel.currentMap][i] = projectile;
+                        break;
+                    }
                 }
-                if(life <= 0) {
-                    gamePanel.gameState = gamePanel.gameOverState;
-                    gamePanel.sound.stopMusic();
-                    gamePanel.sound.playSoundEffect(13);
-                    gamePanel.sound.gameOverFlag = true;
-                    gamePanel.sound.musicThemeFlag = false;
+
+                gamePanel.playSE(11);
+
+                shotAvailableCounter = 0;
+
+                gamePanel.keyHandler.shotKeyPressed = false;
+            }
+
+            // Invincibility timer
+            if (invincible) {
+                invincibleCounter++;
+                if (invincibleCounter > 60) {
+                    invincible = false;
+                    transparent = false;
+                    invincibleCounter = 0;
                 }
             }
-            if(shotAvailableCounter < 120) {
-                shotAvailableCounter++;
+            if(life > maxLife) {
+                life = maxLife;
+            }
+            if(mana > maxMana) {
+                mana = maxMana;
+            }
+            if(life <= 0) {
+                gamePanel.gameState = gamePanel.gameOverState;
+                gamePanel.sound.stopMusic();
+                gamePanel.sound.playSoundEffect(13);
+                gamePanel.sound.gameOverFlag = true;
+                gamePanel.sound.musicThemeFlag = false;
             }
         }
-
-
-
+        if(shotAvailableCounter < 120) {
+            shotAvailableCounter++;
+        }
+    }
 
     public void pickUpObject(int i) {
 
@@ -354,6 +393,9 @@
                     if(spriteNum == 1){image = attackUp1;}
                     if(spriteNum == 2){image = attackUp2;}
                 }
+                if(guarding) {
+                    image = guardUp;
+                }
                 break;
             case "down":
                 if(!attacking){
@@ -363,6 +405,9 @@
                 if(attacking) {
                     if(spriteNum == 1){image = attackDown1;}
                     if(spriteNum == 2){image = attackDown2;}
+                }
+                if(guarding) {
+                    image = guardDown;
                 }
                 break;
             case "left":
@@ -375,6 +420,9 @@
                     if(spriteNum == 1){image = attackLeft1;}
                     if(spriteNum == 2){image = attackLeft2;}
                 }
+                if(guarding) {
+                    image = guardLeft;
+                }
                 break;
             case "right":
                 if(!attacking){
@@ -385,6 +433,9 @@
                     if(spriteNum == 1){image = attackRight1;}
                     if(spriteNum == 2){image = attackRight2;}
                 }
+                if(guarding) {
+                    image = guardRight;
+                }
                 break;
         }
 
@@ -394,7 +445,6 @@
         g2.drawImage(image,tempScreenX,tempScreenY,null);
 
         //RESET ALPHA
-
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
 
         //DEBUG
@@ -414,7 +464,7 @@
 
                 currentWeapon = selectedItem;
                 attack = getAttack();
-                getPlayerAttackImage();
+                getAttackImage();
             }
             if(selectedItem.type == type_shield) {
 
@@ -487,11 +537,12 @@
             if(!invincible && !gamePanel.monster[gamePanel.currentMap][i].dying) {
                 gamePanel.playSE(6);
                 int damage = gamePanel.monster[gamePanel.currentMap][i].attack - defense;
-                if(damage < 0) {
-                    damage = 0;
+                if(damage < 1) {
+                    damage = 1;
                 }
                 life -= damage;
                 invincible = true;
+                transparent = true;
             }
         }
     }
@@ -503,6 +554,10 @@
                 if(knockBackPower > 0) {
                     setKnockBack(gamePanel.monster[gamePanel.currentMap][monsterIndex], attacker, knockBackPower);
                 }
+                if(gamePanel.monster[gamePanel.currentMap][monsterIndex].offBalance) {
+                    attack *= 2;
+                }
+
                 int damage = attack - gamePanel.monster[gamePanel.currentMap][monsterIndex].defense;
                 if(damage < 0) {
                     damage = 0;
