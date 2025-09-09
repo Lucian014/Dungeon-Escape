@@ -20,6 +20,7 @@ public class Entity {
     public int solidAreaDefaultX, solidAreaDefaultY;
     public boolean collisionOn = false;
     String[] dialogues = new String[20];
+    public Entity attacker;
 
     //STATE
     public int worldX, worldY;
@@ -34,7 +35,7 @@ public class Entity {
     boolean hpBarOn = false;
     public boolean onPath = false;
     public boolean knockBack = false;
-
+    public String knockBackDirection;
     //COUNTER
     public int spriteCounter = 0;
     public int invincibleCounter = 0;
@@ -302,7 +303,7 @@ public class Entity {
                 speed = defaultSpeed;
             }
             else if (!collision) {
-                switch (direction) {
+                switch (knockBackDirection) {
                     case "up":    worldY -= speed; break;
                     case "down":  worldY += speed; break;
                     case "left":  worldX -= speed; break;
@@ -401,7 +402,14 @@ public class Entity {
             gamePanel.player.invincible = true;
         }
     }
+    public void setKnockBack(Entity target, Entity attacker, int knockBackPower) {
 
+        this.attacker = attacker;
+        target.knockBackDirection = attacker.direction;
+        target.speed += knockBackPower;
+        target.knockBack = true;
+
+    }
     public void dyingAnimation(Graphics2D graphics2D) {
 
         int i = 5;
