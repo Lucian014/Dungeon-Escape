@@ -30,10 +30,7 @@
 
 
         setDefaultValues();
-        getImage();
-        getAttackImage();
-        getGuardingImage();
-        setItems();
+
     }
     public void setDefaultValues() {
 
@@ -53,11 +50,17 @@
         exp = 0;
         nextLevelExp = 5;
         coin = 1000;
+        currentLight = null;
         currentWeapon = new OBJ_Sword_Normal(gamePanel);
         currentShield = new OBJ_Shield_Wood(gamePanel);
         projectile = new OBJ_Fireball(gamePanel);
         attack = getAttack(); // Influenced by player's strength and weapon's attack value
         defense = getDefense(); // Influenced by player's dexterity and shield's defense stats
+
+        getImage();
+        getAttackImage();
+        getGuardingImage();
+        setItems();
 
     }
 
@@ -68,10 +71,15 @@
 
     }
 
-    public void restoreLifeAndMana() {
+    public void restoreStatus() {
         life = maxLife;
         mana = maxMana;
         invincible = false;
+        attacking = false;
+        guarding = false;
+        knockBack = false;
+        lightUpdated = true;
+        speed = defaultSpeed;
     }
 
     public void setItems() {

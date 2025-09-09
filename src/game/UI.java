@@ -832,6 +832,7 @@
             if(gamePanel.keyHandler.enterPressed) {
                 subState = 0;
                 gamePanel.gameState = gamePanel.titleState;
+                gamePanel.resetGame(true);
             }
         }
         //NO
