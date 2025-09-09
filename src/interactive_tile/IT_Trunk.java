@@ -13,7 +13,7 @@ public class IT_Trunk extends InteractiveTile {
         this.worldX = col * gamePanel.tileSize;
         this.worldY = row * gamePanel.tileSize;
 
-        down1 = setup("tiles_interactive/trunk",gamePanel.tileSize,gamePanel.tileSize);
+        down1 = setup("tiles_interactive/trunk",1,1);
 
         solidArea.x = 0;
         solidArea.y = 0;
