@@ -5,6 +5,7 @@ import entity.Entity;
 import entity.Player;
 import environment.EnvironmentManager;
 import interactive_tile.InteractiveTile;
+import tiles.Map;
 import tiles.TileManager;
 
 import javax.swing.*;
@@ -28,8 +29,8 @@ public class GamePanel extends JPanel implements Runnable{
     public final int screenHeight = tileSize * maxScreenRow;  // 576 pixels
 
     //WORLD SETTINGS
-    public int maxWorldCol = 50;
-    public int maxWorldRow = 50;
+    public int maxWorldCol;
+    public int maxWorldRow;
     public final int maxMap = 10;
     public int currentMap = 0;
 
@@ -52,6 +53,7 @@ public class GamePanel extends JPanel implements Runnable{
     public Config config = new Config(this);
     public PathFinder pathFinder = new PathFinder(this);
     EnvironmentManager manager = new EnvironmentManager(this);
+    Map map = new Map(this);
 
     //ENTITY AND OBJECT
     public Player player = new Player(this, keyHandler);
@@ -75,6 +77,8 @@ public class GamePanel extends JPanel implements Runnable{
     public final int transitionState = 7;
     public final int tradeState = 8;
     public final int sleepState = 9;
+    public final int mapState = 10;
+
 
     public GamePanel(){
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -223,11 +227,16 @@ public class GamePanel extends JPanel implements Runnable{
     }
 
     public void drawToTempScreen() {
+
         if(gameState == titleState) {
             graphics2D.setColor(Color.BLACK);
             graphics2D.fillRect(0, 0, screenWidth, screenHeight);
             ui.draw(graphics2D);
-        } else {
+        } //MAP SCREEN
+        else if(gameState == mapState) {
+            map.drawFullMapScreen(graphics2D);
+        }
+        else {
 
             //TILE
             tileManager.draw(graphics2D);
@@ -297,6 +306,8 @@ public class GamePanel extends JPanel implements Runnable{
             manager.draw(graphics2D);
             manager.update();
 
+            //MINIMAP
+            map.drawMiniMapScreen(graphics2D);
             //UI
             ui.draw(graphics2D);
 
