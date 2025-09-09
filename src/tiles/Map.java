@@ -27,7 +27,7 @@ public class Map extends TileManager {
 
         for(int i = 0; i < gamePanel.maxMap; i++) {
             worldMap[i] = new BufferedImage(worldMapWidth, worldMapHeight, BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g2 =(Graphics2D) worldMap[i].createGraphics();
+            Graphics2D g2 = worldMap[i].createGraphics();
 
             int col = 0;
             int row = 0;
@@ -45,6 +45,7 @@ public class Map extends TileManager {
                     row++;
                 }
             }
+            g2.dispose();
         }
     }
 
