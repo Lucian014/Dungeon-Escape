@@ -6,6 +6,7 @@ import entity.NPC_merchant;
 import interactive_tile.IT_DryTree;
 import interactive_tile.InteractiveTile;
 import monster.MON_GreenSlime;
+import monster.MON_Orc;
 import object.*;
 
 import java.lang.reflect.Constructor;
@@ -112,6 +113,8 @@ public class AssetSetter {
         gamePanel.monster[mapNum][i++] = createEntity(MON_GreenSlime.class, 21, 38);
         gamePanel.monster[mapNum][i++] = createEntity(MON_GreenSlime.class, 34, 42);
         gamePanel.monster[mapNum][i++] = createEntity(MON_GreenSlime.class, 38, 42);
+        gamePanel.monster[mapNum][i++] = createEntity(MON_Orc.class, 12, 33);
+
     }
 
     public void setInteractiveTile() {

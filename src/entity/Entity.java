@@ -295,7 +295,6 @@ public class Entity {
 
         if(knockBack) {
             checkCollision();
-
             //Reset knockback if collision
             if(collisionOn) {
                 knockBackCounter = 0;
