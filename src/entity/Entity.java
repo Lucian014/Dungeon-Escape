@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Entity {
 
@@ -253,6 +254,43 @@ public class Entity {
 
     }
 
+    public void checkStopChasingOrNot(Entity target, int distance, int rate) {
+
+        if(getTileDistance(target) > distance) {
+            int i = new Random().nextInt(rate);
+            if(i == 0) {
+                onPath = false;
+            }
+        }
+    }
+    public void checkShootOrNot(int rate, int shotInterval) {
+        int i = new Random().nextInt(rate);
+        if(i > 196 && !projectile.alive && shotAvailableCounter >= shotInterval) {
+            projectile.set(worldX,worldY,direction,true,this);
+            //CHECK VACANCY
+            for(i = 0; i < gamePanel.projectile[1].length; i++) {
+                if(gamePanel.projectile[1][i] == null) {
+                    gamePanel.projectile[gamePanel.currentMap][i] = projectile;
+                    break;
+                }
+            }
+
+            shotAvailableCounter = 0;
+        }
+        if(shotAvailableCounter < 30) {
+            shotAvailableCounter++;
+        }
+    }
+    public void checkStartChasingOrNot(Entity target, int distance, int rate) {
+
+        if(getTileDistance(target) < distance) {
+            int i = new Random().nextInt(rate);
+            if(i == 0) {
+                onPath = true;
+            }
+        }
+    }
+
     public void update() {
 
         if(knockBack) {
@@ -313,7 +351,39 @@ public class Entity {
         }
     }
 
-
+    public int getXdistance(Entity target) {
+        return Math.abs(worldX - target.worldX);
+    }
+    public int getYdistance(Entity target) {
+        return Math.abs(worldY - target.worldY);
+    }
+    public int getTileDistance(Entity target) {
+        return (getXdistance(target) + getYdistance(target)) / gamePanel.tileSize;
+    }
+    public int getGoalCol(Entity target) {
+        return (target.worldX + target.solidArea.x) / gamePanel.tileSize;
+    }
+    public int getGoalRow(Entity target) {
+        return (target.worldY + target.solidArea.y) / gamePanel.tileSize;
+    }
+    public void getRandomDirection() {
+        actionLockCounter++;
+        if(actionLockCounter == 80){
+            Random random = new Random();
+            int i = random.nextInt(100) + 1;
+            if (i <= 25) {
+                direction = "up";
+            }
+            if(i > 25 && i <= 50) {
+                direction = "down";
+            }
+            if(i > 50 && i <= 75) {
+                direction = "left";
+            }
+            if(i > 75) {direction = "right";}
+            actionLockCounter = 0;
+        }
+    }
     public Color getParticleColor() {return null;}
     public int getParticleSize() {return 0;}
     public int getParticleSpeed() {return 0;}
