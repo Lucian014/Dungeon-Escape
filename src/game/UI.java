@@ -12,7 +12,7 @@
     public class UI {
     GamePanel gamePanel;
     Graphics2D graphics2D;
-    Font maruMonica, purisaBold;
+    public Font maruMonica, purisaBold;
     BufferedImage heart_full, heart_half, heart_blank, crystal_full, crystal_blank, coin;
     public boolean messageOn = false;
     ArrayList<String> message = new ArrayList<>();

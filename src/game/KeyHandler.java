@@ -52,10 +52,14 @@ public class KeyHandler implements KeyListener {
         else if(gamePanel.gameState == gamePanel.gameOverState) {
             gameOverState(code);
         }
+        //TRADE STATE
         else if(gamePanel.gameState == gamePanel.tradeState) {
             tradeState(code);
         }
-
+        //MAP STATE
+        else if(gamePanel.gameState == gamePanel.mapState) {
+            mapState(code);
+        }
     }
 
     public void titleState(int code) {
@@ -116,6 +120,12 @@ public class KeyHandler implements KeyListener {
         }
         if(code == KeyEvent.VK_ESCAPE) {
             gamePanel.gameState = gamePanel.optionsState;
+        }
+        if(code == KeyEvent.VK_M) {
+            gamePanel.gameState = gamePanel.mapState;
+        }
+        if(code == KeyEvent.VK_X) {
+            gamePanel.map.miniMapOn = !gamePanel.map.miniMapOn;
         }
     }
 
@@ -271,6 +281,13 @@ public class KeyHandler implements KeyListener {
             }
         }
     }
+
+    public void mapState(int code) {
+        if(code == KeyEvent.VK_M) {
+            gamePanel.gameState = gamePanel.playState;
+        }
+    }
+
     public void playerInventory(int code) {
         if(code == KeyEvent.VK_W) {
             if(gamePanel.ui.playerSlotRow != 0){
