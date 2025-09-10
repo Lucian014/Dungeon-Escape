@@ -831,8 +831,8 @@
             graphics2D.drawString(">", textX - 25, textY);
             if(gamePanel.keyHandler.enterPressed) {
                 subState = 0;
+                gamePanel.dataManager.savePlayerStats(gamePanel.player);
                 gamePanel.gameState = gamePanel.titleState;
-                gamePanel.resetGame(true);
             }
         }
         //NO

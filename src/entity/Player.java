@@ -54,6 +54,7 @@
         currentWeapon = new OBJ_Sword_Normal(gamePanel);
         currentShield = new OBJ_Shield_Wood(gamePanel);
         projectile = new OBJ_Fireball(gamePanel);
+        currentLight = new OBJ_Lantern(gamePanel);
         attack = getAttack(); // Influenced by player's strength and weapon's attack value
         defense = getDefense(); // Influenced by player's dexterity and shield's defense stats
 
