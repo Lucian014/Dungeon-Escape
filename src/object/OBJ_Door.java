@@ -22,12 +22,19 @@ public class OBJ_Door extends Entity {
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
 
+        setDialogue();
+    }
+
+    public void setDialogue() {
+
+        dialogues[0][0] = "You need a key to open this !";
+
     }
 
     public void interact() {
 
         gamePanel.gameState = gamePanel.dialogueState;
-        gamePanel.ui.currentDialogue = "You need a key to open this !";
         gamePanel.keyHandler.enterPressed = false;
+        startDialogue(this,0);
     }
 }

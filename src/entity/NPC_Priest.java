@@ -13,18 +13,29 @@ public class NPC_Priest extends Entity{
         direction = "down";
         speed = 2;
         getImage();
-        setDialogue();
         solidArea = new Rectangle(8,16,30,30);
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
+        dialogueSet = -1;
+
+        setDialogue();
+
     }
 
     public void setDialogue(){
 
-        dialogues[0] = "Hello my son.";
-        dialogues[1] = "So you've come to this island to get \nit.";
-        dialogues[2] = "Many have tried but failed.";
-        dialogues[3] = "Good luck warrior.";
+        dialogues[0][0] = "Hello my son.";
+        dialogues[0][1] = "So you've come to this island to get \nit.";
+        dialogues[0][2] = "Many have tried but failed.";
+        dialogues[0][3] = "Good luck warrior.";
+
+        dialogues[1][0] = "If you become tired, rest at the water.";
+        dialogues[1][1] = "You can drink from the water to heal. Though \n if you rest monsters will appear";
+        dialogues[1][2] = "Anyway, try to not die.";
+
+        dialogues[2][0] = "For how long have i been here?";
+
+
 
     }
     public void getImage(){
@@ -71,8 +82,17 @@ public class NPC_Priest extends Entity{
         }
     }
     public void speak() {
-        super.speak();
 
-        onPath = true;
+        facePlayer();
+        startDialogue(this,dialogueSet);
+
+        dialogueSet++;
+
+        if(dialogues[dialogueSet][0] == null) {
+
+            dialogueSet--;
+
+        }
+        //onPath = true;
     }
 }

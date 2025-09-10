@@ -62,6 +62,7 @@
         getAttackImage();
         getGuardingImage();
         setItems();
+        setDialogue();
 
     }
 
@@ -380,8 +381,9 @@
 
     public void interactNPC(int i) {
         if (i != 999) {
-            gamePanel.gameState = gamePanel.dialogueState;
-            gamePanel.npc[gamePanel.currentMap][i].speak();
+            if(gamePanel.keyHandler.enterPressed) {
+                gamePanel.npc[gamePanel.currentMap][i].speak();
+            }
         }
     }
 
@@ -586,7 +588,10 @@
         }
     }
 
-
+    public void setDialogue() {
+        dialogues[0][0] = "You are level " + level + " !";
+        startDialogue(this,0);
+    }
 
     public void damageInteractiveTile(int i) {
 
@@ -626,7 +631,7 @@
 
         gamePanel.playSE(8);
         gamePanel.gameState = gamePanel.dialogueState;
-        gamePanel.ui.currentDialogue = "You are level " + level + " !";
+
         }
     }
 

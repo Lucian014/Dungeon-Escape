@@ -2,7 +2,7 @@ package game;
 
 import entity.Entity;
 import entity.NPC_Priest;
-import entity.NPC_merchant;
+import entity.NPC_Merchant;
 import interactive_tile.IT_DryTree;
 import interactive_tile.InteractiveTile;
 import monster.MON_GreenSlime;
@@ -91,17 +91,18 @@ public class AssetSetter {
         gamePanel.object[mapNum][i++] = createEntity(OBJ_Chest.class,30,12, new OBJ_Key(gamePanel));
         gamePanel.object[mapNum][i++] = createEntity(OBJ_Lantern.class,18,20);
         gamePanel.object[mapNum][i++] = createEntity(OBJ_Tent.class,19,20);
+        gamePanel.object[mapNum][i++] = createEntity(OBJ_Chest.class,30,29,new OBJ_Shield_Blue(gamePanel));
     }
 
     public void setNPC() {
         int mapNum = 0;
 
         //MAP 1 NPCs
-        gamePanel.npc[mapNum][0] = createEntity(NPC_Priest.class, 21, 21);
+        gamePanel.npc[mapNum][0] = createEntity(NPC_Priest.class, 17, 20);
 
         //MAP 2 NPCS
         mapNum = 1;
-        gamePanel.npc[mapNum][0] = createEntity(NPC_merchant.class, 12, 7);
+        gamePanel.npc[mapNum][0] = createEntity(NPC_Merchant.class, 12, 7);
 
     }
 

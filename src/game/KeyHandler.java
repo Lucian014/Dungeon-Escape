@@ -140,8 +140,7 @@ public class KeyHandler implements KeyListener {
 
     public void dialogueState(int code) {
         if(code == KeyEvent.VK_ENTER){
-            gamePanel.gameState = gamePanel.playState;
-            gamePanel.ui.currentDialogue = "";
+            enterPressed = true;
         }
     }
 
@@ -246,7 +245,6 @@ public class KeyHandler implements KeyListener {
                 gamePanel.ui.commandNum = 0; // Reset menu selection
             }
         }
-
     }
 
     public void tradeState(int code) {
