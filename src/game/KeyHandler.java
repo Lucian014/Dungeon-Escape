@@ -235,11 +235,15 @@ public class KeyHandler implements KeyListener {
         if(code == KeyEvent.VK_ENTER) {
             if(gamePanel.ui.commandNum == 0) {
                 gamePanel.gameState = gamePanel.playState;
-                gamePanel.retry();
+                gamePanel.resetGame(false);
             }
-            else if(gamePanel.ui.commandNum == 1) {
+            else if (gamePanel.ui.commandNum == 1) {
+                // Quit: Save player stats and return to title screen
+                // Optionally restore health before saving to avoid saving a dead state
+                gamePanel.player.restoreStatus(); // Restore life, mana, etc.
+                gamePanel.dataManager.savePlayerStats(gamePanel.player);
                 gamePanel.gameState = gamePanel.titleState;
-                gamePanel.restart();
+                gamePanel.ui.commandNum = 0; // Reset menu selection
             }
         }
 
@@ -416,12 +420,14 @@ public class KeyHandler implements KeyListener {
         }
         if(code == KeyEvent.VK_ENTER) {
             switch(gamePanel.ui.commandNum) {
-                case 0: // New Game
+                //NEW GAME
+                case 0:
                     gamePanel.ui.titleScreenState = 1;
-                    // Reset selection for character screen
                     break;
-                case 1: // Load Game (example)
-                    // Add load game functionality
+                case 1: // Load Game
+                    gamePanel.dataManager.loadPlayerStats(gamePanel.player);
+                    gamePanel.gameState = gamePanel.playState;
+                    gamePanel.ui.titleScreenState = 0;
                     break;
                 case 2: // Options (example)
                     // Add options functionality
@@ -435,6 +441,7 @@ public class KeyHandler implements KeyListener {
 
     private void startGame() {
         System.out.println("Starting game with selected character...");
+        gamePanel.resetGame(true);
         gamePanel.gameState = gamePanel.playState;
         gamePanel.ui.titleScreenState = 0; // Reset to main menu
         gamePanel.ui.commandNum = 0; // Reset selection to top

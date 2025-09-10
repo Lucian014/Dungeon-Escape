@@ -712,7 +712,7 @@ public class Entity {
 //                onPath = false;
             }
         }
-        public int getDetected(Entity user,Entity target[][], String targetName) {
+    public int getDetected(Entity user,Entity target[][], String targetName) {
 
         int index = 999;
 
@@ -722,10 +722,10 @@ public class Entity {
         int nextWorldY  = user.getTopY();
 
         switch (user.direction) {
-            case "up": nextWorldY = user.getTopY() - 1; break;
-            case "down": nextWorldY = user.getBottomY() + 1; break;
-            case "left": nextWorldX = user.getLeftX() - 1; break;
-            case "right": nextWorldX = user.getRightX() + 1; break;
+            case "up": nextWorldY = user.getTopY() - gamePanel.player.speed; break;
+            case "down": nextWorldY = user.getBottomY() + gamePanel.player.speed; break;
+            case "left": nextWorldX = user.getLeftX() - gamePanel.player.speed; break;
+            case "right": nextWorldX = user.getRightX() + gamePanel.player.speed; break;
             }
             int col = nextWorldX / gamePanel.tileSize;
             int row = nextWorldY / gamePanel.tileSize;
