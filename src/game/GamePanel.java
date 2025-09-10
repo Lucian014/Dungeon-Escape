@@ -5,6 +5,7 @@ import data.DataManager;
 import entity.Entity;
 import entity.Player;
 import environment.EnvironmentManager;
+import interactive_tile.IT_DryTree;
 import interactive_tile.InteractiveTile;
 import tiles.Map;
 import tiles.TileManager;
@@ -55,7 +56,7 @@ public class GamePanel extends JPanel implements Runnable{
     public PathFinder pathFinder = new PathFinder(this);
     EnvironmentManager manager = new EnvironmentManager(this);
     Map map = new Map(this);
-    DataManager dataManager = new DataManager(this);
+    public DataManager dataManager = new DataManager(this);
 
     //ENTITY AND OBJECT
     public Player player = new Player(this, keyHandler);
@@ -91,34 +92,45 @@ public class GamePanel extends JPanel implements Runnable{
     }
 
     public void setupGame() {
+        // Common setup
         assetSetter.setNPC();
         assetSetter.setMonster();
-        assetSetter.setObject();
-        assetSetter.setInteractiveTile();
         manager.setup();
-        gameState = titleState;
 
-        tempScreen = new BufferedImage(screenWidth,screenHeight,BufferedImage.TYPE_INT_ARGB);
+        tempScreen = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
         graphics2D = (Graphics2D) tempScreen.getGraphics();
-        //sound.playMusic(0);
-        if(fullScreenOn){
+        if (fullScreenOn) {
             setFullScreen();
         }
+
+        // Set default objects/tiles
+        assetSetter.setObject();
+        assetSetter.setInteractiveTile();
+        // Load saved state (this will apply saved changes or use defaults if no save exists)
+        dataManager.loadWorldObjectState();
+        gameState = titleState;
     }
 
     public void resetGame(boolean restart) {
-
         player.setDefaultPositions();
         player.restoreStatus();
         assetSetter.setNPC();
         assetSetter.setMonster();
         manager.lighting.resetDay();
-        if(restart) {
+
+        if (restart) {
+            // For new game - reset everything to defaults
             player.setDefaultValues();
             dataManager.resetPlayerData(player);
             assetSetter.setObject();
             assetSetter.setInteractiveTile();
-
+            dataManager.saveWorldObjectState(); // Save fresh defaults
+        } else {
+            // For loading a saved game - load player data and world state
+            dataManager.loadPlayerStats(player);
+            assetSetter.setObject();
+            assetSetter.setInteractiveTile();
+            dataManager.loadWorldObjectState(); // Apply saved changes
         }
     }
 
@@ -216,6 +228,10 @@ public class GamePanel extends JPanel implements Runnable{
             for (int i = 0; i < iTile[1].length; i++) {
                 if (iTile[currentMap][i] != null) {
                     iTile[currentMap][i].update();
+                    //SAVE TILE STATE IF A DRY TREE IS DESTROYED
+                    if(iTile[currentMap][i] instanceof IT_DryTree dryTree && dryTree.life <= 0) {
+                        dataManager.saveWorldObjectState();
+                    }
                 }
             }
 

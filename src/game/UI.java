@@ -25,10 +25,11 @@
     public int playerSlotRow = 0;
     public int npcSlotCol = 0;
     public int npcSlotRow = 0;
-
+    int charIndex = 0;
     int subState = 0;
     int counter = 0;
     private float counterDeath = 0;
+    String combinedText = "";
     public Entity npc;
     public UI(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
@@ -51,7 +52,6 @@
         Entity coin_bronze = new OBJ_Coin_Bronze(gamePanel);
         coin = coin_bronze.down1;
     }
-
     public void addMessage(String text) {
 
         message.add(text);
@@ -149,7 +149,39 @@
 
         graphics2D.setFont(graphics2D.getFont().deriveFont(Font.PLAIN, 32F));
         x += gamePanel.tileSize;
-        y += gamePanel.tileSize * 2;
+        y += gamePanel.tileSize;
+
+        if(npc.dialogues[npc.dialogueSet][npc.dialogueIndex] != null){
+
+            //currentDialogue = npc.dialogues[npc.dialogueSet][npc.dialogueIndex];
+
+            char[] characters = npc.dialogues[npc.dialogueSet][npc.dialogueIndex].toCharArray();
+            if(charIndex < characters.length) {
+
+                String s = String.valueOf(characters[charIndex]);
+                combinedText = combinedText + s;
+                currentDialogue = combinedText;
+                charIndex++;
+            }
+            if(gamePanel.keyHandler.enterPressed) {
+
+                charIndex = 0;
+                combinedText = "";
+
+                if (gamePanel.gameState == gamePanel.dialogueState) {
+                    npc.dialogueIndex++;
+                    gamePanel.keyHandler.enterPressed = false;
+                }
+            }
+        } else { //NO TEXT IN ARRAY
+            npc.dialogueIndex = 0;
+
+            if(gamePanel.gameState == gamePanel.dialogueState) {
+                gamePanel.gameState = gamePanel.playState;
+            }
+        }
+
+
 
         for (String line : currentDialogue.split("\n")) {
             graphics2D.drawString(line, x, y);
@@ -850,6 +882,7 @@
     }
     public void trade_select() {
 
+        npc.dialogueSet = 0;
         drawDialogueScreen();
         //DRAW WINDOW
         int x = gamePanel.tileSize * 15;
@@ -882,8 +915,7 @@
             graphics2D.drawString(">", x - 24, y);
             if (gamePanel.keyHandler.enterPressed) {
                 commandNum = 0;
-                gamePanel.gameState = gamePanel.dialogueState;
-                currentDialogue = "Come again, brotha!";
+                npc.startDialogue(npc,1);
             }
         }
     }
@@ -908,7 +940,6 @@
         height = gamePanel.tileSize * 2;
         drawSubWindow(x,y,width,height);
         graphics2D.drawString("Your coins: " + gamePanel.player.coin , x + 24,y + 60);
-
         //DRAW PRICE WINDOW
         int itemIndex = getItemIndexOnSlot(npcSlotCol,npcSlotRow);
         if(itemIndex < npc.inventory.size()) {
@@ -930,11 +961,9 @@
             if(gamePanel.keyHandler.enterPressed) {
                 // Check if player has enough money
                 if(gamePanel.player.coin < price) {
-                    int coinDifference = price - gamePanel.player.coin;
                     subState = 0;
-                    gamePanel.gameState = gamePanel.dialogueState;
-                    currentDialogue = "You need " + coinDifference + " more coins to buy the " + npc.inventory.get(itemIndex).name;
-                    drawDialogueScreen();
+                    npc.startDialogue(npc,2);
+                    gamePanel.keyHandler.enterPressed = false;
                 }
                 else {
                     if(gamePanel.player.canObtainItem(npc.inventory.get(itemIndex))) {
@@ -942,8 +971,8 @@
                     }
                     else {
                         subState = 0;
-                        gamePanel.gameState = gamePanel.dialogueState;
-                        currentDialogue = "You cannot carry any more stuff!";
+                        npc.startDialogue(npc,3);
+                        gamePanel.keyHandler.enterPressed = false;
                     }
                 }
                 // Reset enter key to prevent multiple purchases
@@ -993,8 +1022,8 @@
                         gamePanel.player.inventory.get(itemIndex) == gamePanel.player.currentShield) {
                     subState = 0;
                     commandNum = 0;
-                    gamePanel.gameState = gamePanel.dialogueState;
-                    currentDialogue = "You cannot sell an equipped item";
+                    npc.startDialogue(npc, 4);
+                    gamePanel.keyHandler.enterPressed = false;
                     drawDialogueScreen();
                 }
                 // If not equipped, complete the sale

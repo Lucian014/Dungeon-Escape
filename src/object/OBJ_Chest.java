@@ -19,36 +19,38 @@ public class OBJ_Chest extends Entity {
         image2 = setup("items/chest_opened",1,1);
         down1 = setup("items/chest",1,1);
         collision = true;
-
         solidArea.x = 4;
         solidArea.y = 16;
         solidArea.width = 40;
         solidArea.height = 32;
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
+        setDialogue();
+    }
+
+    public void setDialogue() {
+
+        dialogues[0][0] = "You open the chest and find a " + loot.name + " !\n...But your inventory is full.\"";
+        dialogues[1][0] = "You open the chest and find the " + loot.name + " !\nYou obtain the " + loot.name + " !";
+        dialogues[2][0] = "The chest is empty.";
 
     }
     public void interact() {
 
-        gamePanel.gameState = gamePanel.dialogueState;
-
         if(!opened) {
             gamePanel.sound.playSoundEffect(3);
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("You open the chest and find the " + loot.name + " !");
 
             if(!gamePanel.player.canObtainItem(loot)) {
-                stringBuilder.append("\n...But your inventory is full.");
+                startDialogue(this,0);
             }
             else {
-                stringBuilder.append("\nYou obtain the " + loot.name + "!");
+                startDialogue(this,1);
                 down1 = image2;
+                opened = true;
             }
-            gamePanel.ui.currentDialogue = stringBuilder.toString();
-            opened = true;
         }
         else {
-            gamePanel.ui.currentDialogue = "The chest is empty.";
+            startDialogue(this,2);
         }
         gamePanel.keyHandler.enterPressed = false;
     }

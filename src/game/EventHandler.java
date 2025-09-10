@@ -7,13 +7,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EventHandler {
+public class EventHandler{
     GamePanel gamePanel;
     Rectangle eventRect;
     int eventRectDefaultX, eventRectDefaultY;
     Map<Integer, ArrayList<Event>> mapEvents;
     private long lastTeleportTime = 0;
     int tempMap,tempCol,tempRow;
+    Entity eventMaster;
 
     // Debug visualization toggle
     public boolean showEventDebug = false;
@@ -21,6 +22,7 @@ public class EventHandler {
     public EventHandler(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
 
+        eventMaster = new Entity(gamePanel);
         eventRect = new Rectangle();
         eventRect.x = 24;
         eventRect.y = 15;
@@ -30,8 +32,18 @@ public class EventHandler {
         eventRectDefaultY = eventRect.y;
         mapEvents = new HashMap<>();
         setupEvents();
+        setDialogue();
     }
 
+    void setDialogue() {
+
+        eventMaster.dialogues[0][0] = "You fall into a pit!";
+
+        eventMaster.dialogues[1][0] = "You drink the water.\nYour life has been recovered";
+
+        eventMaster.dialogues[2][0] = "You fall into a pit!";
+
+    }
     private void setupEvents() {
         // MAP 0 EVENTS
         ArrayList<Event> map0Events = new ArrayList<>();
@@ -214,13 +226,13 @@ public class EventHandler {
 
     public void damagePit() {
         gamePanel.player.life -= 1;
-        gamePanel.ui.currentDialogue = "You fall into a pit!";
-        gamePanel.gameState = gamePanel.dialogueState;
+        eventMaster.startDialogue(eventMaster,0);
     }
 
     public void healingPool() {
+
         gamePanel.gameState = gamePanel.dialogueState;
-        gamePanel.ui.currentDialogue = "You drink the water.\nYour life has been recovered";
+        eventMaster.startDialogue(eventMaster,1);
         gamePanel.player.life = gamePanel.player.maxLife;
         gamePanel.player.mana = gamePanel.player.maxMana;
         gamePanel.assetSetter.setMonster();

@@ -3,8 +3,9 @@ package data;
 import entity.Entity;
 import entity.Player;
 import game.GamePanel;
+import game.OBJ_Tent;
+import interactive_tile.*;
 import object.*;
-import org.sqlite.core.DB;
 
 import java.sql.*;
 
@@ -20,8 +21,7 @@ public class DataManager {
 
     private void createTables() {
         try(Connection connection = DriverManager.getConnection(DB_URL)) {
-            //PLAYER STATS TABLE
-
+            // PLAYER STATS TABLE
             String playerStats = "CREATE TABLE IF NOT EXISTS player(" +
                     "id INTEGER PRIMARY KEY," +
                     "worldX INTEGER," +
@@ -46,6 +46,7 @@ public class DataManager {
             Statement statement = connection.createStatement();
             statement.execute(playerStats);
 
+            // INVENTORY TABLE
             String inventory = "CREATE TABLE IF NOT EXISTS inventory (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "player_id INTEGER," +
@@ -55,13 +56,23 @@ public class DataManager {
                     "FOREIGN KEY(player_id) REFERENCES player(id)" +
                     ");";
             statement.execute(inventory);
+
+            // WORLD OBJECTS TABLE (for interactive tiles and objects like doors)
+            String worldObjects = "CREATE TABLE IF NOT EXISTS world_objects (" +
+                    "map_id INTEGER," +
+                    "col INTEGER," +
+                    "row INTEGER," +
+                    "type TEXT," +
+                    "state TEXT," +
+                    "PRIMARY KEY (map_id, col, row)" +
+                    ");";
+            statement.execute(worldObjects);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public void savePlayerStats(Player player) {
-
         try(Connection connection = DriverManager.getConnection(DB_URL)) {
             // SAVE OR UPDATE PLAYER STATS
             String query = "INSERT OR REPLACE INTO player (id, worldX, worldY, direction, speed, defaultSpeed, level, " +
@@ -110,35 +121,6 @@ public class DataManager {
         }
     }
 
-    // Factory method to recreate items by name (extend this with all possible items in your game)
-    private Entity getItemByName(String name) {
-        Entity item = null;
-        switch (name) {
-            case "Normal Sword":
-                item = new OBJ_Sword_Normal(gamePanel);
-                break;
-            case "Wood Shield":
-                item = new OBJ_Shield_Wood(gamePanel);
-                break;
-            case "Key":
-                item = new OBJ_Key(gamePanel);
-                break;
-            case "Woodcutter's Axe":
-                item = new OBJ_Axe(gamePanel);
-                break;
-            case "Red Potion":
-                item = new OBJ_Potion_Red(gamePanel);
-                break;
-            case "Lantern":
-                item = new OBJ_Lantern(gamePanel);
-                break;
-            // Add cases for other items as needed (e.g., potions, lights, etc.)
-            default:
-                System.out.println("Unknown item name: " + name + ". Item not loaded.");
-        }
-        return item;
-    }
-
     public void loadPlayerStats(Player player) {
         try(Connection connection = DriverManager.getConnection(DB_URL)) {
             // LOAD PLAYER STATS
@@ -177,7 +159,7 @@ public class DataManager {
                     Entity item = getItemByName(itemName);
                     if(item != null) {
                         item.amount = amount;
-                        item.type = type;  // Restore type if your Entity uses it
+                        item.type = type;
                         player.inventory.add(item);
 
                         // Set equipped if name matches
@@ -218,26 +200,226 @@ public class DataManager {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            player.setDefaultValues();  // Fallback on error
+            player.setDefaultValues();
         }
+    }
+
+    private Entity getItemByName(String name) {
+        Entity item = null;
+        switch (name) {
+            case "Normal Sword":
+                item = new OBJ_Sword_Normal(gamePanel);
+                break;
+            case "Wood Shield":
+                item = new OBJ_Shield_Wood(gamePanel);
+                break;
+            case "Key":
+                item = new OBJ_Key(gamePanel);
+                break;
+            case "Woodcutter's Axe":
+                item = new OBJ_Axe(gamePanel);
+                break;
+            case "Red Potion":
+                item = new OBJ_Potion_Red(gamePanel);
+                break;
+            case "Lantern":
+                item = new OBJ_Lantern(gamePanel);
+                break;
+            case "Tent":
+                item = new OBJ_Tent(gamePanel);
+                break;
+            case "Blue Shield":
+                item = new OBJ_Shield_Blue(gamePanel);
+            default:
+                System.out.println("Unknown item name: " + name + ". Item not loaded.");
+        }
+        return item;
     }
 
     public void resetPlayerData(Player player) {
         try(Connection connection = DriverManager.getConnection(DB_URL)) {
-            //DELETE EXISTING PLAYER DATA
+            // DELETE EXISTING PLAYER DATA
             String deletePlayer = "DELETE FROM player WHERE id = 1;";
             Statement statement = connection.createStatement();
             statement.execute(deletePlayer);
 
-            //Delete existing inventory data
+            // Delete existing inventory data
             String deleteInventory = "DELETE FROM inventory WHERE player_id = 1;";
             statement.execute(deleteInventory);
 
-            //SAVE DEFAULT PLAYER STATE
-            savePlayerStats(player);
+            // Delete existing world objects data
+            String deleteObjects = "DELETE FROM world_objects;";
+            statement.execute(deleteObjects);
 
+            // SAVE DEFAULT PLAYER STATE
+            savePlayerStats(player);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public void saveWorldObjectState() {
+        try (Connection connection = DriverManager.getConnection(DB_URL)) {
+            // Clear existing object states for current map
+            String deleteObjects = "DELETE FROM world_objects WHERE map_id = ?;";
+            PreparedStatement deleteStmt = connection.prepareStatement(deleteObjects);
+            deleteStmt.setInt(1, gamePanel.currentMap);
+            deleteStmt.executeUpdate();
+
+            // Save interactive tile states (e.g., DryTree)
+            String insertObject = "INSERT INTO world_objects (map_id, col, row, type, state) VALUES (?, ?, ?, ?, ?);";
+            PreparedStatement insertStmt = connection.prepareStatement(insertObject);
+            for (int i = 0; i < gamePanel.iTile[gamePanel.currentMap].length; i++) {
+                InteractiveTile tile = gamePanel.iTile[gamePanel.currentMap][i];
+                if (tile != null) {
+                    String type = tile instanceof IT_DryTree ? "DryTree" : null;
+                    String state = null;
+                    if (tile instanceof IT_DryTree dryTree) {
+                        state = dryTree.life <= 0 ? "destroyed" : "intact";
+                    }
+                    if (type != null) {
+                        insertStmt.setInt(1, gamePanel.currentMap);
+                        insertStmt.setInt(2, tile.worldX / gamePanel.tileSize);
+                        insertStmt.setInt(3, tile.worldY / gamePanel.tileSize);
+                        insertStmt.setString(4, type);
+                        insertStmt.setString(5, state);
+                        insertStmt.executeUpdate();
+                    }
+                }
+            }
+
+            // Save object states (e.g., Door, Key, etc.)
+            for (int i = 0; i < gamePanel.object[gamePanel.currentMap].length; i++) {
+                Entity obj = gamePanel.object[gamePanel.currentMap][i];
+                if (obj != null) {
+                    String type = null;
+                    if (obj instanceof OBJ_Door) {
+                        type = "Door";
+                    } else if (obj instanceof OBJ_Key) {
+                        type = "Key";
+                    } else if (obj instanceof OBJ_Potion_Red) {
+                        type = "Red Potion";
+                    } // Add other object types as needed
+                    if (type != null) {
+                        insertStmt.setInt(1, gamePanel.currentMap);
+                        insertStmt.setInt(2, obj.worldX / gamePanel.tileSize);
+                        insertStmt.setInt(3, obj.worldY / gamePanel.tileSize);
+                        insertStmt.setString(4, type);
+                        insertStmt.setString(5, "intact");
+                        insertStmt.executeUpdate();
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadWorldObjectState() {
+        try (Connection connection = DriverManager.getConnection(DB_URL)) {
+            String query = "SELECT * FROM world_objects WHERE map_id = ?;";
+            PreparedStatement stmt = connection.prepareStatement(query);
+            stmt.setInt(1, gamePanel.currentMap);
+            ResultSet rs = stmt.executeQuery();
+
+            // Create new arrays for tiles and objects
+            InteractiveTile[][] newTiles = new InteractiveTile[gamePanel.maxMap][gamePanel.iTile[0].length];
+            Entity[][] newObjects = new Entity[gamePanel.maxMap][gamePanel.object[0].length];
+
+            // Copy existing tiles and objects (preserve defaults from AssetSetter)
+            for (int i = 0; i < gamePanel.iTile[gamePanel.currentMap].length; i++) {
+                newTiles[gamePanel.currentMap][i] = gamePanel.iTile[gamePanel.currentMap][i];
+            }
+            for (int i = 0; i < gamePanel.object[gamePanel.currentMap].length; i++) {
+                newObjects[gamePanel.currentMap][i] = gamePanel.object[gamePanel.currentMap][i];
+            }
+
+            // Process saved states
+            while (rs.next()) {
+                int col = rs.getInt("col");
+                int row = rs.getInt("row");
+                String type = rs.getString("type");
+                String state = rs.getString("state");
+
+                if ("DryTree".equals(type)) {
+                    int index = findTileIndex(col, row);
+                    if (index == -1) {
+                        index = findEmptyTileSlot();
+                        if (index == -1) continue;
+                    }
+                    InteractiveTile tile = "destroyed".equals(state) ? new IT_Trunk(gamePanel, col, row) : new IT_DryTree(gamePanel, col, row);
+                    newTiles[gamePanel.currentMap][index] = tile;
+                } else {
+                    int index = findObjectIndex(col, row);
+                    if ("intact".equals(state)) {
+                        if (index == -1) {
+                            index = findEmptyObjectSlot();
+                            if (index == -1) continue;
+                        }
+                        Entity obj = null;
+                        if ("Door".equals(type)) {
+                            obj = new OBJ_Door(gamePanel);
+                        } else if ("Key".equals(type)) {
+                            obj = new OBJ_Key(gamePanel);
+                        } else if ("Red Potion".equals(type)) {
+                            obj = new OBJ_Potion_Red(gamePanel);
+                        } // Add other object types as needed
+                        if (obj != null) {
+                            obj.worldX = col * gamePanel.tileSize;
+                            obj.worldY = row * gamePanel.tileSize;
+                            newObjects[gamePanel.currentMap][index] = obj;
+                        }
+                    } else if ("removed".equals(state)) {
+                        if (index != -1) {
+                            newObjects[gamePanel.currentMap][index] = null;
+                        }
+                    }
+                }
+            }
+
+            // Update gamePanel arrays
+            gamePanel.iTile[gamePanel.currentMap] = newTiles[gamePanel.currentMap];
+            gamePanel.object[gamePanel.currentMap] = newObjects[gamePanel.currentMap];
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private int findTileIndex(int col, int row) {
+        for (int i = 0; i < gamePanel.iTile[gamePanel.currentMap].length; i++) {
+            InteractiveTile tile = gamePanel.iTile[gamePanel.currentMap][i];
+            if (tile != null && tile.worldX / gamePanel.tileSize == col && tile.worldY / gamePanel.tileSize == row) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private int findEmptyTileSlot() {
+        for (int i = 0; i < gamePanel.iTile[gamePanel.currentMap].length; i++) {
+            if (gamePanel.iTile[gamePanel.currentMap][i] == null) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private int findObjectIndex(int col, int row) {
+        for (int i = 0; i < gamePanel.object[gamePanel.currentMap].length; i++) {
+            Entity obj = gamePanel.object[gamePanel.currentMap][i];
+            if (obj != null && obj.worldX / gamePanel.tileSize == col && obj.worldY / gamePanel.tileSize == row) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private int findEmptyObjectSlot() {
+        for (int i = 0; i < gamePanel.object[gamePanel.currentMap].length; i++) {
+            if (gamePanel.object[gamePanel.currentMap][i] == null) {
+                return i;
+            }
+        }
+        return -1;
     }
 }

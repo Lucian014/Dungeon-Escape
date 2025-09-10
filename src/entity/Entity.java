@@ -6,7 +6,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Random;
 
 public class Entity {
@@ -19,14 +18,15 @@ public class Entity {
     public Rectangle attackArea = new Rectangle(0,0,0,0);
     public int solidAreaDefaultX, solidAreaDefaultY;
     public boolean collisionOn = false;
-    String[] dialogues = new String[20];
+    public String[][] dialogues = new String[20][20];
     public Entity attacker;
 
     //STATE
     public int worldX, worldY;
     public String direction = "down";
     public int spriteNum = 1;
-    int dialogueIndex = 0;
+    public int dialogueIndex = 0;
+    public int dialogueSet = 0;
     public boolean collision = false;
     public boolean invincible = false;
     public boolean attacking = false;
@@ -39,6 +39,7 @@ public class Entity {
     public boolean guarding = false;
     public boolean transparent = false;
     public boolean offBalance = false;
+
     //COUNTER
     public int spriteCounter = 0;
     public int invincibleCounter = 0;
@@ -239,12 +240,9 @@ public class Entity {
 
     public void damageReaction() {}
 
-    public void speak() {
-        if(dialogues[dialogueIndex] == null){
-            dialogueIndex = 0;
-        }
-        gamePanel.ui.currentDialogue = dialogues[dialogueIndex];
-        dialogueIndex++;
+    public void speak() {}
+
+    public void facePlayer() {
 
         switch (gamePanel.player.direction) {
             case "up" :
@@ -260,6 +258,14 @@ public class Entity {
                 direction = "left";
                 break;
         }
+    }
+
+    public void startDialogue(Entity entity, int setNum) {
+
+        gamePanel.gameState = gamePanel.dialogueState;
+        gamePanel.ui.npc = entity;
+        dialogueSet = setNum;
+
     }
 
     public boolean use(Entity entity) {return false;}
