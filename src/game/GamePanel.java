@@ -82,6 +82,12 @@ public class GamePanel extends JPanel implements Runnable{
     public final int sleepState = 9;
     public final int mapState = 10;
 
+    //AREA
+    public int currentArea;
+    public final int outside = 50;
+    public final int indoor = 51;
+    public final int dungeon = 52;
+    public int nextArea;
 
     public GamePanel(){
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -102,13 +108,13 @@ public class GamePanel extends JPanel implements Runnable{
         if (fullScreenOn) {
             setFullScreen();
         }
-
         // Set default objects/tiles
         assetSetter.setObject();
         assetSetter.setInteractiveTile();
         // Load saved state (this will apply saved changes or use defaults if no save exists)
         dataManager.loadWorldObjectState();
         gameState = titleState;
+        currentArea = outside;
     }
 
     public void resetGame(boolean restart) {
@@ -352,5 +358,25 @@ public class GamePanel extends JPanel implements Runnable{
 
     public void playSE(int i) {
         sound.playSoundEffect(i);
+    }
+
+    public void changeArea() {
+
+        if(nextArea != currentArea) {
+
+            sound.stopMusic();
+            if(nextArea == outside) {
+                sound.playMusic(0);
+            }
+            if(nextArea == indoor) {
+                sound.playMusic(18);
+            }
+            if(nextArea == dungeon) {
+                sound.playMusic(19);
+            }
+        }
+        currentArea = nextArea;
+        assetSetter.setMonster();
+
     }
 }

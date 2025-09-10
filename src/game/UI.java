@@ -425,7 +425,6 @@
     }
     public void drawTransitionScreen() {
             counter++;
-
             // Fade out (0-25 frames) then fade in (26-50 frames)
             if (counter <= 25) {
                 // Fade to black
@@ -445,6 +444,7 @@
                 int alpha = Math.max(255 - ((counter - 25) * 10), 0);
                 graphics2D.setColor(new Color(0, 0, 0, alpha));
                 graphics2D.fillRect(0, 0, gamePanel.screenWidth, gamePanel.screenHeight);
+                gamePanel.changeArea();
             } else {
                 // Transition complete
                 counter = 0;
