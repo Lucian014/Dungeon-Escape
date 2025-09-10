@@ -64,11 +64,12 @@ public class MON_Orc extends Entity {
     public void setAction() {
         // Always check for attacks first, regardless of path state
         if(!attacking) {
-            checkAttackOrNot(20, gamePanel.tileSize * 2, gamePanel.tileSize * 1);
+            checkAttackOrNot(20, gamePanel.tileSize * 2, gamePanel.tileSize);
         }
 
         // Then handle movement/pathfinding
-        if(!attacking) {  // Only do AI movement if not attacking
+        if(!attacking) {
+            // Only do AI movement if not attacking
             if(onPath) {
                 checkStopChasingOrNot(gamePanel.player, 15,100);
                 searchPath(getGoalCol(gamePanel.player),getGoalRow(gamePanel.player));

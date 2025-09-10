@@ -30,8 +30,14 @@ public class Lighting {
     }
 
     public void draw(Graphics2D graphics2D) {
-        graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,filterAlpha));
-        graphics2D.drawImage(darknessFilter,0,0,null);
+
+        if(gamePanel.currentArea == gamePanel.outside) {
+            graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,filterAlpha));
+        }
+        if(gamePanel.currentArea == gamePanel.outside || gamePanel.currentArea == gamePanel.dungeon) {
+            graphics2D.drawImage(darknessFilter,0,0,null);
+        }
+
         graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1f));
 
         String timeOfDay = "";
@@ -117,6 +123,7 @@ public class Lighting {
         if(dayState == day) {
 
             dayCounter++;
+
             if(dayCounter > 600) {
                 dayState = dusk;
                 dayCounter = 0;

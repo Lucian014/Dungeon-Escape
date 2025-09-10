@@ -49,16 +49,27 @@ public class EventHandler{
         ArrayList<Event> map0Events = new ArrayList<>();
         map0Events.add(new Event(0, 27, 16, "right", this::damagePit, true));
         map0Events.add(new Event(0, 23, 12, "up", this::healingPool, true));
-        map0Events.add(new Event(0, 10, 39, "any", () -> teleport(1, 12, 13), true));
-
+        map0Events.add(new Event(0, 10, 39, "any", () -> teleport(1, 12, 13,gamePanel.indoor), true)); //teleport to merchant
+        map0Events.add(new Event(0,12,9,"any", () -> teleport(2,9,41,gamePanel.dungeon),true)); //teleport to dungeon
         mapEvents.put(0, map0Events);
 
         // MAP 1 EVENTS
         ArrayList<Event> map1Events = new ArrayList<>();
-        map1Events.add(new Event(1, 12, 13, "down", () -> teleport(0, 10, 39), true));
+        map1Events.add(new Event(1, 12, 13, "down", () -> teleport(0, 10, 39,gamePanel.outside), true)); //teleport outside
         map1Events.add(new Event(1, 12, 9, "up",() -> speak(gamePanel.npc[1][0]),true));
 
         mapEvents.put(1, map1Events);
+
+        //MAP 2 EVENTS
+        ArrayList<Event> map2Events = new ArrayList<>();
+        map2Events.add(new Event(2, 9, 41, "down", () -> teleport(0, 12, 9,gamePanel.outside), true)); //teleport outside
+        map2Events.add(new Event(2, 8, 7, "any",() -> teleport(3,26,41,gamePanel.dungeon),true));
+        mapEvents.put(2,map2Events);
+
+        //MAP3 EVENTS
+        ArrayList<Event> map3Events = new ArrayList<>();
+        map3Events.add(new Event(3, 26, 41, "down", () -> teleport(2, 8, 7,gamePanel.outside), true)); //teleport outside
+        mapEvents.put(2,map3Events);
     }
 
     // Method to draw event trigger areas for debugging
@@ -238,8 +249,9 @@ public class EventHandler{
         gamePanel.assetSetter.setMonster();
     }
 
-    public void teleport(int map, int col, int row) {
+    public void teleport(int map, int col, int row, int area) {
         gamePanel.gameState = gamePanel.transitionState;
+        gamePanel.nextArea = area;
         tempMap = map;
         tempCol = col;
         tempRow = row;
