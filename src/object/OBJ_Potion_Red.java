@@ -6,12 +6,12 @@ import game.GamePanel;
 public class OBJ_Potion_Red extends Entity {
 
     GamePanel gamePanel;
-
+    public static final String objName = "Red Potion";
     public OBJ_Potion_Red(GamePanel gamePanel) {
         super(gamePanel);
         this.gamePanel = gamePanel;
         type = type_consumable;
-        name = "Red Potion";
+        name = objName;
         value = 5;
         down1 = setup("items/potion_red",1,1);
         description = "[Red Potion]\nHeals you by " + value + " .";

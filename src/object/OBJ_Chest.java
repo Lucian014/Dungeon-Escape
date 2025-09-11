@@ -8,11 +8,12 @@ public class OBJ_Chest extends Entity {
     GamePanel gamePanel;
     Entity loot;
     boolean opened = false;
+    public static final String objName = "Chest";
 
     public OBJ_Chest(GamePanel gamePanel,Entity loot) {
         super(gamePanel);
         this.gamePanel = gamePanel;
-        name =  "Chest";
+        name =  objName;
         this.loot = loot;
         type = type_obstacle;
         image = setup("items/chest",1,1);

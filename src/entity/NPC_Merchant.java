@@ -51,6 +51,8 @@ public class NPC_Merchant extends Entity{
     }
     public void speak() {
 
+        dialogueSet = 0;
+        dialogueIndex = 0;
 
         gamePanel.gameState = gamePanel.tradeState;
         gamePanel.ui.npc = this;

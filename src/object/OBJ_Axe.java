@@ -4,11 +4,14 @@ import entity.Entity;
 import game.GamePanel;
 
 public class OBJ_Axe extends Entity {
+
+    public static final String objName = "Woodcutter's Axe";
+
     public OBJ_Axe(GamePanel gamePanel) {
         super(gamePanel);
 
         type = type_axe;
-        name = "Woodcutter's Axe";
+        name = objName;
         down1 = setup("items/axe", 1, 1);
         attackValue = 6;
         attackArea.width = 30;

@@ -5,10 +5,11 @@ import game.GamePanel;
 
 public class OBJ_Sword_Normal extends Entity {
 
+    public static final String objName = "Normal Sword";
     public OBJ_Sword_Normal(GamePanel gamePanel) {
         super(gamePanel);
 
-        name = "Normal Sword";
+        name = objName;
         down1 = setup("items/sword_normal", 1, 1);
         attackValue = 4;
         attackArea.width = 36;
