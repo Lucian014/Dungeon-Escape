@@ -75,7 +75,7 @@ public class MON_Orc extends Entity {
                 searchPath(getGoalCol(gamePanel.player),getGoalRow(gamePanel.player));
             } else {
                 checkStartChasingOrNot(gamePanel.player, 5,100);
-                getRandomDirection();
+                getRandomDirection(120);
             }
         }
     }

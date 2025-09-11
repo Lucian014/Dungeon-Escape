@@ -34,18 +34,19 @@
     }
     public void setDefaultValues() {
 
-        worldX = gamePanel.tileSize * 23;
-        worldY = gamePanel.tileSize * 21;
+        gamePanel.currentMap = 0;
+        worldX = gamePanel.tileSize * 12;
+        worldY = gamePanel.tileSize * 11;
         defaultSpeed = 4;
         speed = defaultSpeed;
         direction = "down";
         //PLAYER STATUS
-        maxLife = 6; // 2 lives = 1 heart
+        maxLife = 16; // 2 lives = 1 heart
         life = maxLife;
         maxMana = 6;
         mana = maxMana;
         level = 1;
-        strength = 1; // The greater the strength, the more damage he gives.
+        strength = 5; // The greater the strength, the more damage he gives.
         dexterity = 1; // The greater the dex, the less damage he receives.
         exp = 0;
         nextLevelExp = 5;
@@ -66,8 +67,10 @@
     }
 
     public void setDefaultPositions() {
-        worldX = gamePanel.tileSize * 23;
-        worldY = gamePanel.tileSize * 21;
+        gamePanel.currentMap = 0;
+        gamePanel.currentArea = gamePanel.outside;
+        worldX = gamePanel.tileSize * 12;
+        worldY = gamePanel.tileSize * 11;
         direction = "down";
 
     }
@@ -202,11 +205,12 @@
 
             if(knockBack) {
                 collisionOn = false;
+                collision = false;
                 gamePanel.checker.checkObject(this, true);
                 gamePanel.checker.checkEntity(this, gamePanel.npc);
                 gamePanel.checker.checkEntity(this, gamePanel.monster);
                 gamePanel.checker.checkEntity(this, gamePanel.iTile);
-                gamePanel.checker.checkTile(this);
+                gamePanel.checker.checkTile(this,knockBackDirection);
 
                 if(collisionOn) {
                     knockBackCounter = 0;

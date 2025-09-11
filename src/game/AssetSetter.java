@@ -8,8 +8,10 @@ import interactive_tile.IT_DestructibleWall;
 import interactive_tile.IT_DryTree;
 import interactive_tile.IT_MetalPlate;
 import interactive_tile.InteractiveTile;
+import monster.MON_Bat;
 import monster.MON_GreenSlime;
 import monster.MON_Orc;
+import monster.MON_SkeletonLord;
 import object.*;
 
 import java.lang.reflect.Constructor;
@@ -135,6 +137,19 @@ public class AssetSetter {
         gamePanel.monster[mapNum][i++] = createEntity(MON_GreenSlime.class, 34, 42);
         gamePanel.monster[mapNum][i++] = createEntity(MON_GreenSlime.class, 38, 42);
         gamePanel.monster[mapNum][i++] = createEntity(MON_Orc.class, 12, 33);
+
+        i = 0;
+        mapNum += 2;
+
+        gamePanel.monster[mapNum][i++] = createEntity(MON_Bat.class,34,39);
+        gamePanel.monster[mapNum][i++] = createEntity(MON_Bat.class,36,25);
+        gamePanel.monster[mapNum][i++] = createEntity(MON_Bat.class,39,26);
+        gamePanel.monster[mapNum][i++] = createEntity(MON_Bat.class,28,11);
+        gamePanel.monster[mapNum][i++] = createEntity(MON_Bat.class,10,19);
+
+        mapNum = 3;
+        i = 0;
+        gamePanel.monster[mapNum][i++] = createEntity(MON_SkeletonLord.class,25,11);
 
     }
 

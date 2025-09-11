@@ -230,6 +230,8 @@ public class DataManager {
                 break;
             case "Blue Shield":
                 item = new OBJ_Shield_Blue(gamePanel);
+            case "Pickaxe":
+                item = new OBJ_Pickaxe(gamePanel);
             default:
                 System.out.println("Unknown item name: " + name + ". Item not loaded.");
         }

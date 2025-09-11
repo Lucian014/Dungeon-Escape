@@ -70,8 +70,76 @@ public class CollisionChecker {
                     break;
             }
     }
+
+    public void checkTile(Entity entity, String checkDirection) {  // Add param; defaults to entity.direction if not passed
+
+        entity.collisionOn = false;
+
+        int predictedX = entity.worldX;
+        int predictedY = entity.worldY;
+
+        // Predict based on checkDirection (for knockback, this will be knockBackDirection)
+        switch(checkDirection) {
+            case "up": predictedY -= entity.speed; break;
+            case "down": predictedY += entity.speed; break;
+            case "left": predictedX -= entity.speed; break;
+            case "right": predictedX += entity.speed; break;
+        }
+
+        int leftWorldX = predictedX + entity.solidArea.x;
+        int rightWorldX = predictedX + entity.solidArea.x + entity.solidArea.width;
+        int topWorldY = predictedY + entity.solidArea.y;
+        int bottomWorldY = predictedY + entity.solidArea.y + entity.solidArea.height;
+
+        int leftCol = leftWorldX / gamePanel.tileSize;
+        int rightCol = (rightWorldX - 1) / gamePanel.tileSize;
+        int topRow = topWorldY / gamePanel.tileSize;
+        int bottomRow = (bottomWorldY - 1) / gamePanel.tileSize;
+
+        // Check tiles based on checkDirection (consistent with prediction)
+        switch(checkDirection) {
+            case "up":
+                if (topRow >= 0 && topRow < gamePanel.maxWorldRow && leftCol >= 0 && rightCol < gamePanel.maxWorldCol) {  // Bounds check (add if missing)
+                    int topLeftTile = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][leftCol][topRow];
+                    int topRightTile = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][rightCol][topRow];
+                    entity.collisionOn = gamePanel.tileManager.tile[topLeftTile].collision ||
+                            gamePanel.tileManager.tile[topRightTile].collision;
+                }
+                break;
+            case "down":
+                if (bottomRow >= 0 && bottomRow < gamePanel.maxWorldRow && leftCol >= 0 && rightCol < gamePanel.maxWorldCol) {
+                    int bottomLeftTile = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][leftCol][bottomRow];
+                    int bottomRightTile = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][rightCol][bottomRow];
+                    entity.collisionOn = gamePanel.tileManager.tile[bottomLeftTile].collision ||
+                            gamePanel.tileManager.tile[bottomRightTile].collision;
+                }
+                break;
+            case "left":
+                if (bottomRow >= 0 && bottomRow < gamePanel.maxWorldRow && leftCol >= 0 && rightCol < gamePanel.maxWorldCol) {
+                    int leftTopTile = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][leftCol][topRow];
+                    int leftBottomTile = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][leftCol][bottomRow];
+                    entity.collisionOn = gamePanel.tileManager.tile[leftTopTile].collision ||
+                            gamePanel.tileManager.tile[leftBottomTile].collision;
+                }
+                break;
+            case "right":
+                if (topRow >= 0 && topRow < gamePanel.maxWorldRow && leftCol >= 0 && rightCol < gamePanel.maxWorldCol) {
+                    int rightTopTile = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][rightCol][topRow];
+                    int rightBottomTile = gamePanel.tileManager.mapTileNum[gamePanel.currentMap][rightCol][bottomRow];
+                    entity.collisionOn = gamePanel.tileManager.tile[rightTopTile].collision ||
+                            gamePanel.tileManager.tile[rightBottomTile].collision;
+                }
+                break;
+        }
+    }
+
     public int checkObject(Entity entity, boolean player) {
         int index = 999;
+
+        String direction = entity.direction;
+        if(entity.knockBack) {
+            direction = entity.knockBackDirection;
+        }
 
         for (int i = 0; i < gamePanel.object[1].length; i++) {
             if (gamePanel.object[gamePanel.currentMap][i] != null) {
