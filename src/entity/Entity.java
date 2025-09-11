@@ -41,7 +41,7 @@ public class Entity {
     public boolean guarding = false;
     public boolean transparent = false;
     public boolean offBalance = false;
-
+    public boolean inRage = false;
     //COUNTER
     public int spriteCounter = 0;
     public int invincibleCounter = 0;
@@ -127,6 +127,13 @@ public class Entity {
     public int getRow(){
         return (worldY + solidArea.y) / gamePanel.tileSize;
     }
+    public int getCenterX() {
+        return worldX +left1.getWidth() / 2;
+    }
+    public int getCenterY() {
+        return worldY +up1.getHeight() / 2;
+    }
+
     public void draw(Graphics2D g2) {
 
         BufferedImage image = null;
@@ -140,9 +147,9 @@ public class Entity {
         int tempScreenY = screenY;
 
         // Only draw if within screen bounds
-        if (worldX + gamePanel.tileSize > gamePanel.player.worldX - gamePanel.player.screenX &&
+        if (worldX + gamePanel.tileSize * 5 > gamePanel.player.worldX - gamePanel.player.screenX &&
                 worldX - gamePanel.tileSize < gamePanel.player.worldX + gamePanel.player.screenX &&
-                worldY + gamePanel.tileSize > gamePanel.player.worldY - gamePanel.player.screenY &&
+                worldY + gamePanel.tileSize * 5 > gamePanel.player.worldY - gamePanel.player.screenY &&
                 worldY - gamePanel.tileSize < gamePanel.player.worldY + gamePanel.player.screenY) {
 
             // === Direction + Sprite selection ===
@@ -151,7 +158,7 @@ public class Entity {
                     if (!attacking) {
                         image = (spriteNum == 1) ? up1 : up2;
                     } else {
-                        tempScreenY = screenY - gamePanel.tileSize;
+                        tempScreenY = screenY - up1.getHeight();
                         image = (spriteNum == 1) ? attackUp1 : attackUp2;
                     }
                     break;
@@ -168,7 +175,7 @@ public class Entity {
                     if (!attacking) {
                         image = (spriteNum == 1) ? left1 : left2;
                     } else {
-                        tempScreenX = screenX - gamePanel.tileSize;
+                        tempScreenX = screenX - left1.getWidth();
                         image = (spriteNum == 1) ? attackLeft1 : attackLeft2;
                     }
                     break;
@@ -222,6 +229,7 @@ public class Entity {
             changeAlpha(g2, 1F);
         }
     }
+
 
 
     public BufferedImage setup(String imagePath, int scaleWidth, int scaleHeigth) {
@@ -303,24 +311,6 @@ public class Entity {
         }
     }
 
-//    public void checkCollisionForRock() {
-//        collisionOn = false;
-//        gamePanel.checker.checkTile(this);
-//        if (collisionOn) System.out.println("Collision with tile");
-//        gamePanel.checker.checkObject(this, false);
-//        if (collisionOn) System.out.println("Collision with object");
-//        gamePanel.checker.checkEntity(this, gamePanel.npc);
-//        if (collisionOn) System.out.println("Collision with NPC");
-//        gamePanel.checker.checkEntity(this, gamePanel.monster);
-//        if (collisionOn) System.out.println("Collision with monster");
-//        gamePanel.checker.checkEntity(this, gamePanel.iTile);
-//        if (collisionOn) System.out.println("Collision with interactive tile");
-//        boolean contactPlayer = gamePanel.checker.checkPlayer(this);
-//        if (contactPlayer) System.out.println("Collision with player");
-//    }
-
-
-
     public void checkStopChasingOrNot(Entity target, int distance, int rate) {
 
         if(getTileDistance(target) > distance) {
@@ -365,22 +355,22 @@ public class Entity {
 
         switch (direction) {
             case "up":
-                if(gamePanel.player.worldY < worldY && yDis < straight && xDis < horizontal) {
+                if(gamePanel.player.getCenterY() < getCenterY() && yDis < straight && xDis < horizontal) {
                     targetInRange = true;
                 }
                 break;
             case "down":
-                if(gamePanel.player.worldY > worldY && yDis < straight && xDis < horizontal) {
+                if(gamePanel.player.getCenterY() > getCenterY() && yDis < straight && xDis < horizontal) {
                     targetInRange = true;
                 }
                 break;
             case "left":
-                if(gamePanel.player.worldX < worldX && xDis < straight && yDis < horizontal) {
+                if(gamePanel.player.getCenterX() < getCenterX() && xDis < straight && yDis < horizontal) {
                     targetInRange = true;
                 }
                 break;
             case "right":
-                if(gamePanel.player.worldX > worldX && xDis < straight && yDis < horizontal) {
+                if(gamePanel.player.getCenterX() > getCenterX() && xDis < straight && yDis < horizontal) {
                     targetInRange = true;
                 }
                 break;
@@ -535,10 +525,10 @@ public class Entity {
 
     }
     public int getXdistance(Entity target) {
-        return Math.abs(worldX - target.worldX);
+        return Math.abs(getCenterX() - target.getCenterX());
     }
     public int getYdistance(Entity target) {
-        return Math.abs(worldY - target.worldY);
+        return Math.abs(getCenterY() - target.getCenterY());
     }
     public int getTileDistance(Entity target) {
         return (getXdistance(target) + getYdistance(target)) / gamePanel.tileSize;
@@ -549,9 +539,9 @@ public class Entity {
     public int getGoalRow(Entity target) {
         return (target.worldY + target.solidArea.y) / gamePanel.tileSize;
     }
-    public void getRandomDirection() {
+    public void getRandomDirection(int interval) {
         actionLockCounter++;
-        if(actionLockCounter == 80){
+        if(actionLockCounter > interval){
             Random random = new Random();
             int i = random.nextInt(100) + 1;
             if (i <= 25) {
@@ -564,6 +554,32 @@ public class Entity {
                 direction = "left";
             }
             if(i > 75) {direction = "right";}
+            actionLockCounter = 0;
+        }
+    }
+
+    public void moveTowardPlayer(int interval) {
+
+        actionLockCounter++;
+
+        if(actionLockCounter > interval) {
+
+            if(getXdistance(gamePanel.player) > getYdistance(gamePanel.player)) {
+                if(gamePanel.player.getCenterX() < getCenterX()) {
+                    direction = "left";
+                }
+                else {
+                    direction = "right";
+                }
+            }
+            else if(getXdistance(gamePanel.player) < getYdistance(gamePanel.player)) {
+                if(gamePanel.player.getCenterY() < getCenterY()) {
+                    direction = "up";
+                }
+                else {
+                    direction = "down";
+                }
+            }
             actionLockCounter = 0;
         }
     }
@@ -596,7 +612,7 @@ public class Entity {
                     gamePanel.sound.playSoundEffect(17);
                     setKnockBack(this, gamePanel.player, knockBackPower);
                     offBalance = true;
-                    spriteCounter =- 60;
+                    spriteCounter =- 100;
                 }
                 else {
                     damage /= 3;
