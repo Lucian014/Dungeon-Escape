@@ -34,14 +34,14 @@
     }
     public void setDefaultValues() {
 
-        gamePanel.currentMap = 0;
-        worldX = gamePanel.tileSize * 12;
-        worldY = gamePanel.tileSize * 11;
+        gamePanel.currentMap = 3;
+        worldX = gamePanel.tileSize * 26;
+        worldY = gamePanel.tileSize * 40;
         defaultSpeed = 4;
         speed = defaultSpeed;
         direction = "down";
         //PLAYER STATUS
-        maxLife = 16; // 2 lives = 1 heart
+        maxLife = 30; // 2 lives = 1 heart
         life = maxLife;
         maxMana = 6;
         mana = maxMana;
@@ -67,10 +67,10 @@
     }
 
     public void setDefaultPositions() {
-        gamePanel.currentMap = 0;
+        gamePanel.currentMap = 3;
         gamePanel.currentArea = gamePanel.outside;
-        worldX = gamePanel.tileSize * 12;
-        worldY = gamePanel.tileSize * 11;
+        worldX = gamePanel.tileSize * 26;
+        worldY = gamePanel.tileSize * 40;
         direction = "down";
 
     }

@@ -25,7 +25,7 @@ public class MON_SkeletonLord extends Entity {
         knockBackPower = 5;
         defense = 2;
         exp = 50;
-
+        boss = true;
         int size = gamePanel.tileSize * 5;
         solidArea.x = 48;
         solidArea.y = 48;
