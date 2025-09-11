@@ -1,9 +1,12 @@
 package game;
 
 import entity.Entity;
+import entity.NPC_BigRock;
 import entity.NPC_Priest;
 import entity.NPC_Merchant;
+import interactive_tile.IT_DestructibleWall;
 import interactive_tile.IT_DryTree;
+import interactive_tile.IT_MetalPlate;
 import interactive_tile.InteractiveTile;
 import monster.MON_GreenSlime;
 import monster.MON_Orc;
@@ -92,17 +95,34 @@ public class AssetSetter {
         gamePanel.object[mapNum][i++] = createEntity(OBJ_Lantern.class,18,20);
         gamePanel.object[mapNum][i++] = createEntity(OBJ_Tent.class,19,20);
         gamePanel.object[mapNum][i++] = createEntity(OBJ_Chest.class,30,29,new OBJ_Shield_Blue(gamePanel));
+
+        mapNum += 2;
+        i = 0;
+        gamePanel.object[mapNum][i++] = createEntity(OBJ_Chest.class,40,41, new OBJ_Pickaxe(gamePanel));
+        gamePanel.object[mapNum][i++] = createEntity(OBJ_Chest.class,13,16, new OBJ_Potion_Red(gamePanel));
+        gamePanel.object[mapNum][i++] = createEntity(OBJ_Chest.class,26,34, new OBJ_Potion_Red(gamePanel));
+        gamePanel.object[mapNum][i++] = createEntity(OBJ_Chest.class,27,15, new OBJ_Potion_Red(gamePanel));
+        gamePanel.object[mapNum][i++] = createEntity(OBJ_Door_Iron.class,18,23);
+
+
     }
 
     public void setNPC() {
         int mapNum = 0;
-
+        int i = 0;
         //MAP 1 NPCs
-        gamePanel.npc[mapNum][0] = createEntity(NPC_Priest.class, 17, 20);
+        gamePanel.npc[mapNum][i] = createEntity(NPC_Priest.class, 17, 20);
 
         //MAP 2 NPCS
         mapNum = 1;
-        gamePanel.npc[mapNum][0] = createEntity(NPC_Merchant.class, 12, 7);
+        gamePanel.npc[mapNum][i] = createEntity(NPC_Merchant.class, 12, 7);
+
+        mapNum = 2;
+        gamePanel.npc[mapNum][i++] = createEntity(NPC_BigRock.class, 20, 25);
+        gamePanel.npc[mapNum][i++] = createEntity(NPC_BigRock.class, 11, 18);
+        gamePanel.npc[mapNum][i++] = createEntity(NPC_BigRock.class, 23, 14);
+
+
 
     }
 
@@ -134,6 +154,29 @@ public class AssetSetter {
         gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DryTree.class,27, 32);
         gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DryTree.class,27, 31);
 
+        mapNum += 2;
+        i = 0;
+
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DestructibleWall.class,18, 30);
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DestructibleWall.class,17, 31);
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DestructibleWall.class,17, 32);
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DestructibleWall.class,17, 34);
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DestructibleWall.class,18, 33);
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DestructibleWall.class,10, 22);
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DestructibleWall.class,10, 24);
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DestructibleWall.class,38, 18);
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DestructibleWall.class,38, 19);
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DestructibleWall.class,38, 20);
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DestructibleWall.class,38, 21);
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DestructibleWall.class,18, 13);
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DestructibleWall.class,18, 14);
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DestructibleWall.class,22, 28);
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DestructibleWall.class,30, 28);
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_DestructibleWall.class,32, 28);
+
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_MetalPlate.class,20, 22);
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_MetalPlate.class,8, 17);
+        gamePanel.iTile[mapNum][i++] = createInteractiveTile(IT_MetalPlate.class,39, 31);
 
 
     }

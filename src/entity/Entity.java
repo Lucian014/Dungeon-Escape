@@ -20,6 +20,8 @@ public class Entity {
     public boolean collisionOn = false;
     public String[][] dialogues = new String[20][20];
     public Entity attacker;
+    public Entity linkedEntity;
+
 
     //STATE
     public int worldX, worldY;
@@ -101,6 +103,7 @@ public class Entity {
     public final int type_pickUpOnly = 7;
     public final int type_obstacle = 8;
     public final int type_light = 9;
+    public final int type_pickaxe = 10;
 
     public Entity(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
@@ -238,6 +241,8 @@ public class Entity {
 
     public void setAction() {}
 
+    public void move(String direction) {}
+
     public void damageReaction() {}
 
     public void speak() {}
@@ -296,8 +301,25 @@ public class Entity {
         if (this.type == type_monster && contactPlayer) {
             damagePlayer(attack);
         }
-
     }
+
+//    public void checkCollisionForRock() {
+//        collisionOn = false;
+//        gamePanel.checker.checkTile(this);
+//        if (collisionOn) System.out.println("Collision with tile");
+//        gamePanel.checker.checkObject(this, false);
+//        if (collisionOn) System.out.println("Collision with object");
+//        gamePanel.checker.checkEntity(this, gamePanel.npc);
+//        if (collisionOn) System.out.println("Collision with NPC");
+//        gamePanel.checker.checkEntity(this, gamePanel.monster);
+//        if (collisionOn) System.out.println("Collision with monster");
+//        gamePanel.checker.checkEntity(this, gamePanel.iTile);
+//        if (collisionOn) System.out.println("Collision with interactive tile");
+//        boolean contactPlayer = gamePanel.checker.checkPlayer(this);
+//        if (contactPlayer) System.out.println("Collision with player");
+//    }
+
+
 
     public void checkStopChasingOrNot(Entity target, int distance, int rate) {
 

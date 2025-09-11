@@ -91,6 +91,7 @@
         inventory.add(new OBJ_Axe(gamePanel));
         inventory.add(new OBJ_Lantern(gamePanel));
         inventory.add(new OBJ_Key(gamePanel));
+        inventory.add(new OBJ_Pickaxe(gamePanel));
 
 
     }
@@ -140,7 +141,17 @@
             attackLeft2 = setup("player/player/boy_axe_left_2", 2, 1);
             attackRight1 = setup("player/player/boy_axe_right_1", 2, 1);
             attackRight2 = setup("player/player/boy_axe_right_2", 2, 1);
+        }
+        if(currentWeapon.type == type_pickaxe){
 
+            attackUp1 = setup("player/player/boy_pick_up_1", 1, 2);
+            attackUp2 = setup("player/player/boy_pick_up_2", 1, 2);
+            attackDown1 = setup("player/player/boy_pick_down_1", 1, 2);
+            attackDown2 = setup("player/player/boy_pick_down_2", 1, 2);
+            attackLeft1 = setup("player/player/boy_pick_left_1", 2, 1);
+            attackLeft2 = setup("player/player/boy_pick_left_2", 2, 1);
+            attackRight1 = setup("player/player/boy_pick_right_1", 2, 1);
+            attackRight2 = setup("player/player/boy_pick_right_2", 2, 1);
         }
 
     }
@@ -255,7 +266,7 @@
                     int npcIndex = gamePanel.checker.checkEntity(this, gamePanel.npc);
                     gamePanel.checker.checkEntity(this, gamePanel.iTile);
 
-                    if (npcIndex != 999 && gamePanel.keyHandler.enterPressed) {
+                    if (npcIndex != 999) {
                         interactNPC(npcIndex);
                         gamePanel.keyHandler.enterPressed = false; // consume input
                     } else if (gamePanel.keyHandler.enterPressed) {
@@ -387,6 +398,7 @@
                 gamePanel.npc[gamePanel.currentMap][i].speak();
             }
         }
+        gamePanel.npc[gamePanel.currentMap][i].move(direction);
     }
 
     public void draw(Graphics2D g2){
@@ -473,7 +485,7 @@
 
             Entity selectedItem = inventory.get(itemIndex);
 
-            if(selectedItem.type == type_sword || selectedItem.type == type_axe) {
+            if(selectedItem.type == type_sword || selectedItem.type == type_axe || selectedItem.type == type_pickaxe) {
 
                 currentWeapon = selectedItem;
                 attack = getAttack();
