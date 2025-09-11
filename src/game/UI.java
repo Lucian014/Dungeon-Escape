@@ -69,12 +69,13 @@
         if (gamePanel.gameState == gamePanel.titleState) {
             drawTitleScreen();
         }
+
         //PLAY STATE - just draw regular UI elements
         if (gamePanel.gameState == gamePanel.playState) {
             drawPlayerLife();
             drawMessage();
             drawFPS();
-
+            drawMonsterLife();
         }
         //DIALOGUE STATE
         if (gamePanel.gameState == gamePanel.dialogueState) {
@@ -591,45 +592,141 @@
             }
         }
     }
-    public void drawPlayerLife() {
-        int x = gamePanel.tileSize / 2;
-        int y = gamePanel.tileSize / 2;
 
-        // --- DRAW MAX LIFE (empty hearts) ---
-        for (int i = 0; i < gamePanel.player.maxLife / 2; i++) {
-            graphics2D.drawImage(heart_blank, x, y, null);
-            x += gamePanel.tileSize;
-        }
+        public void drawPlayerLife() {
+            // Smaller size: 24x24 (adjust as needed, e.g., 16 for tinier)
+            int heartSize = gamePanel.tileSize / 2 + 10;  // Hearts and crystals same size for consistency
+            int startX = gamePanel.tileSize / 2;  // Left margin: 24
+            int startY = gamePanel.tileSize / 2;  // Top margin: 24
+            int heartsPerRow = 8;  // Fixed: 8 hearts across
 
-        // --- DRAW CURRENT LIFE ---
-        x = gamePanel.tileSize / 2;
-        int remainingLife = gamePanel.player.life;
-        for (int i = 0; i < gamePanel.player.maxLife / 2; i++) {
-            if (remainingLife >= 2) {
-                graphics2D.drawImage(heart_full, x, y, null);
-                remainingLife -= 2;
-            } else if (remainingLife == 1) {
-                graphics2D.drawImage(heart_half, x, y, null);
-                remainingLife -= 1;
+            // Calculate heart positions once (for both max and current)
+            int numHearts = gamePanel.player.maxLife / 2;
+            int[][] heartPositions = new int[numHearts][2];  // [x, y] for each heart
+            int currentX = startX;
+            int currentY = startY;
+            for (int i = 0; i < numHearts; i++) {
+                heartPositions[i][0] = currentX;
+                heartPositions[i][1] = currentY;
+                currentX += heartSize;
+                if ((i + 1) % heartsPerRow == 0) {  // After drawing a full row, move to next
+                    currentX = startX;
+                    currentY += heartSize;  // Full row height (no half-tile weirdness)
+                }
             }
-            x += gamePanel.tileSize;
+
+            // --- DRAW MAX LIFE (empty hearts) ---
+            for (int i = 0; i < numHearts; i++) {
+                int hx = heartPositions[i][0];
+                int hy = heartPositions[i][1];
+                graphics2D.drawImage(heart_blank, hx, hy, heartSize, heartSize, null);
+            }
+
+            // --- DRAW CURRENT LIFE (overlay full/half on the same positions) ---
+            int remainingLife = gamePanel.player.life;
+            for (int i = 0; i < numHearts; i++) {
+                int hx = heartPositions[i][0];
+                int hy = heartPositions[i][1];
+                if (remainingLife >= 2) {
+                    graphics2D.drawImage(heart_full, hx, hy, heartSize, heartSize, null);
+                    remainingLife -= 2;
+                } else if (remainingLife == 1) {
+                    graphics2D.drawImage(heart_half, hx, hy, heartSize, heartSize, null);
+                    remainingLife -= 1;
+                }
+                // If remainingLife == 0, it stays blank (already drawn)
+            }
+
+            // --- DRAW MANA (below hearts) ---
+            int manaStartY = currentY + 33;  // Just below last heart row + small gap
+            int manaPerRow = gamePanel.player.maxMana;  // For now, 10; wrap if more
+            if (manaPerRow > 10) manaPerRow = 10;  // Optional: Limit row to 10 for layout
+
+            currentX = startX - 1;
+            currentY = manaStartY;
+            int numCrystals = gamePanel.player.maxMana;
+
+            // Max mana (empty crystals)
+            for (int i = 0; i < numCrystals; i++) {
+                graphics2D.drawImage(crystal_blank, currentX, currentY, heartSize, heartSize, null);
+                currentX += heartSize;
+                if ((i + 1) % manaPerRow == 0) {
+                    currentX = startX;
+                    currentY += heartSize;
+                }
+            }
+
+            // Current mana (overlay full crystals)
+            remainingLife = gamePanel.player.mana;  // Reuse var, or use 'currentMana'
+            currentX = startX - 1;
+            currentY = manaStartY;
+            for (int i = 0; i < gamePanel.player.mana; i++) {
+                graphics2D.drawImage(crystal_full, currentX, currentY, heartSize, heartSize, null);
+                currentX += heartSize;
+                if ((i + 1) % manaPerRow == 0) {
+                    currentX = startX;
+                    currentY += heartSize;
+                }
+            }
         }
 
-        // --- DRAW MANA ---
-        x = gamePanel.tileSize / 2;
-        y += gamePanel.tileSize + 6; // a bit below hearts
+    public void drawMonsterLife() {
+        // === Monster HP bar ===
+        for(int i = 0; i < gamePanel.monster[1].length; i++) {
+            Entity monster = gamePanel.monster[gamePanel.currentMap][i];
 
-        // Max mana (empty crystals)
-        for (int i = 0; i < gamePanel.player.maxMana; i++) {
-            graphics2D.drawImage(crystal_blank, x, y, gamePanel.tileSize, gamePanel.tileSize, null);
-            x += gamePanel.tileSize;
-        }
+            if(monster != null) {
+                // Regular monsters: Only if in camera and hpBarOn
+                if (!monster.boss && monster.inCamera()) {
+                    if (monster.hpBarOn) {
+                        double oneScale = (double) gamePanel.tileSize / monster.maxLife;
+                        double hpBarValue = oneScale * monster.life;
 
-        // Current mana (full crystals)
-        x = gamePanel.tileSize / 2;
-        for (int i = 0; i < gamePanel.player.mana; i++) {
-            graphics2D.drawImage(crystal_full, x, y, gamePanel.tileSize, gamePanel.tileSize, null);
-            x += gamePanel.tileSize;
+                        graphics2D.setColor(new Color(35, 35, 35));
+                        graphics2D.fillRect(monster.getScreenX() - 1, monster.getScreenY() - 16, gamePanel.tileSize + 2, 12);
+
+                        graphics2D.setColor(new Color(185, 185, 185));
+                        graphics2D.fillRect(monster.getScreenX(), monster.getScreenY() - 15, gamePanel.tileSize, 10);
+
+                        graphics2D.setColor(new Color(255, 0, 30));
+                        graphics2D.fillRect(monster.getScreenX(), monster.getScreenY() - 15, (int) hpBarValue, 10);
+
+                        monster.hpBarCounter++;
+                        if (monster.hpBarCounter > 600) {
+                            monster.hpBarCounter = 0;
+                            monster.hpBarOn = false;
+                        }
+                    }
+                }
+                // Boss bar: Always draw if boss exists (no inCamera or hpBarOn check)
+                else if (monster.boss && monster.inCamera()) {
+                    // Debug: Print once per draw call (remove later)
+                    System.out.println("Drawing boss bar for " + monster.name + " (life=" + monster.life + "/" + monster.maxLife + ")");
+
+                    double oneScale = (double) gamePanel.tileSize * 8 / monster.maxLife;
+                    double hpBarValue = oneScale * monster.life;
+
+                    int x = gamePanel.screenWidth / 2 - gamePanel.tileSize * 4;
+                    int y = gamePanel.tileSize * 10;
+
+                    // Background (dark outline) - full size
+                    graphics2D.setColor(new Color(35, 35, 35));
+                    graphics2D.fillRect(x - 1, y - 1, gamePanel.tileSize * 8 + 2, 24);  // 22 + 2 for border
+
+                    // Gray base bar - full width/height
+                    graphics2D.setColor(new Color(185, 185, 185));
+                    graphics2D.fillRect(x, y, gamePanel.tileSize * 8, 22);
+
+                    // Red HP fill - MATCH HEIGHT TO GRAY (was 10 → now 22)
+                    graphics2D.setColor(new Color(255, 0, 30));
+                    graphics2D.fillRect(x, y, (int) hpBarValue, 22);  // FIXED: Full 22px height
+
+                    // Name above
+                    graphics2D.setFont(graphics2D.getFont().deriveFont(Font.BOLD, 24F));
+                    graphics2D.setColor(Color.WHITE);
+                    graphics2D.drawString(monster.name, x + 4, y - 10);
+                }
+            }
         }
     }
     public void drawFPS() {
@@ -649,6 +746,7 @@
         graphics2D.setStroke(new BasicStroke(5));
         graphics2D.drawRoundRect(x + 5, y + 5, width - 10, height - 10, 25, 25);
     }
+    //CHECK DrawMessage LATER FOR THE DIALOGUE WINDOW BUG
     public void drawMessage() {
 
             int messageX = gamePanel.tileSize;

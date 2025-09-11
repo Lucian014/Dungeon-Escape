@@ -34,7 +34,7 @@ public class Entity {
     public boolean attacking = false;
     public boolean alive = true;
     public boolean dying = false;
-    boolean hpBarOn = false;
+    public boolean hpBarOn = false;
     public boolean onPath = false;
     public boolean knockBack = false;
     public String knockBackDirection;
@@ -42,12 +42,13 @@ public class Entity {
     public boolean transparent = false;
     public boolean offBalance = false;
     public boolean inRage = false;
+    public boolean boss;
     //COUNTER
     public int spriteCounter = 0;
     public int invincibleCounter = 0;
     public int actionLockCounter = 0;
     int dyingCounter = 0;
-    int hpBarCounter = 0;
+    public int hpBarCounter = 0;
     public int shotAvailableCounter = 0;
     int knockBackCounter = 0;
     public int guardCounter = 0;
@@ -133,7 +134,13 @@ public class Entity {
     public int getCenterY() {
         return worldY +up1.getHeight() / 2;
     }
+    public boolean inCamera() {
 
+        return worldX + gamePanel.tileSize * 5 > gamePanel.player.worldX - gamePanel.player.screenX &&
+                worldX - gamePanel.tileSize < gamePanel.player.worldX + gamePanel.player.screenX &&
+                worldY + gamePanel.tileSize * 5 > gamePanel.player.worldY - gamePanel.player.screenY &&
+                worldY - gamePanel.tileSize < gamePanel.player.worldY + gamePanel.player.screenY;
+    }
     public void draw(Graphics2D g2) {
 
         BufferedImage image = null;
@@ -143,14 +150,11 @@ public class Entity {
         int screenY = worldY - gamePanel.player.worldY + gamePanel.player.screenY;
 
         // Offset temp values for attacks
-        int tempScreenX = screenX;
-        int tempScreenY = screenY;
+        int tempScreenX = getScreenX();
+        int tempScreenY = getScreenY();
 
         // Only draw if within screen bounds
-        if (worldX + gamePanel.tileSize * 5 > gamePanel.player.worldX - gamePanel.player.screenX &&
-                worldX - gamePanel.tileSize < gamePanel.player.worldX + gamePanel.player.screenX &&
-                worldY + gamePanel.tileSize * 5 > gamePanel.player.worldY - gamePanel.player.screenY &&
-                worldY - gamePanel.tileSize < gamePanel.player.worldY + gamePanel.player.screenY) {
+        if (inCamera()) {
 
             // === Direction + Sprite selection ===
             switch (direction) {
@@ -189,26 +193,7 @@ public class Entity {
                     break;
             }
 
-            // === Monster HP bar ===
-            if (type == 2 && hpBarOn) {
-                double oneScale = (double) gamePanel.tileSize / maxLife;
-                double hpBarValue = oneScale * life;
 
-                g2.setColor(new Color(35, 35, 35));
-                g2.fillRect(screenX - 1, screenY - 16, gamePanel.tileSize + 2, 12); // lifted above sprite
-
-                g2.setColor(new Color(185, 185, 185));
-                g2.fillRect(screenX, screenY - 15, gamePanel.tileSize, 10);
-
-                g2.setColor(new Color(255, 0, 30));
-                g2.fillRect(screenX, screenY - 15, (int) hpBarValue, 10);
-
-                hpBarCounter++;
-                if (hpBarCounter > 600) {
-                    hpBarCounter = 0;
-                    hpBarOn = false;
-                }
-            }
 
             // === Invincibility effect ===
             if (invincible) {
@@ -557,7 +542,12 @@ public class Entity {
             actionLockCounter = 0;
         }
     }
-
+    public int getScreenX () {
+        return worldX - gamePanel.player.worldX + gamePanel.player.screenX;
+    }
+    public int getScreenY () {
+        return worldY - gamePanel.player.worldY + gamePanel.player.screenY;
+    }
     public void moveTowardPlayer(int interval) {
 
         actionLockCounter++;
