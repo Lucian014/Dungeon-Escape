@@ -12,11 +12,12 @@ import java.sql.SQLException;
 public class OBJ_Key extends Entity {
 
     GamePanel gamePanel;
+    public static final String objName = "Key";
 
     public OBJ_Key(GamePanel gamePanel) {
         super(gamePanel);
         this.gamePanel = gamePanel;
-        name = "Key";
+        name = objName;
         down1 = setup("items/key", 1, 1);
         description = "[" + name + "]\nIt opens chests or doors.";
         price = 50;

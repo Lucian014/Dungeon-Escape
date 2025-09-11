@@ -4,11 +4,13 @@ import entity.Entity;
 import game.GamePanel;
 
 public class OBJ_Pickaxe extends Entity {
+
+    public static final String objName = "Pickaxe";
     public OBJ_Pickaxe(GamePanel gamePanel) {
         super(gamePanel);
 
         type = type_pickaxe;
-        name = "Pickaxe";
+        name = objName;
         down1 = setup("items/pickaxe", 1, 1);
         attackValue = 6;
         attackArea.width = 30;

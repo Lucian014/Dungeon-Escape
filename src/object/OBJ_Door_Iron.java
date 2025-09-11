@@ -8,11 +8,12 @@ import game.GamePanel;
 public class OBJ_Door_Iron extends Entity {
 
     GamePanel gamePanel;
+    public static final String objName = "Iron Door";
     public OBJ_Door_Iron(GamePanel gamePanel){
         super(gamePanel);
         this.gamePanel = gamePanel;
         type = type_obstacle;
-        name =  "Iron Door";
+        name =  objName;
         down1 = setup("items/door_iron",1,1);
         collision = true;
         solidArea.x = 0;

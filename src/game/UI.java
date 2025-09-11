@@ -25,11 +25,11 @@
     public int playerSlotRow = 0;
     public int npcSlotCol = 0;
     public int npcSlotRow = 0;
-    int charIndex = 0;
+    public int charIndex = 0;
     int subState = 0;
     int counter = 0;
     private float counterDeath = 0;
-    String combinedText = "";
+    public String combinedText = "";
     public Entity npc;
     public UI(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
@@ -51,6 +51,9 @@
         crystal_blank = crystal.image2;
         Entity coin_bronze = new OBJ_Coin_Bronze(gamePanel);
         coin = coin_bronze.down1;
+        charIndex = 0;
+        combinedText = "";
+        currentDialogue = "";
     }
     public void addMessage(String text) {
 
@@ -79,7 +82,6 @@
         }
         //DIALOGUE STATE
         if (gamePanel.gameState == gamePanel.dialogueState) {
-            drawPlayerLife();
             drawDialogueScreen();
         }
         //PAUSE STATE
@@ -140,55 +142,70 @@
         graphics2D.setColor(Color.WHITE);
         graphics2D.drawString(text, x, y);
     }
-    public void drawDialogueScreen() {
-        //WINDOW
-        int x = gamePanel.tileSize * 3;
-        int y = gamePanel.tileSize / 2;
-        int width = gamePanel.screenWidth - (gamePanel.tileSize * 6);
-        int height = gamePanel.tileSize * 4;
-        drawSubWindow(x, y, width, height);
+        public void drawDialogueScreen() {
+            // WINDOW
+            int x = gamePanel.tileSize * 3;
+            int y = gamePanel.tileSize / 2;
+            int width = gamePanel.screenWidth - (gamePanel.tileSize * 6);
+            int height = gamePanel.tileSize * 4;
+            drawSubWindow(x, y, width, height);
 
-        graphics2D.setFont(graphics2D.getFont().deriveFont(Font.PLAIN, 32F));
-        x += gamePanel.tileSize;
-        y += gamePanel.tileSize;
+            graphics2D.setFont(graphics2D.getFont().deriveFont(Font.PLAIN, 32F));
+            x += gamePanel.tileSize;
+            y += gamePanel.tileSize;
 
-        if(npc.dialogues[npc.dialogueSet][npc.dialogueIndex] != null){
+            if (npc.dialogues[npc.dialogueSet][npc.dialogueIndex] != null) {
+                char[] characters = npc.dialogues[npc.dialogueSet][npc.dialogueIndex].toCharArray();
 
-            //currentDialogue = npc.dialogues[npc.dialogueSet][npc.dialogueIndex];
+                // Handle text animation
+                if (charIndex < characters.length) {
+                    String s = String.valueOf(characters[charIndex]);
+                    combinedText = combinedText + s;
+                    currentDialogue = combinedText;
+                    charIndex++;
+                }
 
-            char[] characters = npc.dialogues[npc.dialogueSet][npc.dialogueIndex].toCharArray();
-            if(charIndex < characters.length) {
+                // Handle ENTER key press to advance dialogue
+                if (gamePanel.keyHandler.enterPressed) {
+                    gamePanel.keyHandler.enterPressed = false;
 
-                String s = String.valueOf(characters[charIndex]);
-                combinedText = combinedText + s;
-                currentDialogue = combinedText;
-                charIndex++;
-            }
-            if(gamePanel.keyHandler.enterPressed) {
+                    if (charIndex < characters.length) {
+                        // Skip to end of current dialogue if still animating
+                        charIndex = characters.length;
+                        combinedText = npc.dialogues[npc.dialogueSet][npc.dialogueIndex];
+                        currentDialogue = combinedText;
+                    } else {
+                        // Move to next dialogue line
+                        charIndex = 0;
+                        combinedText = "";
+                        npc.dialogueIndex++;
 
+                        // Check if we reached the end of this dialogue set
+                        if (npc.dialogues[npc.dialogueSet][npc.dialogueIndex] == null) {
+                            npc.dialogueIndex = 0;
+                            if (gamePanel.gameState == gamePanel.dialogueState) {
+                                gamePanel.gameState = gamePanel.playState;
+                            }
+                        }
+                    }
+                }
+            } else {
+                // NO TEXT IN ARRAY - exit dialogue
+                npc.dialogueIndex = 0;
                 charIndex = 0;
                 combinedText = "";
 
                 if (gamePanel.gameState == gamePanel.dialogueState) {
-                    npc.dialogueIndex++;
-                    gamePanel.keyHandler.enterPressed = false;
+                    gamePanel.gameState = gamePanel.playState;
                 }
             }
-        } else { //NO TEXT IN ARRAY
-            npc.dialogueIndex = 0;
 
-            if(gamePanel.gameState == gamePanel.dialogueState) {
-                gamePanel.gameState = gamePanel.playState;
+            // Draw the current dialogue
+            for (String line : currentDialogue.split("\n")) {
+                graphics2D.drawString(line, x, y);
+                y += 40;
             }
         }
-
-
-
-        for (String line : currentDialogue.split("\n")) {
-            graphics2D.drawString(line, x, y);
-            y += 40;
-        }
-    }
     public void drawCharacterScreen() {
         // Subwindow frame
         final int frameX = gamePanel.tileSize * 2;
@@ -593,7 +610,7 @@
         }
     }
 
-        public void drawPlayerLife() {
+    public void drawPlayerLife() {
             // Smaller size: 24x24 (adjust as needed, e.g., 16 for tinier)
             int heartSize = gamePanel.tileSize / 2 + 10;  // Hearts and crystals same size for consistency
             int startX = gamePanel.tileSize / 2;  // Left margin: 24

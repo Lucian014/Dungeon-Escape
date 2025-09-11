@@ -34,9 +34,9 @@
     }
     public void setDefaultValues() {
 
-        gamePanel.currentMap = 3;
-        worldX = gamePanel.tileSize * 26;
-        worldY = gamePanel.tileSize * 40;
+        gamePanel.currentMap = 0;
+        worldX = gamePanel.tileSize * 23;
+        worldY = gamePanel.tileSize * 17;
         defaultSpeed = 4;
         speed = defaultSpeed;
         direction = "down";
@@ -69,8 +69,8 @@
     public void setDefaultPositions() {
         gamePanel.currentMap = 3;
         gamePanel.currentArea = gamePanel.outside;
-        worldX = gamePanel.tileSize * 26;
-        worldY = gamePanel.tileSize * 40;
+        worldX = gamePanel.tileSize * 23;
+        worldY = gamePanel.tileSize * 17;
         direction = "down";
 
     }
@@ -537,23 +537,25 @@
 
     public boolean canObtainItem(Entity item) {
 
+        Entity newItem = gamePanel.entityGenerator.getObject(item.name);
+
         boolean canObtain = false;
         //CHECK IF STACKABLE
-        if (item.stackable) {
-            int index = searchItemInInventory(item.name);
+        if (newItem.stackable) {
+            int index = searchItemInInventory(newItem.name);
             if (index != 999) {
                 inventory.get(index).amount++;
                 canObtain = true;
             } else { //NEW ITEM
                 if (inventory.size() != maxInventorySize) {
-                    inventory.add(item);
+                    inventory.add(newItem);
                     canObtain = true;
                 }
             }
         }
         else { //NOT STACKABLE
             if (inventory.size() != maxInventorySize) {
-                inventory.add(item);
+                inventory.add(newItem);
                 canObtain = true;
             }
         }
@@ -608,7 +610,6 @@
 
     public void setDialogue() {
         dialogues[0][0] = "You are level " + level + " !";
-        startDialogue(this,0);
     }
 
     public void damageInteractiveTile(int i) {
@@ -636,22 +637,22 @@
             generateParticle(projectile, projectile);
         }
     }
-    public void checkLevelUp() {
-        if(exp >= nextLevelExp) {
+        public void checkLevelUp() {
+            if(exp >= nextLevelExp) {
+                level++;
+                nextLevelExp = nextLevelExp * 2;
+                maxLife += 2;
+                strength++;
+                dexterity++;
+                attack = getAttack();
+                defense = getDefense();
 
-            level++;
-            nextLevelExp = nextLevelExp * 2;
-            maxLife += 2;
-            strength++;
-            dexterity++;
-            attack = getAttack();
-            defense = getDefense();
+                gamePanel.playSE(8);
+                gamePanel.gameState = gamePanel.dialogueState;
 
-        gamePanel.playSE(8);
-        gamePanel.gameState = gamePanel.dialogueState;
-
+                // Set the dialogue and then start it
+                setDialogue(); // This just sets the text, doesn't start dialogue
+                startDialogue(this, 0); // This actually starts the dialogue
+            }
         }
-    }
-
-
 }
