@@ -10,7 +10,7 @@ public class Sound {
 
     // Store multiple clips for different sounds
     private final Map<Integer, Clip> clips = new HashMap<>();
-    private final URL[] soundURL = new URL[20];
+    private final URL[] soundURL = new URL[50];
     private final Map<Integer, FloatControl> volumeControls = new HashMap<>();
 
     // Separate volume controls for music and sound effects
@@ -58,6 +58,8 @@ public class Sound {
         soundURL[17] = getClass().getResource("/sounds/parry.wav");
         soundURL[18] = getClass().getResource("/sounds/Merchant.wav");
         soundURL[19] = getClass().getResource("/sounds/Dungeon.wav");
+        soundURL[20] = getClass().getResource("/sounds/chipwall.wav");
+        soundURL[21] = getClass().getResource("/sounds/dooropen.wav");
 
     }
 
@@ -73,7 +75,7 @@ public class Sound {
             // Original format of the file
             AudioFormat baseFormat = ais.getFormat();
 
-            // Convert to 16-bit PCM (safe for Java Sound)
+            // Convert to 16-bit PCM
             AudioFormat decodedFormat = new AudioFormat(
                     AudioFormat.Encoding.PCM_SIGNED,
                     baseFormat.getSampleRate(),

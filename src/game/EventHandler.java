@@ -63,13 +63,13 @@ public class EventHandler{
         //MAP 2 EVENTS
         ArrayList<Event> map2Events = new ArrayList<>();
         map2Events.add(new Event(2, 9, 41, "down", () -> teleport(0, 12, 9,gamePanel.outside), true)); //teleport outside
-        map2Events.add(new Event(2, 8, 7, "any",() -> teleport(3,26,41,gamePanel.dungeon),true));
+        map2Events.add(new Event(2, 8, 7, "any",() -> teleport(3,26,41,gamePanel.dungeon),true)); // teleport to Final Boss
         mapEvents.put(2,map2Events);
 
         //MAP3 EVENTS
         ArrayList<Event> map3Events = new ArrayList<>();
         map3Events.add(new Event(3, 26, 41, "down", () -> teleport(2, 8, 7,gamePanel.outside), true)); //teleport outside
-        mapEvents.put(2,map3Events);
+        mapEvents.put(3,map3Events);
     }
 
     // Method to draw event trigger areas for debugging
