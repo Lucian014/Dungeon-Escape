@@ -34,9 +34,9 @@
     }
     public void setDefaultValues() {
 
-        gamePanel.currentMap = 0;
-        worldX = gamePanel.tileSize * 23;
-        worldY = gamePanel.tileSize * 17;
+        gamePanel.currentMap = 2;
+        worldX = gamePanel.tileSize * 9;
+        worldY = gamePanel.tileSize * 10;
         defaultSpeed = 4;
         speed = defaultSpeed;
         direction = "down";
@@ -67,10 +67,10 @@
     }
 
     public void setDefaultPositions() {
-        gamePanel.currentMap = 3;
-        gamePanel.currentArea = gamePanel.outside;
-        worldX = gamePanel.tileSize * 23;
-        worldY = gamePanel.tileSize * 17;
+        gamePanel.currentMap = 2;
+        gamePanel.currentArea = gamePanel.dungeon;
+        worldX = gamePanel.tileSize * 9;
+        worldY = gamePanel.tileSize * 10;
         direction = "down";
 
     }
@@ -471,7 +471,9 @@
         if( invincible ) {
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
         }
-        g2.drawImage(image,tempScreenX,tempScreenY,null);
+        if(drawing) {
+            g2.drawImage(image,tempScreenX,tempScreenY,null);
+        }
 
         //RESET ALPHA
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));

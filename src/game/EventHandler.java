@@ -69,6 +69,8 @@ public class EventHandler{
         //MAP3 EVENTS
         ArrayList<Event> map3Events = new ArrayList<>();
         map3Events.add(new Event(3, 26, 41, "down", () -> teleport(2, 8, 7,gamePanel.outside), true)); //teleport outside
+        map3Events.add(new Event(3, 25, 27, "any", this::skeletonLord, false)); //teleport outside
+
         mapEvents.put(3,map3Events);
     }
 
@@ -262,5 +264,14 @@ public class EventHandler{
             gamePanel.gameState = gamePanel.dialogueState;
             entity.speak();
 
+    }
+
+    public void skeletonLord() {
+
+        if(!gamePanel.bossBattleOn) {
+            gamePanel.gameState = gamePanel.cutsceneState;
+            gamePanel.cutsceneManager.sceneNum = gamePanel.cutsceneManager.skeletonLord;
+
+        }
     }
 }
