@@ -108,6 +108,9 @@ public class AssetSetter {
         mapNum = 3;
         i = 0;
         gamePanel.object[mapNum][i++] = createEntity(OBJ_Door_Iron.class,25,15);
+        gamePanel.object[mapNum][i++] = createEntity(OBJ_BlueHeart.class,25,8);
+
+
 
     }
 
