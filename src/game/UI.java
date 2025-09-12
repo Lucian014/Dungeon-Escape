@@ -142,70 +142,60 @@
         graphics2D.setColor(Color.WHITE);
         graphics2D.drawString(text, x, y);
     }
-        public void drawDialogueScreen() {
-            // WINDOW
-            int x = gamePanel.tileSize * 3;
-            int y = gamePanel.tileSize / 2;
-            int width = gamePanel.screenWidth - (gamePanel.tileSize * 6);
-            int height = gamePanel.tileSize * 4;
-            drawSubWindow(x, y, width, height);
+    public void drawDialogueScreen() {
 
-            graphics2D.setFont(graphics2D.getFont().deriveFont(Font.PLAIN, 32F));
-            x += gamePanel.tileSize;
-            y += gamePanel.tileSize;
+        //WINDOW
+        int x = gamePanel.tileSize / 2;
+        int y = gamePanel.tileSize / 2;
+        int width = gamePanel.screenWidth - (gamePanel.tileSize * 6);
+        int height = gamePanel.tileSize * 4;
+        drawSubWindow(x, y, width, height);
 
-            if (npc.dialogues[npc.dialogueSet][npc.dialogueIndex] != null) {
-                char[] characters = npc.dialogues[npc.dialogueSet][npc.dialogueIndex].toCharArray();
+        graphics2D.setFont(graphics2D.getFont().deriveFont(Font.PLAIN, 32F));
+        x += gamePanel.tileSize;
+        y += gamePanel.tileSize;
 
-                // Handle text animation
-                if (charIndex < characters.length) {
-                    String s = String.valueOf(characters[charIndex]);
-                    combinedText = combinedText + s;
-                    currentDialogue = combinedText;
-                    charIndex++;
-                }
+        if(npc.dialogues[npc.dialogueSet][npc.dialogueIndex] != null) {
 
-                // Handle ENTER key press to advance dialogue
-                if (gamePanel.keyHandler.enterPressed) {
-                    gamePanel.keyHandler.enterPressed = false;
+           // currentDialogue = npc.dialogues[npc.dialogueSet][npc.dialogueIndex];
 
-                    if (charIndex < characters.length) {
-                        // Skip to end of current dialogue if still animating
-                        charIndex = characters.length;
-                        combinedText = npc.dialogues[npc.dialogueSet][npc.dialogueIndex];
-                        currentDialogue = combinedText;
-                    } else {
-                        // Move to next dialogue line
-                        charIndex = 0;
-                        combinedText = "";
-                        npc.dialogueIndex++;
+            char[] characters = npc.dialogues[npc.dialogueSet][npc.dialogueIndex].toCharArray();
 
-                        // Check if we reached the end of this dialogue set
-                        if (npc.dialogues[npc.dialogueSet][npc.dialogueIndex] == null) {
-                            npc.dialogueIndex = 0;
-                            if (gamePanel.gameState == gamePanel.dialogueState) {
-                                gamePanel.gameState = gamePanel.playState;
-                            }
-                        }
-                    }
-                }
-            } else {
-                // NO TEXT IN ARRAY - exit dialogue
-                npc.dialogueIndex = 0;
+            if(charIndex < characters.length) {
+
+                gamePanel.sound.playSoundEffect(22);
+                String s = String.valueOf(characters[charIndex]);
+                combinedText = combinedText + s;
+                currentDialogue = combinedText;
+                charIndex++;
+            }
+
+            if(gamePanel.keyHandler.enterPressed) {
+
                 charIndex = 0;
                 combinedText = "";
 
-                if (gamePanel.gameState == gamePanel.dialogueState) {
-                    gamePanel.gameState = gamePanel.playState;
+                if(gamePanel.gameState == gamePanel.dialogueState) {
+
+                    npc.dialogueIndex++;
+                    gamePanel.keyHandler.enterPressed = false;
                 }
             }
+        }
+        else { // If no text is in the array
 
-            // Draw the current dialogue
-            for (String line : currentDialogue.split("\n")) {
-                graphics2D.drawString(line, x, y);
-                y += 40;
+            npc.dialogueIndex = 0;
+
+            if(gamePanel.gameState == gamePanel.dialogueState) {
+                gamePanel.gameState = gamePanel.playState;
             }
         }
+
+        for(String line : currentDialogue.split("\n")) {
+            graphics2D.drawString(line, x, y);
+            y += 40;
+        }
+    }
     public void drawCharacterScreen() {
         // Subwindow frame
         final int frameX = gamePanel.tileSize * 2;
