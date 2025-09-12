@@ -23,9 +23,13 @@ public class NPC_Merchant extends Entity{
     public void setDialogue(){
 
         dialogues[0][0] = "Looks like you've found me \nbrotha! What shall i offer \nyou lad?";
+
         dialogues[1][0] = "Come again, brotha!";
+
         dialogues[2][0] = "You need more coin to buy that.";
+
         dialogues[3][0] = "You cannot carry any more!";
+
         dialogues[4][0] = "You cannot sell an equipped item! ";
 
 
@@ -56,6 +60,7 @@ public class NPC_Merchant extends Entity{
 
         gamePanel.gameState = gamePanel.tradeState;
         gamePanel.ui.npc = this;
+
     }
 
 }

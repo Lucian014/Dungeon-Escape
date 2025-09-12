@@ -264,9 +264,6 @@ public class Entity {
         gamePanel.ui.npc = entity;
         dialogueSet = setNum;
 
-        gamePanel.ui.charIndex = 0;
-        gamePanel.ui.combinedText = "";
-        gamePanel.ui.currentDialogue = "";
 
     }
 

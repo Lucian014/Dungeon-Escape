@@ -651,8 +651,7 @@
                 gamePanel.gameState = gamePanel.dialogueState;
 
                 // Set the dialogue and then start it
-                setDialogue(); // This just sets the text, doesn't start dialogue
-                startDialogue(this, 0); // This actually starts the dialogue
+                startDialogue(this, 0);
             }
         }
 }
