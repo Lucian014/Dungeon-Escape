@@ -3,22 +3,28 @@ package entity;
 import game.GamePanel;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Random;
 
 public class NPC_Priest extends Entity{
 
+    BufferedImage sheet;
+    BufferedImage[] Priest = new BufferedImage[8];
     public NPC_Priest(GamePanel gamePanel) {
         super(gamePanel);
 
         direction = "down";
         speed = 2;
-        getImage();
         solidArea = new Rectangle(8,16,30,30);
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
         dialogueSet = -1;
 
+        sheet = loadARGB("/npc/priest/Priest.png");
         setDialogue();
+        getImage();
+
 
     }
 
@@ -39,14 +45,18 @@ public class NPC_Priest extends Entity{
 
     }
     public void getImage(){
-        up1 = setup("npc/priest/priest_up_01",1,1);
-        up2 = setup("npc/priest/priest_up_02",1,1);
-        down1 = setup("npc/priest/priest_down_01",1,1);
-        down2 = setup("npc/priest/priest_down_02",1,1);
-        left1 = setup("npc/priest/priest_left_01",1,1);
-        left2 = setup("npc/priest/priest_left_02",1,1);
-        right1 = setup("npc/priest/priest_right_01",1,1);
-        right2 = setup("npc/priest/priest_right_02",1,1);
+
+        for(int i = 0; i < Priest.length; i++) {
+            Priest[i] = sheet.getSubimage(i * 16, 0, 16, 16);
+        }
+        down1 = setup(Priest[0],1,1);
+        down2 = setup(Priest[1],1,1);
+        left1 = setup(Priest[2],1,1);
+        left2 = setup(Priest[3],1,1);
+        right1 = setup(Priest[4],1,1);
+        right2 = setup(Priest[5],1,1);
+        up1 = setup(Priest[6],1,1);
+        up2 = setup(Priest[7],1,1);
 
     }
 

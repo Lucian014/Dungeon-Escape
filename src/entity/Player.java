@@ -3,8 +3,11 @@
     import game.GamePanel;
     import game.KeyHandler;
     import object.*;
+
+    import javax.imageio.ImageIO;
     import java.awt.*;
     import java.awt.image.BufferedImage;
+    import java.io.IOException;
 
 
     public class Player extends Entity {
@@ -14,11 +17,25 @@
     public final int screenX;
     public final int screenY;
     public boolean lightUpdated = false;
-    public Player(GamePanel gamePanel, KeyHandler keyHandler) {
+    BufferedImage sheetRunning, sheetSword, sheetAxe, sheetPickaxe, sheetGuard;
+
+
+
+        public Player(GamePanel gamePanel, KeyHandler keyHandler) {
 
         super(gamePanel);
         this.gamePanel = gamePanel;
         this.keyHandler = keyHandler;
+            try {
+                sheetSword = ImageIO.read(getClass().getResource("/player/player/playerSword.png"));
+                sheetAxe = loadARGB("/player/player/playerAxe.png");
+                sheetGuard = loadARGB("/player/player/guarding.png");
+                sheetPickaxe = loadARGB("/player/player/playerPickaxe.png");
+                sheetRunning = loadARGB("/player/player/playerRunning.png");
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
 
         screenX = gamePanel.screenWidth / 2 - (gamePanel.tileSize / 2);
         screenY = gamePanel.screenHeight / 2 - (gamePanel.tileSize / 2);
@@ -32,11 +49,15 @@
         setDefaultValues();
 
     }
+
+
+
+
     public void setDefaultValues() {
 
-        gamePanel.currentMap = 2;
-        worldX = gamePanel.tileSize * 9;
-        worldY = gamePanel.tileSize * 10;
+        gamePanel.currentMap = 0;
+        worldX = gamePanel.tileSize * 23;
+        worldY = gamePanel.tileSize * 17;
         defaultSpeed = 4;
         speed = defaultSpeed;
         direction = "down";
@@ -67,10 +88,10 @@
     }
 
     public void setDefaultPositions() {
-        gamePanel.currentMap = 2;
+        gamePanel.currentMap = 0;
         gamePanel.currentArea = gamePanel.dungeon;
-        worldX = gamePanel.tileSize * 9;
-        worldY = gamePanel.tileSize * 10;
+        worldX = gamePanel.tileSize * 23;
+        worldY = gamePanel.tileSize * 17;
         direction = "down";
 
     }
@@ -110,61 +131,70 @@
         return defense = dexterity * currentShield.defenseValue;
     }
 
-    public void getImage() {
-        up1 = setup("player/player/boy_up_1", 1, 1);
-        up2 = setup("player/player/boy_up_2", 1, 1);
-        down1 = setup("player/player/boy_down_1", 1, 1);
-        down2 = setup("player/player/boy_down_2", 1, 1);
-        left1 = setup("player/player/boy_left_1", 1, 1);
-        left2 = setup("player/player/boy_left_2", 1, 1);
-        right1 = setup("player/player/boy_right_1", 1, 1);
-        right2 = setup("player/player/boy_right_2", 1, 1);
-    }
-    public void getAttackImage() {
+        public void getImage() {
+            up1    = cut(sheetRunning,  0,  0, 16, 16, 1, 1);
+            up2    = cut(sheetRunning, 16,  0, 16, 16, 1, 1);
 
-        if(currentWeapon.type == type_sword){
+            down1  = cut(sheetRunning, 32, 16, 16, 16, 1, 1);
+            down2  = cut(sheetRunning, 48, 16, 16, 16, 1, 1);
 
-            attackUp1 = setup("player/player/boy_attack_up_1", 1, 2);
-            attackUp2 = setup("player/player/boy_attack_up_2", 1, 2);
-            attackDown1 = setup("player/player/boy_attack_down_1", 1, 2);
-            attackDown2 = setup("player/player/boy_attack_down_2", 1, 2);
-            attackLeft1 = setup("player/player/boy_attack_left_1", 2, 1);
-            attackLeft2 = setup("player/player/boy_attack_left_2", 2, 1);
-            attackRight1 = setup("player/player/boy_attack_right_1", 2, 1);
-            attackRight2 = setup("player/player/boy_attack_right_2", 2, 1);
+            left1  = cut(sheetRunning, 16, 16, 16, 16, 1, 1);
+            left2  = cut(sheetRunning, 48,  0, 16, 16, 1, 1);
 
+            right1 = cut(sheetRunning, 32,  0, 16, 16, 1, 1);
+            right2 = cut(sheetRunning,  0, 16, 16, 16, 1, 1);
         }
-        if(currentWeapon.type == type_axe){
+        public void getAttackImage() {
+            if (currentWeapon.type == type_sword) {
+                attackDown1  = cut(sheetSword,    0,   0, 16, 32, 1, 2);
+                attackDown2  = cut(sheetSword,   16,   0, 16, 32, 1, 2);
 
-            attackUp1 = setup("player/player/boy_axe_up_1", 1, 2);
-            attackUp2 = setup("player/player/boy_axe_up_2", 1, 2);
-            attackDown1 = setup("player/player/boy_axe_down_1", 1, 2);
-            attackDown2 = setup("player/player/boy_axe_down_2", 1, 2);
-            attackLeft1 = setup("player/player/boy_axe_left_1", 2, 1);
-            attackLeft2 = setup("player/player/boy_axe_left_2", 2, 1);
-            attackRight1 = setup("player/player/boy_axe_right_1", 2, 1);
-            attackRight2 = setup("player/player/boy_axe_right_2", 2, 1);
+                attackLeft1  = cut(sheetSword,    0,  32, 32, 16, 2, 1);
+                attackLeft2  = cut(sheetSword,    0,  48, 32, 16, 2, 1);
+
+                attackRight1 = cut(sheetSword,    0,  64, 32, 16, 2, 1);
+                attackRight2 = cut(sheetSword,    0,  80, 32, 16, 2, 1);
+
+                attackUp1    = cut(sheetSword,    0,  96, 16, 32, 1, 2);
+                attackUp2    = cut(sheetSword,   16,  96, 16, 32, 1, 2);
+            }
+
+            if (currentWeapon.type == type_axe) {
+                attackDown1  = cut(sheetAxe,      0,   0, 16, 32, 1, 2);
+                attackDown2  = cut(sheetAxe,     16,   0, 16, 32, 1, 2);
+
+                attackUp1    = cut(sheetAxe,      0,  32, 16, 32, 1, 2);
+                attackUp2    = cut(sheetAxe,     16,  32, 16, 32, 1, 2);
+
+                attackLeft1  = cut(sheetAxe,      0,  64, 32, 16, 2, 1);
+                attackLeft2  = cut(sheetAxe,      0,  80, 32, 16, 2, 1);
+
+                attackRight1 = cut(sheetAxe,      0,  96, 32, 16, 2, 1);
+                attackRight2 = cut(sheetAxe,      0, 112, 32, 16, 2, 1);
+            }
+
+            if (currentWeapon.type == type_pickaxe) {
+                attackDown1  = cut(sheetPickaxe,  0,   0, 16, 32, 1, 2);
+                attackDown2  = cut(sheetPickaxe, 16,   0, 16, 32, 1, 2);
+
+                attackUp1    = cut(sheetPickaxe,  0,  32, 16, 32, 1, 2);
+                attackUp2    = cut(sheetPickaxe, 16,  32, 16, 32, 1, 2);
+
+                attackLeft1  = cut(sheetPickaxe,  0,  64, 32, 16, 2, 1);
+                attackLeft2  = cut(sheetPickaxe,  0,  80, 32, 16, 2, 1);
+
+                attackRight1 = cut(sheetPickaxe,  0,  96, 32, 16, 2, 1);
+                attackRight2 = cut(sheetPickaxe,  0, 112, 32, 16, 2, 1);
+            }
         }
-        if(currentWeapon.type == type_pickaxe){
 
-            attackUp1 = setup("player/player/boy_pick_up_1", 1, 2);
-            attackUp2 = setup("player/player/boy_pick_up_2", 1, 2);
-            attackDown1 = setup("player/player/boy_pick_down_1", 1, 2);
-            attackDown2 = setup("player/player/boy_pick_down_2", 1, 2);
-            attackLeft1 = setup("player/player/boy_pick_left_1", 2, 1);
-            attackLeft2 = setup("player/player/boy_pick_left_2", 2, 1);
-            attackRight1 = setup("player/player/boy_pick_right_1", 2, 1);
-            attackRight2 = setup("player/player/boy_pick_right_2", 2, 1);
+        public void getGuardingImage() {
+            guardDown  = cut(sheetGuard,  0, 0, 16, 16, 1, 1);
+            guardLeft  = cut(sheetGuard, 16, 0, 16, 16, 1, 1);
+            guardRight = cut(sheetGuard, 32, 0, 16, 16, 1, 1);
+            guardUp    = cut(sheetGuard, 48, 0, 16, 16, 1, 1);
         }
 
-    }
-    public void getGuardingImage() {
-        guardUp = setup("player/player/boy_guard_up", 1, 1);
-        guardDown = setup("player/player/boy_guard_down", 1, 1);
-        guardLeft = setup("player/player/boy_guard_left", 1, 1);
-        guardRight = setup("player/player/boy_guard_right", 1, 1);
-
-    }
     public void getSleepingImage(BufferedImage image) {
         up1 = image;
         up2 = image;

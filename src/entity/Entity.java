@@ -145,6 +145,36 @@ public class Entity {
                 worldY + gamePanel.tileSize * 5 > gamePanel.player.worldY - gamePanel.player.screenY &&
                 worldY - gamePanel.tileSize < gamePanel.player.worldY + gamePanel.player.screenY;
     }
+
+    protected BufferedImage loadARGB(String path) {
+        try {
+            // Load image (PNG with transparency)
+            BufferedImage img = ImageIO.read(getClass().getResource(path));
+
+            // Force TYPE_INT_ARGB so alpha is always preserved
+            BufferedImage argb = new BufferedImage(
+                    img.getWidth(),
+                    img.getHeight(),
+                    BufferedImage.TYPE_INT_ARGB
+            );
+
+            Graphics2D g2d = argb.createGraphics();
+            g2d.drawImage(img, 0, 0, null);
+            g2d.dispose();
+
+            return argb;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    protected BufferedImage cut(BufferedImage sheet, int x, int y, int w, int h, int scaleX, int scaleY) {
+        BufferedImage sub = sheet.getSubimage(x, y, w, h);
+        return setup(sub, scaleX, scaleY);
+    }
+
     public void draw(Graphics2D g2) {
 
         BufferedImage image = null;
@@ -234,6 +264,18 @@ public class Entity {
             System.out.println("Could not load resource: /" + imagePath + ".png");
         }
         return image;
+    }
+
+    public BufferedImage setup(BufferedImage image, int scaleWidth, int scaleHeight) {
+        UtilityTool utilityTool = new UtilityTool();
+        BufferedImage scaledImage = null;
+
+        try {
+            scaledImage = utilityTool.scaleImage(image, gamePanel.tileSize * scaleWidth, gamePanel.tileSize * scaleHeight);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+        return scaledImage;
     }
 
     public void setAction() {}
