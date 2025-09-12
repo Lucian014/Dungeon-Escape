@@ -175,7 +175,7 @@
                 charIndex = 0;
                 combinedText = "";
 
-                if(gamePanel.gameState == gamePanel.dialogueState) {
+                if(gamePanel.gameState == gamePanel.dialogueState || gamePanel.gameState == gamePanel.cutsceneState) {
 
                     npc.dialogueIndex++;
                     gamePanel.keyHandler.enterPressed = false;
@@ -188,6 +188,9 @@
 
             if(gamePanel.gameState == gamePanel.dialogueState) {
                 gamePanel.gameState = gamePanel.playState;
+            }
+            if(gamePanel.gameState == gamePanel.cutsceneState) {
+                gamePanel.cutsceneManager.scenePhase++;
             }
         }
 

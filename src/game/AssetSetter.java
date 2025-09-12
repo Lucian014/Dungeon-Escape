@@ -105,6 +105,9 @@ public class AssetSetter {
         gamePanel.object[mapNum][i++] = createEntity(OBJ_Chest.class,27,15, new OBJ_Potion_Red(gamePanel));
         gamePanel.object[mapNum][i++] = createEntity(OBJ_Door_Iron.class,18,23);
 
+        mapNum = 3;
+        i = 0;
+        gamePanel.object[mapNum][i++] = createEntity(OBJ_Door_Iron.class,25,15);
 
     }
 
@@ -148,7 +151,7 @@ public class AssetSetter {
 
         mapNum = 3;
         i = 0;
-        gamePanel.monster[mapNum][i++] = createEntity(MON_SkeletonLord.class,25,11);
+        gamePanel.monster[mapNum][i++] = createEntity(MON_SkeletonLord.class,23,15);
 
     }
 
