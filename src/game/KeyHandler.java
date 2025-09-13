@@ -235,6 +235,9 @@ public class KeyHandler implements KeyListener {
             if(gamePanel.ui.commandNum == 0) {
                 gamePanel.gameState = gamePanel.playState;
                 gamePanel.resetGame(false);
+                if(gamePanel.currentMap == 3) {
+                    gamePanel.dataManager.savePlayerPosition(3,gamePanel.dungeon,26 * gamePanel.tileSize, 40 * gamePanel.tileSize);
+                }
             }
             else if (gamePanel.ui.commandNum == 1) {
                 // Quit: Save player stats and return to title screen

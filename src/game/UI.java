@@ -429,9 +429,6 @@
             graphics2D.drawString(">", x - 40, y);
         }
 
-
-
-
         //Back to title field
     }
     public void drawTransitionScreen() {
@@ -710,8 +707,6 @@
                 }
                 // Boss bar: Always draw if boss exists (no inCamera or hpBarOn check)
                 else if (monster.boss && monster.inCamera()) {
-                    // Debug: Print once per draw call (remove later)
-                    System.out.println("Drawing boss bar for " + monster.name + " (life=" + monster.life + "/" + monster.maxLife + ")");
 
                     double oneScale = (double) gamePanel.tileSize * 8 / monster.maxLife;
                     double hpBarValue = oneScale * monster.life;
@@ -971,7 +966,12 @@
             graphics2D.drawString(">", textX - 25, textY);
             if(gamePanel.keyHandler.enterPressed) {
                 subState = 0;
-                gamePanel.dataManager.savePlayerStats(gamePanel.player);
+                if(gamePanel.currentMap != 3) {
+                    gamePanel.dataManager.savePlayerStats(gamePanel.player);
+                }
+                else {
+                    gamePanel.dataManager.savePlayerPosition(3,gamePanel.dungeon,26 * gamePanel.tileSize,40 * gamePanel.tileSize);
+                }
                 gamePanel.gameState = gamePanel.titleState;
             }
         }

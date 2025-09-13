@@ -1,7 +1,7 @@
-package game;
+package object;
 
 import entity.Entity;
-
+import game.GamePanel;
 
 
 public class OBJ_Tent extends Entity {
