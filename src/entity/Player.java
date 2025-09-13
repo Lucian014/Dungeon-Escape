@@ -17,6 +17,7 @@
     public final int screenX;
     public final int screenY;
     public boolean lightUpdated = false;
+    public boolean killSkeletonLord = false;
     BufferedImage sheetRunning, sheetSword, sheetAxe, sheetPickaxe, sheetGuard;
 
 
@@ -55,9 +56,9 @@
 
     public void setDefaultValues() {
 
-        gamePanel.currentMap = 0;
-        worldX = gamePanel.tileSize * 23;
-        worldY = gamePanel.tileSize * 17;
+        gamePanel.currentMap = 2;
+        worldX = gamePanel.tileSize * 9;
+        worldY = gamePanel.tileSize * 8;
         defaultSpeed = 4;
         speed = defaultSpeed;
         direction = "down";
@@ -88,10 +89,10 @@
     }
 
     public void setDefaultPositions() {
-        gamePanel.currentMap = 0;
+        gamePanel.currentMap = 2;
         gamePanel.currentArea = gamePanel.dungeon;
-        worldX = gamePanel.tileSize * 23;
-        worldY = gamePanel.tileSize * 17;
+        worldX = gamePanel.tileSize * 9;
+        worldY = gamePanel.tileSize * 8;
         direction = "down";
 
     }

@@ -154,8 +154,9 @@ public class AssetSetter {
 
         mapNum = 3;
         i = 0;
-        gamePanel.monster[mapNum][i++] = createEntity(MON_SkeletonLord.class,23,15);
-
+        if(!gamePanel.player.killSkeletonLord) {
+            gamePanel.monster[mapNum][i++] = createEntity(MON_SkeletonLord.class,23,15);
+        }
     }
 
     public void setInteractiveTile() {

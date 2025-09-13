@@ -11,7 +11,6 @@ import java.util.Random;
 
 public class MON_SkeletonLord extends Entity {
     GamePanel gamePanel;
-
     public MON_SkeletonLord(GamePanel gamePanel) {
 
         super(gamePanel);
@@ -133,12 +132,13 @@ public class MON_SkeletonLord extends Entity {
 
         actionLockCounter = 0;
         onPath = true;
+        sleep = false;
     }
 
     public void checkDrop() {
 
         gamePanel.bossBattleOn = false;
-
+        gamePanel.player.killSkeletonLord = true;
         // Restore the previous music
 
         gamePanel.sound.stopMusic();

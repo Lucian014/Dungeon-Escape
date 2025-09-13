@@ -3,7 +3,7 @@ package data;
 import entity.Entity;
 import entity.Player;
 import game.GamePanel;
-import game.OBJ_Tent;
+import object.OBJ_Tent;
 import interactive_tile.*;
 import object.*;
 
@@ -24,6 +24,8 @@ public class DataManager {
             // PLAYER STATS TABLE
             String playerStats = "CREATE TABLE IF NOT EXISTS player(" +
                     "id INTEGER PRIMARY KEY," +
+                    "currentMap INTEGER," +
+                    "currentArea INTEGER," +
                     "worldX INTEGER," +
                     "worldY INTEGER," +
                     "direction TEXT," +
@@ -75,29 +77,31 @@ public class DataManager {
     public void savePlayerStats(Player player) {
         try(Connection connection = DriverManager.getConnection(DB_URL)) {
             // SAVE OR UPDATE PLAYER STATS
-            String query = "INSERT OR REPLACE INTO player (id, worldX, worldY, direction, speed, defaultSpeed, level, " +
+            String query = "INSERT OR REPLACE INTO player (id, currentMap, currentArea, worldX, worldY, direction, speed, defaultSpeed, level, " +
                     "strength, dexterity, exp, nextLevelExp, coin, maxLife, life, maxMana, mana, " +
                     "currentWeaponName, currentShieldName, currentLightName) " +
-                    "VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+                    "VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, player.worldX);
-            preparedStatement.setInt(2, player.worldY);
-            preparedStatement.setString(3, player.direction);
-            preparedStatement.setInt(4, player.speed);
-            preparedStatement.setInt(5, player.defaultSpeed);
-            preparedStatement.setInt(6, player.level);
-            preparedStatement.setInt(7, player.strength);
-            preparedStatement.setInt(8, player.dexterity);
-            preparedStatement.setInt(9, player.exp);
-            preparedStatement.setInt(10, player.nextLevelExp);
-            preparedStatement.setInt(11, player.coin);
-            preparedStatement.setInt(12, player.maxLife);
-            preparedStatement.setInt(13, player.life);
-            preparedStatement.setInt(14, player.maxMana);
-            preparedStatement.setInt(15, player.mana);
-            preparedStatement.setString(16, player.currentWeapon != null ? player.currentWeapon.name : null);
-            preparedStatement.setString(17, player.currentShield != null ? player.currentShield.name : null);
-            preparedStatement.setString(18, player.currentLight != null ? player.currentLight.name : null);
+            preparedStatement.setInt(1, gamePanel.currentMap);
+            preparedStatement.setInt(2, gamePanel.currentArea);
+            preparedStatement.setInt(3, player.worldX);
+            preparedStatement.setInt(4, player.worldY);
+            preparedStatement.setString(5, player.direction);
+            preparedStatement.setInt(6, player.speed);
+            preparedStatement.setInt(7, player.defaultSpeed);
+            preparedStatement.setInt(8, player.level);
+            preparedStatement.setInt(9, player.strength);
+            preparedStatement.setInt(10, player.dexterity);
+            preparedStatement.setInt(11, player.exp);
+            preparedStatement.setInt(12, player.nextLevelExp);
+            preparedStatement.setInt(13, player.coin);
+            preparedStatement.setInt(14, player.maxLife);
+            preparedStatement.setInt(15, player.life);
+            preparedStatement.setInt(16, player.maxMana);
+            preparedStatement.setInt(17, player.mana);
+            preparedStatement.setString(18, player.currentWeapon != null ? player.currentWeapon.name : null);
+            preparedStatement.setString(19, player.currentShield != null ? player.currentShield.name : null);
+            preparedStatement.setString(20, player.currentLight != null ? player.currentLight.name : null);
             preparedStatement.executeUpdate();
 
             // DELETE OLD INVENTORY
@@ -128,6 +132,8 @@ public class DataManager {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             if(resultSet.next()) {
+                gamePanel.currentMap = resultSet.getInt("currentMap");
+                gamePanel.currentArea = resultSet.getInt("currentArea");
                 player.worldX = resultSet.getInt("worldX");
                 player.worldY = resultSet.getInt("worldY");
                 player.direction = resultSet.getString("direction");
@@ -230,8 +236,10 @@ public class DataManager {
                 break;
             case "Blue Shield":
                 item = new OBJ_Shield_Blue(gamePanel);
+                break;
             case "Pickaxe":
                 item = new OBJ_Pickaxe(gamePanel);
+                break;
             default:
                 System.out.println("Unknown item name: " + name + ". Item not loaded.");
         }
@@ -423,5 +431,30 @@ public class DataManager {
             }
         }
         return -1;
+    }
+
+    public void savePlayerPosition(int map, int area, int worldX, int worldY) {
+        try(Connection connection = DriverManager.getConnection(DB_URL)) {
+            String query = "UPDATE player SET currentMap = ?, currentArea = ?, worldX = ?, worldY = ? WHERE id = 1;";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, map);
+            preparedStatement.setInt(2, area);
+            preparedStatement.setInt(3, worldX);
+            preparedStatement.setInt(4, worldY);
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected == 0) {
+                // If no row was updated, insert a new one with default values
+                String insertQuery = "INSERT INTO player (id, currentMap, currentArea, worldX, worldY) VALUES (1, ?, ?, ?, ?);";
+                PreparedStatement insertStmt = connection.prepareStatement(insertQuery);
+                insertStmt.setInt(1, map);
+                insertStmt.setInt(2, area);
+                insertStmt.setInt(3, worldX);
+                insertStmt.setInt(4, worldY);
+                insertStmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

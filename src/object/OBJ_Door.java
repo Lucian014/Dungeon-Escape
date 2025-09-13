@@ -9,6 +9,7 @@ public class OBJ_Door extends Entity {
 
     GamePanel gamePanel;
     public static final String objName = "Door";
+    public boolean opened = false;
     public OBJ_Door(GamePanel gamePanel){
         super(gamePanel);
         this.gamePanel = gamePanel;

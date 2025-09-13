@@ -103,7 +103,7 @@ public class CutsceneManager {
 
             gamePanel.player.worldY -= 2;
 
-            if(gamePanel.player.worldY < gamePanel.tileSize * 16) {
+            if(gamePanel.player.worldY < gamePanel.tileSize * 17) {
                 scenePhase++;
 
             }
@@ -266,8 +266,6 @@ public class CutsceneManager {
             gamePanel.sound.stopMusic();
             gamePanel.sound.playMusic(9);
         }
-
-
     }
 
     public boolean counterReached(int target) {
