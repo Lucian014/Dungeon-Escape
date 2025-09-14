@@ -81,8 +81,7 @@ public class AssetSetter {
         gamePanel.object[mapNum][i++] = createEntity(OBJ_Door.class,14,28);
         gamePanel.object[mapNum][i++] = createEntity(OBJ_Door.class,12,12);
         gamePanel.object[mapNum][i++] = createEntity(OBJ_Chest.class,30,12, new OBJ_Key(gamePanel));
-        gamePanel.object[mapNum][i++] = createEntity(OBJ_Chest.class,30,29,new OBJ_Shield_Blue(gamePanel));
-        gamePanel.object[mapNum][i++] = createEntity(OBJ_Shield_Blue.class, 30,27);
+        gamePanel.object[mapNum][i++] = createEntity(OBJ_Chest.class,30,29,new OBJ_Axe(gamePanel));
         mapNum += 2;
         i = 0;
         gamePanel.object[mapNum][i++] = createEntity(OBJ_Chest.class,40,41, new OBJ_Pickaxe(gamePanel));
@@ -94,13 +93,13 @@ public class AssetSetter {
         mapNum = 3;
         i = 0;
         gamePanel.object[mapNum][i++] = createEntity(OBJ_Door_Iron.class,25,15);
-        gamePanel.object[mapNum][i++] = createEntity(OBJ_BlueHeart.class,25,8);
+        gamePanel.object[mapNum][i++] = createEntity(OBJ_AmuletOfLife.class,25,8);
 
         mapNum = 4;
         i = 0;
 
         gamePanel.object[mapNum][i++] = createEntity(OBJ_Chest.class,20,12, new OBJ_Potion_Red(gamePanel));
-        gamePanel.object[mapNum][i++] = createEntity(OBJ_Chest.class,11,13, new OBJ_Boots(gamePanel));
+        gamePanel.object[mapNum][i++] = createEntity(OBJ_Boots.class,11,13);
         gamePanel.object[mapNum][i++] = createEntity(OBJ_Chest.class,16,38, new OBJ_SwordRed(gamePanel));
 
 
@@ -129,7 +128,7 @@ public class AssetSetter {
     public void setMonster() {
         int i = 0;
         int mapNum = 0;
-        gamePanel.monster[mapNum][i++] = createEntity(MON_GreenSlime.class, 23, 16);
+        gamePanel.monster[mapNum][i++] = createEntity(MON_GreenSlime.class, 21, 12);
         gamePanel.monster[mapNum][i++] = createEntity(MON_GreenSlime.class, 24, 37);
         gamePanel.monster[mapNum][i++] = createEntity(MON_GreenSlime.class, 21, 38);
         gamePanel.monster[mapNum][i++] = createEntity(MON_GreenSlime.class, 34, 42);
@@ -159,8 +158,15 @@ public class AssetSetter {
         gamePanel.monster[mapNum][i++] = createEntity(MON_RedSlime.class,16,19);
         gamePanel.monster[mapNum][i++] = createEntity(MON_RedSlime.class,20,33);
 
-        gamePanel.monster[mapNum][i++] = createEntity(MON_GoblinBoss.class,35,13);
+        gamePanel.monster[mapNum][i++] = createEntity(MON_Orc.class,9,42);
+        gamePanel.monster[mapNum][i++] = createEntity(MON_RedSlime.class,11,16);
+        gamePanel.monster[mapNum][i++] = createEntity(MON_RedSlime.class,13,21);
 
+
+
+        if(!gamePanel.player.killGoblinBoss) {
+            gamePanel.monster[mapNum][i++] = createEntity(MON_GoblinBoss.class, 34, 13);
+        }
 
 
 

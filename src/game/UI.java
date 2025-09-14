@@ -145,7 +145,7 @@
     public void drawDialogueScreen() {
 
         //WINDOW
-        int x = gamePanel.tileSize / 2;
+        int x = gamePanel.tileSize * 2;
         int y = gamePanel.tileSize / 2;
         int width = gamePanel.screenWidth - (gamePanel.tileSize * 6);
         int height = gamePanel.tileSize * 4;
@@ -153,7 +153,7 @@
 
         graphics2D.setFont(graphics2D.getFont().deriveFont(Font.PLAIN, 32F));
         x += gamePanel.tileSize;
-        y += gamePanel.tileSize;
+        y += gamePanel.tileSize + 20;
 
         if(npc.dialogues[npc.dialogueSet][npc.dialogueIndex] != null) {
 
@@ -294,7 +294,7 @@
 
             text = "NEW GAME";
             x = getXforCenteredText(text);
-            y += gamePanel.tileSize * 3;
+            y += gamePanel.tileSize * 4;
             graphics2D.drawString(text, x, y);
             if (commandNum == 0) {
                 graphics2D.drawString(">", x - gamePanel.tileSize, y);
@@ -308,19 +308,11 @@
                 graphics2D.drawString(">", x - gamePanel.tileSize, y);
             }
 
-            text = "SETTINGS";
+            text = "QUIT";
             x = getXforCenteredText(text);
             y += gamePanel.tileSize;
             graphics2D.drawString(text, x, y);
             if (commandNum == 2) {
-                graphics2D.drawString(">", x - gamePanel.tileSize, y);
-            }
-
-            text = "QUIT GAME";
-            x = getXforCenteredText(text);
-            y += gamePanel.tileSize;
-            graphics2D.drawString(text, x, y);
-            if (commandNum == 3) {
                 graphics2D.drawString(">", x - gamePanel.tileSize, y);
             }
         } else if (titleScreenState == 1) {
@@ -333,7 +325,7 @@
             int y = gamePanel.tileSize * 3;
             graphics2D.drawString(text, x, y);
 
-            text = "Fighter";
+            text = "Fighter (+1 Strength)";
             x = getXforCenteredText(text);
             y += gamePanel.tileSize * 2;
             graphics2D.drawString(text, x, y);
@@ -341,7 +333,7 @@
                 graphics2D.drawString(">", x - gamePanel.tileSize, y);
             }
 
-            text = "Thief";
+            text = "Thief (+1 Health)";
             x = getXforCenteredText(text);
             y += gamePanel.tileSize;
             graphics2D.drawString(text, x, y);
@@ -349,7 +341,7 @@
                 graphics2D.drawString(">", x - gamePanel.tileSize, y);
             }
 
-            text = "Wizard";
+            text = "Wizard(+1 Dexterity)";
             x = getXforCenteredText(text);
             y += gamePanel.tileSize;
             graphics2D.drawString(text, x, y);
@@ -372,9 +364,9 @@
         graphics2D.setFont(graphics2D.getFont().deriveFont(32F));
 
         int frameX = gamePanel.tileSize * 6;
-        int frameY = gamePanel.tileSize ;
+        int frameY = gamePanel.tileSize;
         int frameWidth = gamePanel.tileSize * 8;
-        int frameHeight = gamePanel.tileSize * 10;
+        int frameHeight = gamePanel.tileSize * 11;
         drawSubWindow(frameX,frameY,frameWidth,frameHeight);
 
         switch (subState) {
@@ -913,7 +905,9 @@
         textY += gamePanel.tileSize;
         graphics2D.drawString("Pause", textX, textY);
         textY += gamePanel.tileSize;
-        graphics2D.drawString("Options", textX, textY);
+        graphics2D.drawString("Map", textX, textY);
+        textY += gamePanel.tileSize;
+        graphics2D.drawString("Mini Map", textX, textY);
         textY += gamePanel.tileSize;
 
         textX = frameX + gamePanel.tileSize * 6;
@@ -930,12 +924,16 @@
         textY += gamePanel.tileSize;
         graphics2D.drawString("P", textX, textY);
         textY += gamePanel.tileSize;
+        graphics2D.drawString("M", textX, textY);
+        textY += gamePanel.tileSize;
+        graphics2D.drawString("X", textX, textY);
+        textY += gamePanel.tileSize;
         graphics2D.drawString("ESC", textX, textY);
         textY += gamePanel.tileSize;
 
         //BACK
         textX = frameX + gamePanel.tileSize;
-        textY = frameY + gamePanel.tileSize * 9;
+        textY = frameY + gamePanel.tileSize * 10;
         graphics2D.drawString("Back", textX, textY);
         if (commandNum == 0) {
             graphics2D.drawString(">", textX - 25, textY);

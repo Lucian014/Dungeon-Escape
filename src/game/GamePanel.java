@@ -128,7 +128,6 @@ public class GamePanel extends JPanel implements Runnable{
         currentArea = outside;
         removeTempEntity();
         bossBattleOn = false;
-        player.setDefaultPositions();
         player.restoreStatus();
         assetSetter.setNPC();
         assetSetter.setMonster();
@@ -138,14 +137,10 @@ public class GamePanel extends JPanel implements Runnable{
             // For new game - reset everything to defaults
             player.setDefaultValues();
             dataManager.resetPlayerData(player);
-            assetSetter.setObject();
-            assetSetter.setInteractiveTile();
             dataManager.saveWorldObjectState(); // Save fresh defaults
         } else {
             // For loading a saved game - load player data and world state
             dataManager.loadPlayerStats(player);
-            assetSetter.setObject();
-            assetSetter.setInteractiveTile();
             dataManager.loadWorldObjectState(); // Apply saved changes
         }
     }

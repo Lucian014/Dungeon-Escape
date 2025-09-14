@@ -236,6 +236,9 @@ public class DataManager {
             case "Pickaxe":
                 item = new OBJ_Pickaxe(gamePanel);
                 break;
+            case "Sword of Flame":
+                item = new OBJ_SwordRed(gamePanel);
+                break;
             default:
                 System.out.println("Unknown item name: " + name + ". Item not loaded.");
         }

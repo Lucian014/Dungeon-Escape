@@ -78,7 +78,7 @@ public class EventHandler{
         ArrayList<Event> map4Events = new ArrayList<>();
         map4Events.add(new Event(4,41,27,"up",() -> teleport(5, gamePanel.indoor,12,13),true));
         map4Events.add(new Event(4,21,44,"any", () -> teleportToAnotherIsland(0,gamePanel.outside,37,41),true)); //teleport to another island
-        map4Events.add(new Event(5,35,20,"up",this::goblinBoss,true));
+        map4Events.add(new Event(5,34,20,"up",this::goblinBoss,true));
 
         mapEvents.put(4,map4Events);
 

@@ -49,7 +49,6 @@ public class NPC_Merchant2 extends Entity{
     public void setItems() {
         inventory.add(new OBJ_Potion_Red(gamePanel));
         inventory.add(new OBJ_Lantern(gamePanel));
-        inventory.add(new OBJ_Axe(gamePanel));
     }
     public void speak() {
 

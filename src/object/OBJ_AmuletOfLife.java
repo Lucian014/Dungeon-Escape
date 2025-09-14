@@ -3,26 +3,26 @@ package object;
 import entity.Entity;
 import game.GamePanel;
 
-public class OBJ_BlueHeart extends Entity {
+public class OBJ_AmuletOfLife extends Entity {
 
-    public static final String objName = "Blue Heart";
+    public static final String objName = "Amulet Of Life";
     GamePanel gamePanel;
-    public OBJ_BlueHeart(GamePanel gamePanel) {
+    public OBJ_AmuletOfLife(GamePanel gamePanel) {
         super(gamePanel);
 
         this.gamePanel = gamePanel;
 
         type = type_pickUpOnly;
         name = objName;
-        down1 = setup("items/blueheart",1,1);
+        down1 = setup("items/amuletOfLife",1,1);
         value = 2;
         setDialogues();
     }
 
     public void setDialogues() {
 
-        dialogues[0][0] = "You pick up a beautiful blue heart !";
-        dialogues[0][1] = "You have found the Blue Heart, the legendary treasure !";
+        dialogues[0][0] = "You pick up the Amulet of Life !";
+        dialogues[0][1] = "You have found the Amulet of Life, the legendary treasure !";
 
     }
 
