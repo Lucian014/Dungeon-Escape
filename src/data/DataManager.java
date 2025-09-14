@@ -3,7 +3,6 @@ package data;
 import entity.Entity;
 import entity.Player;
 import game.GamePanel;
-import object.OBJ_Tent;
 import interactive_tile.*;
 import object.*;
 
@@ -230,9 +229,6 @@ public class DataManager {
                 break;
             case "Lantern":
                 item = new OBJ_Lantern(gamePanel);
-                break;
-            case "Tent":
-                item = new OBJ_Tent(gamePanel);
                 break;
             case "Blue Shield":
                 item = new OBJ_Shield_Blue(gamePanel);

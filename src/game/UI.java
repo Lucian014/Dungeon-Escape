@@ -551,7 +551,7 @@
                     graphics2D.drawString(s, amountX - 3, amountY - 3);
                 }
             } else {
-                // Draw an empty slot or debug indicator
+                // Draw an empty slot
                 graphics2D.setColor(Color.GRAY);
                 graphics2D.fillRect(slotX, slotY, slotSize, slotSize);
             }

@@ -51,6 +51,8 @@ public class EventHandler{
         map0Events.add(new Event(0, 23, 12, "up", this::healingPool, true));
         map0Events.add(new Event(0, 10, 39, "any", () -> teleport(1,gamePanel.indoor,12, 13), true)); //teleport to merchant
         map0Events.add(new Event(0,12,9,"any", () -> teleport(2,gamePanel.dungeon,9,41),true)); //teleport to dungeon
+        map0Events.add(new Event(0,38,41,"any", () -> teleportToAnotherIsland(4,gamePanel.outside,23,43),true)); //teleport to another island
+
         mapEvents.put(0, map0Events);
 
         // MAP 1 EVENTS
@@ -69,9 +71,23 @@ public class EventHandler{
         //MAP3 EVENTS
         ArrayList<Event> map3Events = new ArrayList<>();
         map3Events.add(new Event(3, 26, 41, "down", () -> teleport(2, gamePanel.outside, 8, 7), true)); //teleport in the main dungeon
-        map3Events.add(new Event(3, 25, 27, "any", this::skeletonLord, true)); //teleport outside
+        map3Events.add(new Event(3, 25, 27, "any", this::skeletonLord, true));
 
         mapEvents.put(3,map3Events);
+
+        ArrayList<Event> map4Events = new ArrayList<>();
+        map4Events.add(new Event(4,41,27,"up",() -> teleport(5, gamePanel.indoor,12,13),true));
+        map4Events.add(new Event(4,21,44,"any", () -> teleportToAnotherIsland(0,gamePanel.outside,37,41),true)); //teleport to another island
+        map4Events.add(new Event(5,35,20,"up",this::goblinBoss,true));
+
+        mapEvents.put(4,map4Events);
+
+        ArrayList<Event> map5Events = new ArrayList<>();
+        map5Events.add(new Event(5, 12, 9, "up",() -> speak(gamePanel.npc[1][0]),true));
+        map5Events.add(new Event(1, 12, 13, "down", () -> teleport(4,gamePanel.outside,41, 28), true)); //teleport outside
+
+
+        mapEvents.put(5,map5Events);
     }
 
     // Method to draw event trigger areas for debugging
@@ -263,6 +279,19 @@ public class EventHandler{
         gamePanel.sound.playSoundEffect(14);
     }
 
+    public void teleportToAnotherIsland(int map, int area, int col, int row) {
+        gamePanel.gameState = gamePanel.transitionState;
+        gamePanel.nextArea = area;
+        tempMap = map;
+        tempCol = col;
+        tempRow = row;
+        int worldX = col * gamePanel.tileSize;
+        int worldY = row * gamePanel.tileSize;
+        gamePanel.dataManager.savePlayerPosition(map, area, worldX, worldY);
+        gamePanel.sound.playSoundEffect(24);
+    }
+
+
     public void speak(Entity entity) {
             gamePanel.gameState = gamePanel.dialogueState;
             entity.speak();
@@ -275,6 +304,16 @@ public class EventHandler{
             if(!gamePanel.bossBattleOn) {
                 gamePanel.gameState = gamePanel.cutsceneState;
                 gamePanel.cutsceneManager.sceneNum = gamePanel.cutsceneManager.skeletonLord;
+            }
+        }
+    }
+
+    public void goblinBoss() {
+
+        if(!gamePanel.player.killGoblinBoss){
+            if(!gamePanel.bossBattleOn) {
+                gamePanel.gameState = gamePanel.cutsceneState;
+                gamePanel.cutsceneManager.sceneNum = gamePanel.cutsceneManager.goblinBoss;
             }
         }
     }
