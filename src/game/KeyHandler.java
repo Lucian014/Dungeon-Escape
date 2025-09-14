@@ -392,9 +392,9 @@ public class KeyHandler implements KeyListener {
         }
         if(code == KeyEvent.VK_ENTER) {
             switch(gamePanel.ui.commandNum) {
-                case 0: // Fighter
-                case 1: // Another class
-                case 2: // Thief
+                case 0: gamePanel.player.strength += 1;
+                case 1: gamePanel.player.dexterity += 1;
+                case 2: gamePanel.player.maxLife += 1;
                     startGame();
                     break;
                 case 3: // Back
@@ -430,10 +430,9 @@ public class KeyHandler implements KeyListener {
                     gamePanel.gameState = gamePanel.playState;
                     gamePanel.ui.titleScreenState = 0;
                     break;
-                case 2: // Options (example)
-                    // Add options functionality
-                    break;
-                case 3: // Quit
+                case 2: // Quit
+                    gamePanel.dataManager.saveWorldObjectState();
+                    gamePanel.dataManager.savePlayerStats(gamePanel.player);
                     System.exit(0);
                     break;
             }
@@ -441,9 +440,11 @@ public class KeyHandler implements KeyListener {
     }
 
     private void startGame() {
+
+        gamePanel.gameState = gamePanel.cutsceneState;
+        gamePanel.cutsceneManager.sceneNum = gamePanel.cutsceneManager.beginning;
         System.out.println("Starting game with selected character...");
         gamePanel.resetGame(true);
-        gamePanel.gameState = gamePanel.playState;
         gamePanel.ui.titleScreenState = 0; // Reset to main menu
         gamePanel.ui.commandNum = 0; // Reset selection to top
     }

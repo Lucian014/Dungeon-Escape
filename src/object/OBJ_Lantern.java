@@ -14,7 +14,7 @@ public class OBJ_Lantern extends Entity {
         name = objName;
         down1 = setup("items/lantern",1,1);
         description = "[Lantern]\nIlluminates your way out \nof trouble.";
-        price = 200;
+        price = 50;
         lightRadius = 250;
 
     }

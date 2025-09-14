@@ -18,7 +18,7 @@ public class OBJ_Fireball extends Projectile {
         speed = 10;
         maxLife = 80;
         life = maxLife;
-        attack = 1;
+        attack = 4;
         useCost = 1;
         knockBackPower = 5;
         alive = false;
@@ -47,7 +47,7 @@ public class OBJ_Fireball extends Projectile {
     }
 
     public void subtractResource(Entity user) {
-        user.mana -= useCost;
+        user.mana -= 2 * useCost;
     }
 
     public Color getParticleColor() {

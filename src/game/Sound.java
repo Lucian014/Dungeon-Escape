@@ -64,7 +64,6 @@ public class Sound {
         soundURL[23] = getClass().getResource("/sounds/finalBossMusic.wav");
         soundURL[24] = getClass().getResource("/sounds/birdcrow.wav");
 
-
     }
 
     public void setFile(int i) {

@@ -31,9 +31,16 @@ public class NPC_Priest extends Entity{
     public void setDialogue(){
 
         dialogues[0][0] = "Hello my son.";
-        dialogues[0][1] = "So you've come to this island to get \nit.";
+        dialogues[0][1] = "So you've come to this island to get it, is that right?\nThe amulet of life";
         dialogues[0][2] = "Many have tried but failed.";
-        dialogues[0][3] = "Good luck warrior.";
+        dialogues[0][3] = "I have to warn you though, to get to it you have to\naquire two  keys.";
+        dialogues[0][4] = "One of them is hidden on this island. The second one \nis on  another island.";
+        dialogues[0][5] = "Only a creature of the sky can take you there. But \nyou have to be worthy.";
+        dialogues[0][6] = "Your purpose has to be of pure heart. Otherwise \nthey'll drop you in the water to die.";
+        dialogues[0][7] = "Also, the key is guarded by a thief. A goblin king.";
+        dialogues[0][8] = "With the two keys you'll be able to get into the\n Skeleton Lord's dungeon.";
+        dialogues[0][9] = "That dungeon is full of dangers so you'll need a\nsource of light to navigate through.There\n is a merchant on the other island which can help.";
+        dialogues[0][10] = "Good luck warrior. Shall you face no defeat.";
 
         dialogues[1][0] = "If you become tired, rest at the water.";
         dialogues[1][1] = "You can drink from the water to heal. Though \n if you rest monsters will appear";

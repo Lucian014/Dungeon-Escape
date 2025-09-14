@@ -19,6 +19,6 @@ public class OBJ_Pickaxe extends Entity {
         price = 75;
         knockBackPower = 2;
         motion1_duration = 10;
-        motion2_duration = 20;
+        motion2_duration = 30;
     }
 }

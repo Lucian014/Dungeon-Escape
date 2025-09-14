@@ -33,7 +33,6 @@
                 sheetSword = ImageIO.read(getClass().getResource("/player/player/playerSword.png"));
                 sheetAxe = loadARGB("/player/player/playerAxe.png");
                 sheetGuard = loadARGB("/player/player/playerGuard.png");
-                sheetGuard = loadARGB("/player/player/playerGuardBlue.png");
                 sheetPickaxe = loadARGB("/player/player/playerPickaxe.png");
                 sheetRunning = loadARGB("/player/player/playerRunning.png");
                 sheetSwordRed = loadARGB("/player/player/playerSwordRed.png");
@@ -59,23 +58,23 @@
 
     public void setDefaultValues() {
 
-        gamePanel.currentMap = 4;
-        worldX = gamePanel.tileSize * 22;
-        worldY = gamePanel.tileSize * 43;
+        gamePanel.currentMap = 0;
+        worldX = gamePanel.tileSize * 23;
+        worldY = gamePanel.tileSize * 17;
         defaultSpeed = 4;
         speed = defaultSpeed;
         direction = "down";
         //PLAYER STATUS
-        maxLife = 30; // 2 lives = 1 heart
+        maxLife = 8; // 2 lives = 1 heart
         life = maxLife;
         maxMana = 6;
         mana = maxMana;
         level = 1;
-        strength = 5; // The greater the strength, the more damage he gives.
+        strength = 2; // The greater the strength, the more damage he gives.
         dexterity = 1; // The greater the dex, the less damage he receives.
         exp = 0;
         nextLevelExp = 5;
-        coin = 1000;
+        coin = 0;
         currentLight = null;
         currentWeapon = new OBJ_Sword_Normal(gamePanel);
         currentShield = new OBJ_Shield_Wood(gamePanel);
@@ -87,15 +86,14 @@
         getAttackImage();
         getGuardingImage();
         setItems();
-        setDialogue();
 
     }
 
     public void setDefaultPositions() {
-        gamePanel.currentMap = 4;
+        gamePanel.currentMap = 0;
         gamePanel.currentArea = gamePanel.outside;
-        worldX = gamePanel.tileSize * 22;
-        worldY = gamePanel.tileSize * 43;
+        worldX = gamePanel.tileSize * 23;
+        worldY = gamePanel.tileSize * 17;
         direction = "down";
 
     }
@@ -115,12 +113,6 @@
 
         inventory.clear();
         inventory.add(currentWeapon);
-        inventory.add(new OBJ_Key(gamePanel));
-        inventory.add(new OBJ_Axe(gamePanel));
-        inventory.add(new OBJ_Lantern(gamePanel));
-        inventory.add(new OBJ_Key(gamePanel));
-        inventory.add(new OBJ_Pickaxe(gamePanel));
-        inventory.add(new OBJ_SwordRed(gamePanel));
 
     }
     public int getAttack() {
@@ -539,7 +531,6 @@
 
                 currentShield = selectedItem;
                 defense = getDefense();
-
             }
             if(selectedItem.type == type_light) {
                 if(currentLight == selectedItem) {
@@ -648,9 +639,7 @@
         }
     }
 
-    public void setDialogue() {
-        dialogues[0][0] = "You are level " + level + " !";
-    }
+
 
     public void damageInteractiveTile(int i) {
 
@@ -690,6 +679,7 @@
                 gamePanel.playSE(8);
                 gamePanel.gameState = gamePanel.dialogueState;
 
+                dialogues[0][0] = "You are level " + level + " !";
                 // Set the dialogue and then start it
                 startDialogue(this, 0);
             }

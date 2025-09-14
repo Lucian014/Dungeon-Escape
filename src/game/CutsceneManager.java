@@ -1,8 +1,7 @@
 package game;
 
 import entity.PlayerDummy;
-import monster.MON_SkeletonLord;
-import object.OBJ_BlueHeart;
+import object.OBJ_AmuletOfLife;
 import object.OBJ_Door_Iron;
 
 import java.awt.*;
@@ -23,6 +22,7 @@ public class CutsceneManager {
     public final int skeletonLord = 1;
     public final int ending = 2;
     public final int goblinBoss = 3;
+    public final int beginning = 4;
     public CutsceneManager(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
 
@@ -62,8 +62,79 @@ public class CutsceneManager {
             case skeletonLord: scene_skeletonLord(); break;
             case ending: scene_ending(); break;
             case goblinBoss: scene_goblinBoss(); break;
+            case beginning: scene_beginning(); break;
         }
     }
+
+    public void scene_beginning() {
+        // Initialize alpha for fade-in if not already set
+        if (scenePhase == 0) {
+            alpha = 0f;
+            scenePhase = 1;
+        }
+
+        // Draw black background with full opacity during text phases
+        if (scenePhase <= 2) {
+            drawBlackBackground(1f);
+        }
+
+        // Display message with fading effect
+        String message = "After a lot of searching across the globe, Sam has \nfound a lead on the amulet of life, to save his wife \nfrom an incurable illness. It's guarded on an island.";
+
+        if (scenePhase == 1) {
+            // Increase alpha for text fade-in effect (~2 seconds)
+            alpha += 0.02f; // ~2 seconds at 60 FPS (0.02 * 100 frames)
+            if (alpha > 1f) {
+                alpha = 1f;
+                scenePhase = 2;
+            }
+            drawString(alpha, 38f, gamePanel.screenHeight / 2 - 48, message, 40);
+        }
+
+        if (scenePhase == 2) {
+            // Hold text for ~4.5 seconds (270 frames)
+            drawString(alpha, 38f, gamePanel.screenHeight / 2 - 48, message, 40);
+            if (counterReached(270)) {
+                scenePhase = 3;
+                alpha = 1f; // Reset alpha for black screen
+            }
+        }
+
+        if (scenePhase == 3) {
+            // Hold black screen for ~1 second (60 frames)
+            drawBlackBackground(1f);
+            if (counterReached(60)) {
+                scenePhase = 4;
+            }
+        }
+
+        if (scenePhase == 4) {
+            // Fade out black background to reveal world map (~2 seconds)
+            alpha -= 0.01f; // ~2 seconds at 60 FPS (0.01 * 200 frames)
+            if (alpha < 0f) {
+                alpha = 0f; // Clamp alpha to prevent negative values
+            }
+            drawBlackBackground(alpha);
+            if (alpha <= 0f) {
+                scenePhase = 5;
+            }
+        }
+
+        if (scenePhase == 5) {
+            // Wait briefly (~0.5 seconds) before transitioning
+            if (counterReached(30)) {
+                // Reset
+                sceneNum = NA;
+                scenePhase = 0;
+                gamePanel.gameState = gamePanel.playState;
+
+                // Change the music
+                gamePanel.sound.stopMusic();
+                gamePanel.sound.playMusic(0);
+            }
+        }
+    }
+
     public void scene_skeletonLord() {
 
         if(scenePhase == 0) {
@@ -172,10 +243,10 @@ public class CutsceneManager {
                 if(gamePanel.object[gamePanel.currentMap][i] == null) {
 
                     gamePanel.object[gamePanel.currentMap][i] = new OBJ_Door_Iron(gamePanel);
-                    gamePanel.object[gamePanel.currentMap][i].worldX = 35 * gamePanel.tileSize;
+                    gamePanel.object[gamePanel.currentMap][i].worldX = 34 * gamePanel.tileSize;
                     gamePanel.object[gamePanel.currentMap][i].worldY = 21 * gamePanel.tileSize;
                     gamePanel.object[gamePanel.currentMap][i].temp = true;
-                    gamePanel.sound.playSoundEffect(21);
+                    gamePanel.sound.stopMusic();
                     break;
                 }
             }
@@ -226,6 +297,8 @@ public class CutsceneManager {
         }
         if(scenePhase == 4) {
 
+            gamePanel.sound.playMusic(25);
+
             //Return to the player
 
             //Search the dummy
@@ -261,7 +334,7 @@ public class CutsceneManager {
         if (scenePhase == 0) {
 
             gamePanel.sound.stopMusic();
-            gamePanel.ui.npc = new OBJ_BlueHeart(gamePanel);
+            gamePanel.ui.npc = new OBJ_AmuletOfLife(gamePanel);
             scenePhase++;
         }
         if (scenePhase == 1) {
@@ -311,7 +384,7 @@ public class CutsceneManager {
             String text = "After the fierce battle with the Skeleton Lord, \n"
                     + "our warrior finally found the legendary treasure.\n"
                     + "His search is finally over.\n"
-                    + "He can return home.";
+                    + "He can return home to his wife to heal her.";
 
             drawString(alpha, 38f, 200, text, 70);
 
@@ -361,7 +434,7 @@ public class CutsceneManager {
 
             // Change the music
             gamePanel.sound.stopMusic();
-            gamePanel.sound.playMusic(9);
+            gamePanel.sound.playMusic(0);
         }
     }
 

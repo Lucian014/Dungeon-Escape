@@ -22,7 +22,7 @@ public class NPC_Merchant extends Entity{
 
     public void setDialogue(){
 
-        dialogues[0][0] = "Looks like you've found me \nbrotha! What shall i offer \nyou lad?";
+        dialogues[0][0] = "Looks like you've found me brotha! What shall i offer \nyou lad?";
 
         dialogues[1][0] = "Come again, brotha!";
 
@@ -48,9 +48,6 @@ public class NPC_Merchant extends Entity{
     }
     public void setItems() {
         inventory.add(new OBJ_Potion_Red(gamePanel));
-        inventory.add(new OBJ_Key(gamePanel));
-        inventory.add(new OBJ_Sword_Normal(gamePanel));
-        inventory.add(new OBJ_Shield_Blue(gamePanel));
         inventory.add(new OBJ_Axe(gamePanel));
     }
     public void speak() {
