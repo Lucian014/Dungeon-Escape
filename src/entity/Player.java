@@ -18,7 +18,9 @@
     public final int screenY;
     public boolean lightUpdated = false;
     public boolean killSkeletonLord = false;
-    BufferedImage sheetRunning, sheetSword, sheetAxe, sheetPickaxe, sheetGuard;
+    public boolean killGoblinBoss = false;
+
+    BufferedImage sheetRunning, sheetSword, sheetAxe, sheetPickaxe, sheetGuard, sheetGuardBlue,sheetSwordRed;
 
 
 
@@ -30,10 +32,11 @@
             try {
                 sheetSword = ImageIO.read(getClass().getResource("/player/player/playerSword.png"));
                 sheetAxe = loadARGB("/player/player/playerAxe.png");
-                sheetGuard = loadARGB("/player/player/guarding.png");
+                sheetGuard = loadARGB("/player/player/playerGuard.png");
+                sheetGuard = loadARGB("/player/player/playerGuardBlue.png");
                 sheetPickaxe = loadARGB("/player/player/playerPickaxe.png");
                 sheetRunning = loadARGB("/player/player/playerRunning.png");
-
+                sheetSwordRed = loadARGB("/player/player/playerSwordRed.png");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -56,9 +59,9 @@
 
     public void setDefaultValues() {
 
-        gamePanel.currentMap = 2;
-        worldX = gamePanel.tileSize * 9;
-        worldY = gamePanel.tileSize * 8;
+        gamePanel.currentMap = 4;
+        worldX = gamePanel.tileSize * 22;
+        worldY = gamePanel.tileSize * 43;
         defaultSpeed = 4;
         speed = defaultSpeed;
         direction = "down";
@@ -89,10 +92,10 @@
     }
 
     public void setDefaultPositions() {
-        gamePanel.currentMap = 2;
-        gamePanel.currentArea = gamePanel.dungeon;
-        worldX = gamePanel.tileSize * 9;
-        worldY = gamePanel.tileSize * 8;
+        gamePanel.currentMap = 4;
+        gamePanel.currentArea = gamePanel.outside;
+        worldX = gamePanel.tileSize * 22;
+        worldY = gamePanel.tileSize * 43;
         direction = "down";
 
     }
@@ -117,7 +120,7 @@
         inventory.add(new OBJ_Lantern(gamePanel));
         inventory.add(new OBJ_Key(gamePanel));
         inventory.add(new OBJ_Pickaxe(gamePanel));
-
+        inventory.add(new OBJ_SwordRed(gamePanel));
 
     }
     public int getAttack() {
@@ -160,6 +163,20 @@
                 attackUp2    = cut(sheetSword,   16,  96, 16, 32, 1, 2);
             }
 
+            if (currentWeapon.type == type_sword_red) {
+                attackDown1  = cut(sheetSwordRed,    0,   0, 16, 32, 1, 2);
+                attackDown2  = cut(sheetSwordRed,   16,   0, 16, 32, 1, 2);
+
+                attackLeft1  = cut(sheetSwordRed,    0,  32, 32, 16, 2, 1);
+                attackLeft2  = cut(sheetSwordRed,    0,  48, 32, 16, 2, 1);
+
+                attackRight1 = cut(sheetSwordRed,    0,  64, 32, 16, 2, 1);
+                attackRight2 = cut(sheetSwordRed,    0,  80, 32, 16, 2, 1);
+
+                attackUp1    = cut(sheetSwordRed,    0,  96, 16, 32, 1, 2);
+                attackUp2    = cut(sheetSwordRed,   16,  96, 16, 32, 1, 2);
+            }
+
             if (currentWeapon.type == type_axe) {
                 attackDown1  = cut(sheetAxe,      0,   0, 16, 32, 1, 2);
                 attackDown2  = cut(sheetAxe,     16,   0, 16, 32, 1, 2);
@@ -190,22 +207,12 @@
         }
 
         public void getGuardingImage() {
-            guardDown  = cut(sheetGuard,  0, 0, 16, 16, 1, 1);
-            guardLeft  = cut(sheetGuard, 16, 0, 16, 16, 1, 1);
-            guardRight = cut(sheetGuard, 32, 0, 16, 16, 1, 1);
-            guardUp    = cut(sheetGuard, 48, 0, 16, 16, 1, 1);
-        }
 
-    public void getSleepingImage(BufferedImage image) {
-        up1 = image;
-        up2 = image;
-        down1 = image;
-        down2 = image;
-        left1 = image;
-        left2 = image;
-        right1 = image;
-        right2 = image;
-    }
+            guardDown = cut(sheetGuard, 0, 0, 16, 16, 1, 1);
+            guardLeft = cut(sheetGuard, 16, 0, 16, 16, 1, 1);
+            guardRight = cut(sheetGuard, 32, 0, 16, 16, 1, 1);
+            guardUp = cut(sheetGuard, 48, 0, 16, 16, 1, 1);
+        }
 
     public void update() {
 
@@ -522,7 +529,7 @@
 
             Entity selectedItem = inventory.get(itemIndex);
 
-            if(selectedItem.type == type_sword || selectedItem.type == type_axe || selectedItem.type == type_pickaxe) {
+            if(selectedItem.type == type_sword || selectedItem.type == type_axe || selectedItem.type == type_pickaxe || selectedItem.type == type_sword_red) {
 
                 currentWeapon = selectedItem;
                 attack = getAttack();

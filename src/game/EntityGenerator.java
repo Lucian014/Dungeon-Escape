@@ -3,6 +3,7 @@ package game;
 import entity.Entity;
 import object.*;
 
+
 public class EntityGenerator {
 
     GamePanel gamePanel;
@@ -29,6 +30,7 @@ public class EntityGenerator {
             case OBJ_Door_Iron.objName: obj = new OBJ_Door_Iron(gamePanel); break;
             case OBJ_Fireball.objName: obj = new OBJ_Fireball(gamePanel); break;
             case OBJ_ManaCrystal.objName: obj = new OBJ_ManaCrystal(gamePanel); break;
+            case OBJ_SwordRed.objName: obj = new OBJ_SwordRed(gamePanel);
         }
         return obj;
     }

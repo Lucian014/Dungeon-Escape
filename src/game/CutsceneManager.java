@@ -22,6 +22,7 @@ public class CutsceneManager {
     public final int NA = 0;
     public final int skeletonLord = 1;
     public final int ending = 2;
+    public final int goblinBoss = 3;
     public CutsceneManager(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
 
@@ -60,7 +61,7 @@ public class CutsceneManager {
 
             case skeletonLord: scene_skeletonLord(); break;
             case ending: scene_ending(); break;
-
+            case goblinBoss: scene_goblinBoss(); break;
         }
     }
     public void scene_skeletonLord() {
@@ -114,6 +115,102 @@ public class CutsceneManager {
             for(int i = 0; i < gamePanel.monster[1].length; i++) {
 
                 if(gamePanel.monster[gamePanel.currentMap][i] != null && gamePanel.monster[gamePanel.currentMap][i].name.equals("Skeleton Lord")) {
+
+                    gamePanel.monster[gamePanel.currentMap][i].sleep = false;
+                    gamePanel.ui.npc = gamePanel.monster[gamePanel.currentMap][i];
+                    scenePhase++;
+                    break;
+                }
+            }
+        }
+        if(scenePhase == 3) {
+
+            //The boss speaks
+            gamePanel.ui.drawDialogueScreen();
+        }
+        if(scenePhase == 4) {
+
+            //Return to the player
+
+            //Search the dummy
+            for(int i = 0; i < gamePanel.npc[1].length; i++) {
+
+                if(gamePanel.npc[gamePanel.currentMap][i] != null && gamePanel.npc[gamePanel.currentMap][i].name.equals(PlayerDummy.npcName)) {
+
+                    //Restore player position
+                    gamePanel.player.worldX = gamePanel.npc[gamePanel.currentMap][i].worldX;
+                    gamePanel.player.worldY = gamePanel.npc[gamePanel.currentMap][i].worldY;
+                    gamePanel.player.direction = gamePanel.npc[gamePanel.currentMap][i].direction;
+                    //Delete the dummy
+                    gamePanel.npc[gamePanel.currentMap][i] = null;
+                    break;
+                }
+            }
+            //Start drawing the player
+            gamePanel.player.drawing = true;
+
+            //Reset
+            sceneNum = NA;
+            scenePhase = 0;
+            gamePanel.gameState = gamePanel.playState;
+
+            // Change the music
+            gamePanel.sound.stopMusic();
+            gamePanel.sound.playMusic(23);
+        }
+    }
+
+    public void scene_goblinBoss() {
+
+        if(scenePhase == 0) {
+
+            gamePanel.bossBattleOn = true;
+
+            //Shut the iron door
+            for(int i = 0; i < gamePanel.object[i].length; i++) {
+
+                if(gamePanel.object[gamePanel.currentMap][i] == null) {
+
+                    gamePanel.object[gamePanel.currentMap][i] = new OBJ_Door_Iron(gamePanel);
+                    gamePanel.object[gamePanel.currentMap][i].worldX = 35 * gamePanel.tileSize;
+                    gamePanel.object[gamePanel.currentMap][i].worldY = 21 * gamePanel.tileSize;
+                    gamePanel.object[gamePanel.currentMap][i].temp = true;
+                    gamePanel.sound.playSoundEffect(21);
+                    break;
+                }
+            }
+            //Search vacant slot for the dummy
+
+            for(int i = 0; i < gamePanel.npc[1].length; i++) {
+
+                if(gamePanel.npc[gamePanel.currentMap][i] == null) {
+                    gamePanel.npc[gamePanel.currentMap][i] = new PlayerDummy(gamePanel);
+                    gamePanel.npc[gamePanel.currentMap][i].worldX = gamePanel.player.worldX;
+                    gamePanel.npc[gamePanel.currentMap][i].worldY = gamePanel.player.worldY;
+                    gamePanel.npc[gamePanel.currentMap][i].direction = gamePanel.player.direction;
+                    break;
+                }
+            }
+
+            gamePanel.player.drawing = false;
+
+            scenePhase++;
+        }
+        if(scenePhase == 1) {
+
+            gamePanel.player.worldY -= 2;
+
+            if(gamePanel.player.worldY < gamePanel.tileSize * 17) {
+                scenePhase++;
+
+            }
+        }
+        if(scenePhase == 2) {
+
+            //Search the boss
+            for(int i = 0; i < gamePanel.monster[1].length; i++) {
+
+                if(gamePanel.monster[gamePanel.currentMap][i] != null && gamePanel.monster[gamePanel.currentMap][i].name.equals("Goblin Boss")) {
 
                     gamePanel.monster[gamePanel.currentMap][i].sleep = false;
                     gamePanel.ui.npc = gamePanel.monster[gamePanel.currentMap][i];

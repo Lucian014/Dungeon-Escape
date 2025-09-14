@@ -62,6 +62,7 @@ public class Sound {
         soundURL[21] = getClass().getResource("/sounds/dooropen.wav");
         soundURL[22] = getClass().getResource("/sounds/speak.wav");
         soundURL[23] = getClass().getResource("/sounds/finalBossMusic.wav");
+        soundURL[24] = getClass().getResource("/sounds/birdcrow.wav");
 
 
     }
