@@ -243,7 +243,7 @@ public class CutsceneManager {
                 if(gamePanel.object[gamePanel.currentMap][i] == null) {
 
                     gamePanel.object[gamePanel.currentMap][i] = new OBJ_Door_Iron(gamePanel);
-                    gamePanel.object[gamePanel.currentMap][i].worldX = 34 * gamePanel.tileSize;
+                    gamePanel.object[gamePanel.currentMap][i].worldX = 35 * gamePanel.tileSize;
                     gamePanel.object[gamePanel.currentMap][i].worldY = 21 * gamePanel.tileSize;
                     gamePanel.object[gamePanel.currentMap][i].temp = true;
                     gamePanel.sound.stopMusic();
@@ -297,7 +297,7 @@ public class CutsceneManager {
         }
         if(scenePhase == 4) {
 
-            gamePanel.sound.playMusic(25);
+            //gamePanel.sound.playMusic(25);
 
             //Return to the player
 
@@ -322,7 +322,7 @@ public class CutsceneManager {
             sceneNum = NA;
             scenePhase = 0;
             gamePanel.gameState = gamePanel.playState;
-
+            gamePanel.bossBattleOn = false;
             // Change the music
             gamePanel.sound.stopMusic();
             gamePanel.sound.playMusic(23);

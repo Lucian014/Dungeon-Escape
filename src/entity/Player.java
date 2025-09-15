@@ -17,8 +17,8 @@
     public final int screenX;
     public final int screenY;
     public boolean lightUpdated = false;
-    public boolean killSkeletonLord = false;
-    public boolean killGoblinBoss = false;
+    public boolean killSkeletonLord;
+    public boolean killGoblinBoss;
 
     BufferedImage sheetRunning, sheetSword, sheetAxe, sheetPickaxe, sheetGuard, sheetGuardBlue,sheetSwordRed;
 
@@ -79,6 +79,8 @@
         currentWeapon = new OBJ_Sword_Normal(gamePanel);
         currentShield = new OBJ_Shield_Wood(gamePanel);
         projectile = new OBJ_Fireball(gamePanel);
+        killSkeletonLord = false;
+        killGoblinBoss = false;
         attack = getAttack(); // Influenced by player's strength and weapon's attack value
         defense = getDefense(); // Influenced by player's dexterity and shield's defense stats
 
