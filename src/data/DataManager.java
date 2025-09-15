@@ -209,6 +209,29 @@ public class DataManager {
         }
     }
 
+    public void savePlayerInventory(Player player) {
+        try (Connection connection = DriverManager.getConnection(DB_URL)) {
+            // DELETE OLD INVENTORY
+            String deleteInv = "DELETE FROM inventory WHERE player_id = 1;";
+            Statement stmt = connection.createStatement();
+            stmt.execute(deleteInv);
+
+            // SAVE INVENTORY
+            String insertInv = "INSERT INTO inventory (player_id, item_name, amount, item_type) VALUES (1, ?, ?, ?);";
+            PreparedStatement invSQL = connection.prepareStatement(insertInv);
+            for (Entity item : player.inventory) {
+                if (item != null) {
+                    invSQL.setString(1, item.name);
+                    invSQL.setInt(2, item.amount);
+                    invSQL.setInt(3, item.type);
+                    invSQL.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     private Entity getItemByName(String name) {
         Entity item = null;
         switch (name) {
@@ -229,9 +252,6 @@ public class DataManager {
                 break;
             case "Lantern":
                 item = new OBJ_Lantern(gamePanel);
-                break;
-            case "Blue Shield":
-                item = new OBJ_Shield_Blue(gamePanel);
                 break;
             case "Pickaxe":
                 item = new OBJ_Pickaxe(gamePanel);

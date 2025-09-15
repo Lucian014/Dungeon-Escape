@@ -132,6 +132,7 @@ public class GamePanel extends JPanel implements Runnable{
         assetSetter.setNPC();
         assetSetter.setMonster();
         manager.lighting.resetDay();
+        dataManager.savePlayerInventory(player);
 
         if (restart) {
             // For new game - reset everything to defaults

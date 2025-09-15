@@ -26,7 +26,7 @@ public class CutsceneManager {
     public CutsceneManager(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
 
-        endCredit = "Dungeon Escape\n" +
+        endCredit = "Search for Hope\n" +
                 "\n" +
                 "Developed by\n" +
                 "Lucian Covaliuc\n" +
@@ -223,6 +223,7 @@ public class CutsceneManager {
             //Reset
             sceneNum = NA;
             scenePhase = 0;
+            gamePanel.bossBattleOn = false;
             gamePanel.gameState = gamePanel.playState;
 
             // Change the music
@@ -398,7 +399,7 @@ public class CutsceneManager {
 
             drawBlackBackground(1f);
 
-            drawString(1f, 120f, gamePanel.screenHeight / 2, "Dungeon Escape!", 40);
+            drawString(1f, 120f, gamePanel.screenHeight / 2, "Search for Hope!", 40);
 
             if (counterReached(480)) {
                 scenePhase++;

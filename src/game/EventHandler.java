@@ -300,21 +300,16 @@ public class EventHandler{
 
     public void skeletonLord() {
 
-        if(!gamePanel.player.killSkeletonLord){
             if(!gamePanel.bossBattleOn) {
                 gamePanel.gameState = gamePanel.cutsceneState;
                 gamePanel.cutsceneManager.sceneNum = gamePanel.cutsceneManager.skeletonLord;
             }
         }
-    }
 
     public void goblinBoss() {
-
-        if(!gamePanel.player.killGoblinBoss){
             if(!gamePanel.bossBattleOn) {
                 gamePanel.gameState = gamePanel.cutsceneState;
                 gamePanel.cutsceneManager.sceneNum = gamePanel.cutsceneManager.goblinBoss;
-            }
         }
     }
 }

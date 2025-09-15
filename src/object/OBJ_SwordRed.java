@@ -5,7 +5,7 @@ import game.GamePanel;
 
 public class OBJ_SwordRed extends Entity {
 
-    public static final String objName = "Sword of flame";
+    public static final String objName = "Sword of Flame";
     public OBJ_SwordRed(GamePanel gamePanel) {
         super(gamePanel);
 

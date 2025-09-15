@@ -641,8 +641,6 @@
         }
     }
 
-
-
     public void damageInteractiveTile(int i) {
 
             if(i != 999 && gamePanel.iTile[gamePanel.currentMap][i].destructible && !gamePanel.iTile[gamePanel.currentMap][i].invincible && gamePanel.iTile[gamePanel.currentMap][i].isCorrectItem(this)) {

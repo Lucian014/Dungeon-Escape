@@ -22,7 +22,7 @@ public class OBJ_AmuletOfLife extends Entity {
     public void setDialogues() {
 
         dialogues[0][0] = "You pick up the Amulet of Life !";
-        dialogues[0][1] = "You have found the Amulet of Life, the legendary treasure !";
+        dialogues[0][1] = "You have found the Amulet of Life, the legendary\ntreasure !";
 
     }
 
