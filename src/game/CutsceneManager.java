@@ -26,7 +26,7 @@ public class CutsceneManager {
     public CutsceneManager(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
 
-        endCredit = "Dungeon Escape\n" +
+        endCredit = "Search for Hope\n" +
                 "\n" +
                 "Developed by\n" +
                 "Lucian Covaliuc\n" +
@@ -223,6 +223,7 @@ public class CutsceneManager {
             //Reset
             sceneNum = NA;
             scenePhase = 0;
+            gamePanel.bossBattleOn = false;
             gamePanel.gameState = gamePanel.playState;
 
             // Change the music
@@ -243,7 +244,7 @@ public class CutsceneManager {
                 if(gamePanel.object[gamePanel.currentMap][i] == null) {
 
                     gamePanel.object[gamePanel.currentMap][i] = new OBJ_Door_Iron(gamePanel);
-                    gamePanel.object[gamePanel.currentMap][i].worldX = 34 * gamePanel.tileSize;
+                    gamePanel.object[gamePanel.currentMap][i].worldX = 35 * gamePanel.tileSize;
                     gamePanel.object[gamePanel.currentMap][i].worldY = 21 * gamePanel.tileSize;
                     gamePanel.object[gamePanel.currentMap][i].temp = true;
                     gamePanel.sound.stopMusic();
@@ -297,7 +298,7 @@ public class CutsceneManager {
         }
         if(scenePhase == 4) {
 
-            gamePanel.sound.playMusic(25);
+            //gamePanel.sound.playMusic(25);
 
             //Return to the player
 
@@ -322,7 +323,7 @@ public class CutsceneManager {
             sceneNum = NA;
             scenePhase = 0;
             gamePanel.gameState = gamePanel.playState;
-
+            gamePanel.bossBattleOn = false;
             // Change the music
             gamePanel.sound.stopMusic();
             gamePanel.sound.playMusic(23);
@@ -398,7 +399,7 @@ public class CutsceneManager {
 
             drawBlackBackground(1f);
 
-            drawString(1f, 120f, gamePanel.screenHeight / 2, "Dungeon Escape!", 40);
+            drawString(1f, 120f, gamePanel.screenHeight / 2, "Search for Hope!", 40);
 
             if (counterReached(480)) {
                 scenePhase++;

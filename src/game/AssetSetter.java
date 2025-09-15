@@ -146,9 +146,7 @@ public class AssetSetter {
 
         mapNum = 3;
         i = 0;
-        if(!gamePanel.player.killSkeletonLord) {
             gamePanel.monster[mapNum][i++] = createEntity(MON_SkeletonLord.class,23,15);
-        }
 
         mapNum = 4;
         i = 0;
@@ -158,19 +156,13 @@ public class AssetSetter {
         gamePanel.monster[mapNum][i++] = createEntity(MON_RedSlime.class,16,19);
         gamePanel.monster[mapNum][i++] = createEntity(MON_RedSlime.class,20,33);
 
-        gamePanel.monster[mapNum][i++] = createEntity(MON_Orc.class,9,42);
+        gamePanel.monster[mapNum][i++] = createEntity(MON_Orc.class,8,42);
         gamePanel.monster[mapNum][i++] = createEntity(MON_RedSlime.class,11,16);
         gamePanel.monster[mapNum][i++] = createEntity(MON_RedSlime.class,13,21);
 
 
 
-        if(!gamePanel.player.killGoblinBoss) {
-            gamePanel.monster[mapNum][i++] = createEntity(MON_GoblinBoss.class, 34, 13);
-        }
-
-
-
-
+        gamePanel.monster[mapNum][i++] = createEntity(MON_GoblinBoss.class, 34, 13);
     }
 
     public void setInteractiveTile() {

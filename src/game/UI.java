@@ -3,6 +3,7 @@
     import object.*;
     import entity.Entity;
 
+    import javax.imageio.ImageIO;
     import java.awt.*;
     import java.awt.image.BufferedImage;
     import java.io.IOException;
@@ -13,7 +14,7 @@
     GamePanel gamePanel;
     Graphics2D graphics2D;
     public Font maruMonica, purisaBold;
-    BufferedImage heart_full, heart_half, heart_blank, crystal_full, crystal_blank, coin;
+    BufferedImage heart_full, heart_half, heart_blank, crystal_full, crystal_blank, coin, titleCard;
     public boolean messageOn = false;
     ArrayList<String> message = new ArrayList<>();
     ArrayList<Integer> messageCounter = new ArrayList<>();
@@ -38,6 +39,7 @@
             maruMonica = Font.createFont(Font.TRUETYPE_FONT, inputStream);
             inputStream = getClass().getResourceAsStream("/fonts/Purisa Bold.ttf");
             purisaBold = Font.createFont(Font.TRUETYPE_FONT, inputStream);
+            titleCard = ImageIO.read(getClass().getResource("/items/titleCard.png"));
         } catch (IOException | FontFormatException e) {
             e.printStackTrace();
         }
@@ -272,10 +274,10 @@
 
             //TITLE NAME
             graphics2D.setFont(graphics2D.getFont().deriveFont(Font.BOLD, 96F));
-            String text = "Dungeon Escape";
+            String text = "Search for Hope";
             int x = getXforCenteredText(text);
             int y = gamePanel.screenHeight / 2 - gamePanel.tileSize * 3;
-
+            graphics2D.drawImage(titleCard, 0, 0, gamePanel.screenWidth, gamePanel.screenHeight, null);
             //SHADOW
             graphics2D.setColor(Color.black);
             graphics2D.drawString(text, x + 6, y + 6);
@@ -287,7 +289,7 @@
             //TITLE CARD
             x = gamePanel.screenWidth / 2 - gamePanel.tileSize;
             y += gamePanel.tileSize;
-            graphics2D.drawImage(gamePanel.player.down1, x, y, gamePanel.tileSize * 2, gamePanel.tileSize * 2, null);
+
 
             //MENU
             graphics2D.setFont(graphics2D.getFont().deriveFont(Font.BOLD, 40F));
